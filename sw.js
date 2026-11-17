@@ -1,5 +1,5 @@
 /* Pappa Pronta — Offline-First Service Worker (App Shell + Tesseract.js v5 + .traineddata) */
-const APP_CACHE = 'pappa-pronta-shell-v6';
+const APP_CACHE = 'pappa-pronta-shell-v9';
 const OCR_CACHE = 'pappa-pronta-ocr-v2';
 const API_CACHE = 'pappa-pronta-api-v2';
 
@@ -129,6 +129,16 @@ self.addEventListener('fetch', (event) => {
 
   const url = req.url;
   if (!url.startsWith('http://') && !url.startsWith('https://')) return;
+
+  // Allow Firebase Auth, Firestore RPCs & Google Identity endpoints to pass directly to network
+  if (
+    url.includes('googleapis.com') ||
+    url.includes('firebaseio.com') ||
+    url.includes('accounts.google.com') ||
+    url.includes('firebaseapp.com/__/')
+  ) {
+    return;
+  }
 
   // 1. Tesseract.js v5, WASM cores & .traineddata(.gz) -> Cache-First for supermarket offline reliability
   if (isOcrAsset(url)) {

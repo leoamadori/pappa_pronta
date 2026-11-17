@@ -1377,6 +1377,81 @@
       gap: 10px;
     }
 
+    /* Onboarding & Cloud/Health Modals */
+    dialog.modal-dialog {
+      width: min(95vw, 560px);
+      max-height: 92vh;
+      margin: auto;
+      padding: 0;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: var(--shadow-float);
+    }
+
+    dialog.modal-dialog::backdrop {
+      background: rgba(12, 24, 18, 0.72);
+    }
+
+    .modal-body-scroll {
+      padding: 16px;
+      overflow-y: auto;
+      max-height: calc(92vh - 122px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .wiz-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+      margin-top: 6px;
+    }
+
+    .wiz-step-bar {
+      height: 5px;
+      border-radius: 99px;
+      background: var(--border);
+    }
+
+    .wiz-step-bar.active {
+      background: var(--primary);
+    }
+
+    .diet-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .diet-card {
+      width: 100%;
+      text-align: left;
+      padding: 11px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      transition: background-color 140ms ease, border-color 140ms ease;
+    }
+
+    .diet-card.selected {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px var(--primary);
+    }
+
+    .profile-shortcut-btn.logged-in {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
     /* Fixed Bottom Navigation */
     .bottom-nav {
       position: fixed;
@@ -1646,12 +1721,46 @@
         <div class="card-head">
           <div>
             <h2 class="card-title">Protocollo Integratori &amp; Tweaks</h2>
-            <p class="card-desc">Supporto essenziale plant-based e controllo glicemico-pressorio</p>
+            <p class="card-desc" id="protocolCardDesc">Supporto essenziale plant-based e controllo glicemico-pressorio</p>
           </div>
           <span id="protocolCountBadge" class="badge num">0/5</span>
         </div>
 
         <div id="protocolChips" class="chip-row" role="group" aria-label="Checklist integratori e tweaks giornalieri"></div>
+      </article>
+
+      <!-- Card 4B: Salute & Cloud Sync (Google Health Connect / Apple Salute + Account) -->
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Salute &amp; Sincronizzazione</h2>
+            <p class="card-desc">Google Health Connect (Android), Apple Salute (iPhone) e Cloud</p>
+          </div>
+          <button type="button" id="openHealthCloudModalBtn" class="btn btn-sm btn-soft">⚙️ Connetti</button>
+        </div>
+
+        <div class="kpi-grid" style="margin-bottom:10px;">
+          <div class="kpi-box">
+            <span class="kpi-label">Passi oggi</span>
+            <strong class="kpi-value num" id="hcStepsVal">0</strong>
+            <span class="kpi-sub" id="hcStepsSub">target 7.500</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-label">Kcal attive</span>
+            <strong class="kpi-value num" id="hcActiveKcalVal">0</strong>
+            <span class="kpi-sub">workout ≥300</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-label">Account Cloud</span>
+            <strong class="kpi-value" id="cloudShortStatus" style="font-size:0.9rem;">Locale</strong>
+            <span class="kpi-sub" id="cloudShortSub">non connesso</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" id="quickSyncHealthBtn" class="btn btn-sm btn-primary" style="flex:1 1 170px;">❤️ Sincronizza Salute</button>
+          <button type="button" id="quickShareFriendsBtn" class="btn btn-sm" style="flex:1 1 150px;">🔗 Invita un amico</button>
+        </div>
       </article>
 
       <!-- Card 5: Dispensa ("Cosa hai in casa?") -->
@@ -2060,6 +2169,21 @@
         <!-- Anthropometric Summary Banner -->
         <div id="profileSummaryBanner" class="pantry-ready-bar" style="background:var(--surface-muted); border-color:var(--border);"></div>
 
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+          <button type="button" id="reopenOnboardingBtn" class="btn btn-sm btn-soft" style="flex:1 1 180px;">🚀 Configurazione Iniziale</button>
+          <button type="button" id="openCloudFromProfileBtn" class="btn btn-sm btn-primary" style="flex:1 1 180px;">☁️ Login Cloud &amp; Salute</button>
+        </div>
+
+        <!-- Diet Selector in Profile -->
+        <div style="margin-bottom:12px;">
+          <div style="font-size:0.8rem; font-weight:700; margin-bottom:6px;">Regime alimentare attivo:</div>
+          <div class="chip-row" id="profileDietBar">
+            <button type="button" class="chip chip-sm" data-diet="vegan">🌱 100% Plant-Based</button>
+            <button type="button" class="chip chip-sm" data-diet="vegetarian">🥚 Vegetariano</button>
+            <button type="button" class="chip chip-sm" data-diet="omnivore">🐟 Mediterraneo / Onnivoro</button>
+          </div>
+        </div>
+
         <!-- Core Clinical Toggles -->
         <div id="profileTogglesContainer" class="profile-toggles"></div>
 
@@ -2190,6 +2314,157 @@
     </div>
   </dialog>
 
+  <!-- 4-Step Initial Setup Wizard for Friends & Multi-User Onboarding -->
+  <dialog id="onboardingDialog" class="modal-dialog" aria-labelledby="onboardTitle">
+    <div class="crop-modal-head" style="flex-direction:column; align-items:stretch;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <div>
+          <strong id="onboardTitle" style="font-size:1rem;">Benvenuto in Pappa Pronta</strong>
+          <div id="onboardStepLabel" style="font-size:0.75rem; color:var(--ink-secondary);">Passo 1 di 4 · Configura il tuo piano personale</div>
+        </div>
+        <button type="button" id="skipOnboardingBtn" class="btn btn-xs">Salta</button>
+      </div>
+      <div class="wiz-steps" id="onboardStepBars" aria-hidden="true">
+        <div class="wiz-step-bar active"></div>
+        <div class="wiz-step-bar"></div>
+        <div class="wiz-step-bar"></div>
+        <div class="wiz-step-bar"></div>
+      </div>
+    </div>
+
+    <div class="modal-body-scroll" id="onboardStepBody"></div>
+
+    <div class="crop-modal-foot" style="flex-direction:row; justify-content:space-between; align-items:center;">
+      <button type="button" id="onboardPrevBtn" class="btn btn-sm">← Indietro</button>
+      <button type="button" id="onboardNextBtn" class="btn btn-sm btn-primary" style="min-width:140px;">Avanti →</button>
+    </div>
+  </dialog>
+
+  <!-- Unified Cloud Login (Firebase) + Google Health Connect / Apple Salute Modal -->
+  <dialog id="accountHealthDialog" class="modal-dialog" aria-labelledby="accHealthTitle">
+    <div class="crop-modal-head">
+      <div>
+        <strong id="accHealthTitle" style="font-size:0.98rem;">Account Cloud &amp; Sync Salute</strong>
+        <div style="font-size:0.74rem; color:var(--ink-secondary);">Sincronizza dispositivi, invita amici e collega Health Connect / Apple Salute</div>
+      </div>
+      <button type="button" id="closeAccHealthBtn" class="btn btn-sm">Chiudi</button>
+    </div>
+
+    <div class="modal-body-scroll">
+      <!-- 1. Firebase Cloud Login Box -->
+      <section style="border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; background:var(--surface-muted);">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+          <strong style="font-size:0.9rem;">☁️ Account &amp; Sincronizzazione Cloud</strong>
+          <span id="fbStatusBadge" class="badge">Locale</span>
+        </div>
+
+        <div id="fbLoggedOutView">
+          <p style="margin:0 0 10px; font-size:0.8rem; color:var(--ink-secondary);">
+            Accedi per salvare profilo, dispensa, ricette e progressi nel cloud e ritrovarli su qualsiasi telefono o PC.
+          </p>
+          <button type="button" id="fbGoogleLoginBtn" class="btn btn-primary btn-block" style="margin-bottom:8px;">
+            🔐 Accedi con Google
+          </button>
+
+          <details style="margin-top:6px;">
+            <summary style="cursor:pointer; font-size:0.78rem; font-weight:600; color:var(--ink-secondary);">Oppure accedi / registrati con Email e Password</summary>
+            <div style="display:grid; gap:6px; margin-top:8px;">
+              <input type="email" id="fbEmailInput" class="input-field" placeholder="La tua email">
+              <input type="password" id="fbPassInput" class="input-field" placeholder="Password (min. 6 caratteri)">
+              <div style="display:flex; gap:6px;">
+                <button type="button" id="fbEmailSignInBtn" class="btn btn-sm btn-soft" style="flex:1;">Accedi</button>
+                <button type="button" id="fbEmailSignUpBtn" class="btn btn-sm" style="flex:1;">Crea account</button>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div id="fbLoggedInView" style="display:none;">
+          <div style="font-size:0.84rem; margin-bottom:8px;">
+            Connesso come: <strong id="fbUserLabel">—</strong>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" id="fbSyncNowBtn" class="btn btn-sm btn-primary" style="flex:1;">🔄 Sincronizza ora</button>
+            <button type="button" id="fbLogoutBtn" class="btn btn-sm btn-danger">Esci</button>
+          </div>
+        </div>
+
+        <!-- Share Invite Link & Firebase Config -->
+        <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border); display:flex; gap:6px; flex-wrap:wrap;">
+          <button type="button" id="copyFriendInviteBtn" class="btn btn-xs btn-soft" style="flex:1;">🔗 Copia Link d'Invito per Amici</button>
+          <details style="width:100%; margin-top:4px;">
+            <summary style="cursor:pointer; font-size:0.75rem; color:var(--ink-secondary);">⚙️ Configurazione Progetto Firebase (per l'amministratore)</summary>
+            <div style="margin-top:6px; display:grid; gap:6px;">
+              <textarea id="fbConfigTextarea" rows="3" class="input-field" style="font-size:0.76rem; font-family:monospace;" placeholder="Incolla qui l'oggetto firebaseConfig dalla Console Firebase (apiKey, authDomain, projectId, appId)..."></textarea>
+              <div style="display:flex; gap:6px;">
+                <button type="button" id="saveFbConfigBtn" class="btn btn-xs btn-primary">Salva Configurazione Firebase</button>
+                <button type="button" id="clearFbConfigBtn" class="btn btn-xs">Rimuovi</button>
+              </div>
+              <div style="font-size:0.72rem; color:var(--ink-secondary);">
+                Una volta salvata, premendo «🔗 Copia Link d'Invito per Amici» anche i tuoi amici riceveranno il link già pronto per il Login Google senza dover configurare nulla!
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- 2. Google Health Connect (Android) & Apple Salute (iOS) -->
+      <section style="border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; background:var(--surface-muted);">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+          <strong style="font-size:0.9rem;">❤️ Google Health Connect &amp; Apple Salute</strong>
+          <span id="hcPlatformBadge" class="badge ok">Pronto</span>
+        </div>
+
+        <p style="margin:0 0 10px; font-size:0.79rem; color:var(--ink-secondary);">
+          Se oggi superi <strong>7.500 passi</strong> o <strong>300 kcal attive</strong>, Pappa Pronta attiva automaticamente <strong>⚡ Giorno Workout</strong> e spunta <strong>🏃 Movimento</strong> nella Daily Dozen.
+        </p>
+
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+          <button type="button" id="connectNativeHealthBtn" class="btn btn-sm btn-primary" style="flex:1 1 200px;">
+            📲 Sincronizza Google Health Connect (APK Android)
+          </button>
+          <button type="button" id="pushNutritionHealthBtn" class="btn btn-sm btn-soft" style="flex:1 1 160px;">
+            📤 Invia Pasti di Oggi a Salute
+          </button>
+        </div>
+
+        <!-- iOS Apple Salute Bridge (Comandi Rapidi) -->
+        <details style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 10px; margin-bottom:10px;">
+          <summary style="cursor:pointer; font-size:0.8rem; font-weight:700;">🍎 Usi iPhone / Safari? Ponte rapido con Apple Salute</summary>
+          <div style="margin-top:8px; font-size:0.77rem; color:var(--ink-secondary); display:grid; gap:6px;">
+            <div>Su iOS Safari puoi sincronizzare <strong>Apple Salute</strong> gratuitamente tramite l'app nativa <em>Comandi Rapidi (Shortcuts)</em>:</div>
+            <div>1. Crea un Comando Rapido che legge <em>Passi</em>, <em>Energia attiva</em> e <em>Peso</em> da Salute e apre questo URL dinamico:</div>
+            <button type="button" id="copyIosShortcutUrlBtn" class="btn btn-xs btn-soft">📋 Copia URL per Comando Rapido iOS</button>
+            <div>2. Per salvare i nutrienti di oggi in Apple Salute, premi «📤 Invia Pasti di Oggi a Salute» qui sopra per copiare il riepilogo JSON strutturato.</div>
+          </div>
+        </details>
+
+        <!-- Manual / Web Sync & Test -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px;">
+          <div style="font-size:0.78rem; font-weight:700; margin-bottom:6px;">Inserimento / Test rapido attività di oggi:</div>
+          <div class="nutri-form-grid">
+            <div class="field-wrap">
+              <label for="manualStepsInput">Passi oggi</label>
+              <input type="number" id="manualStepsInput" class="nutri-input" min="0" step="100" placeholder="es. 8200">
+            </div>
+            <div class="field-wrap">
+              <label for="manualActiveKcalInput">Kcal attive</label>
+              <input type="number" id="manualActiveKcalInput" class="nutri-input" min="0" step="10" placeholder="es. 380">
+            </div>
+            <div class="field-wrap">
+              <label for="manualWeightSyncInput">Peso (kg)</label>
+              <input type="number" id="manualWeightSyncInput" class="nutri-input" min="35" step="0.1" placeholder="es. 71.8">
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+            <button type="button" id="applyManualHealthBtn" class="btn btn-xs btn-primary" style="flex:1;">Applica e Aggiorna Carb Cycling</button>
+            <button type="button" id="simHealthWorkoutBtn" class="btn btn-xs btn-soft">🧪 Simula 8.500 passi</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </dialog>
+
   <!-- Fixed 4-Tab Bottom Navigation -->
   <nav class="bottom-nav" aria-label="Navigazione principale">
     <div class="bottom-nav-inner" role="tablist">
@@ -2254,8 +2529,21 @@
         { id: 'gout', label: 'Gotta / Acido urico' }
       ];
 
+      // Configurazione Firebase ufficiale del progetto pappa-pronta-leo
+      const FIREBASE_DEFAULT_CONFIG = {
+        apiKey: 'AIzaSyAGXFtR968o80UW0w02-y6IkusWgf6JVKs',
+        authDomain: 'pappa-pronta-leo.firebaseapp.com',
+        projectId: 'pappa-pronta-leo',
+        storageBucket: 'pappa-pronta-leo.firebasestorage.app',
+        messagingSenderId: '570683713285',
+        appId: '1:570683713285:web:1366d69974312b6270796c'
+      };
+
       const EU_ALLERGENS = [
         { id: 'glutine', label: 'Glutine', terms: ['glutine', 'frumento', 'grano', 'farro', 'orzo', 'segale', 'avena', 'kamut'] },
+        { id: 'latte', label: 'Latte / Lattosio', terms: ['latte', 'lattosio', 'burro', 'panna', 'yogurt', 'ricotta', 'formaggio', 'siero di latte', 'caseina'] },
+        { id: 'uova', label: 'Uova', terms: ['uova', 'uovo', 'albume', 'tuorlo'] },
+        { id: 'pesce', label: 'Pesce / Crostacei', terms: ['pesce', 'salmone', 'tonno', 'merluzzo', 'sgombro', 'alici', 'acciughe', 'gamberi', 'crostacei'] },
         { id: 'soia', label: 'Soia', terms: ['soia', 'tofu', 'tempeh', 'edamame', 'lecitina di soia'] },
         { id: 'guscio', label: 'Frutta a guscio', terms: ['noci', 'mandorle', 'nocciole', 'pistacchi', 'anacardi', 'pinoli'] },
         { id: 'arachidi', label: 'Arachidi', terms: ['arachidi', 'arachide'] },
@@ -2379,7 +2667,19 @@
         { id: 'aceto_mele', name: 'Aceto di mele grezzo', cat: 'spezie', g: ['spices'], kcal: 21, prot: 0, carbs: 0.9, fat: 0, fiber: 0, sugars: 0.4, sat: 0, na: 5, k: 73 },
         { id: 'olio_evo', name: 'Olio EVO a crudo', cat: 'spezie', g: [], kcal: 884, prot: 0, carbs: 0, fat: 100, fiber: 0, sugars: 0, sat: 13.8, na: 0, k: 1 },
         { id: 'te_verde', name: 'Tè verde / Matcha', cat: 'spezie', g: ['beverages'], kcal: 2, prot: 0, carbs: 0, fat: 0, fiber: 0, sugars: 0, sat: 0, na: 1, k: 80 },
-        { id: 'karkade', name: 'Infuso di Karkadè', cat: 'spezie', g: ['beverages'], kcal: 1, prot: 0, carbs: 0, fat: 0, fiber: 0, sugars: 0, sat: 0, na: 2, k: 60 }
+        { id: 'karkade', name: 'Infuso di Karkadè', cat: 'spezie', g: ['beverages'], kcal: 1, prot: 0, carbs: 0, fat: 0, fiber: 0, sugars: 0, sat: 0, na: 2, k: 60 },
+
+        // Alimenti opzionali per amici con regime Vegetariano o Mediterraneo/Onnivoro (nascosti nel profilo 100% Plant-Based)
+        { id: 'uova_bio', name: 'Uova biologiche', cat: 'proteine_animali', diet: 'vegetarian', g: [], kcal: 143, prot: 12.6, carbs: 0.7, fat: 9.5, fiber: 0, sugars: 0.4, sat: 3.1, na: 142, k: 138, allergen: 'uova' },
+        { id: 'yogurt_greco', name: 'Yogurt greco 0% s/lattosio', cat: 'proteine_animali', diet: 'vegetarian', g: [], kcal: 59, prot: 10.3, carbs: 3.6, fat: 0.4, fiber: 0, sugars: 3.2, sat: 0.1, na: 36, k: 141, allergen: 'latte' },
+        { id: 'ricotta_magra', name: 'Ricotta vaccina magra', cat: 'proteine_animali', diet: 'vegetarian', g: [], kcal: 138, prot: 11.0, carbs: 3.5, fat: 9.0, fiber: 0, sugars: 3.5, sat: 5.5, na: 85, k: 120, allergen: 'latte' },
+        { id: 'kefir_magro', name: 'Kefir bianco naturale', cat: 'proteine_animali', diet: 'vegetarian', g: [], kcal: 45, prot: 3.6, carbs: 4.5, fat: 1.2, fiber: 0, sugars: 4.5, sat: 0.8, na: 40, k: 155, allergen: 'latte' },
+        { id: 'sgombro', name: 'Sgombro / Pesce azzurro', cat: 'proteine_animali', diet: 'omnivore', g: [], kcal: 205, prot: 20.8, carbs: 0, fat: 13.9, fiber: 0, sugars: 0, sat: 3.3, na: 90, k: 314, allergen: 'pesce' },
+        { id: 'alici', name: 'Alici fresche del Mediterraneo', cat: 'proteine_animali', diet: 'omnivore', g: [], kcal: 131, prot: 16.8, carbs: 0, fat: 4.8, fiber: 0, sugars: 0, sat: 1.3, na: 104, k: 383, allergen: 'pesce' },
+        { id: 'merluzzo', name: 'Filetto di merluzzo', cat: 'proteine_animali', diet: 'omnivore', g: [], kcal: 82, prot: 17.8, carbs: 0, fat: 0.7, fiber: 0, sugars: 0, sat: 0.1, na: 54, k: 413, allergen: 'pesce' },
+        { id: 'salmone', name: 'Salmone selvaggio', cat: 'proteine_animali', diet: 'omnivore', g: [], kcal: 182, prot: 20.4, carbs: 0, fat: 10.4, fiber: 0, sugars: 0, sat: 1.9, na: 56, k: 490, allergen: 'pesce' },
+        { id: 'petto_pollo', name: 'Petto di pollo ruspante', cat: 'proteine_animali', diet: 'omnivore', g: [], kcal: 120, prot: 23.1, carbs: 0, fat: 2.6, fiber: 0, sugars: 0, sat: 0.6, na: 65, k: 330 },
+        { id: 'fesa_tacchino', name: 'Petto di tacchino al naturale', cat: 'proteine_animali', diet: 'omnivore', g: [], kcal: 114, prot: 24.0, carbs: 0, fat: 1.5, fiber: 0, sugars: 0, sat: 0.4, na: 68, k: 310 }
       ];
 
       const FOOD_MAP = Object.fromEntries(FOOD_DB.map((f) => [f.id, f]));
@@ -2399,10 +2699,11 @@
       ];
 
       const PANTRY_CATS = [
-        { id: 'all', label: 'Tutti (' + FOOD_DB.length + ')' },
+        { id: 'all', label: 'Tutti' },
         { id: 'have', label: '✅ In casa' },
         { id: 'expiring', label: '⏳ Da consumare' },
-        { id: 'legumi', label: '🫘 Legumi & Prot.' },
+        { id: 'legumi', label: '🫘 Legumi & Prot. Veg' },
+        { id: 'proteine_animali', label: '🥚🐟 Uova / Latt. / Pesce', nonVeganOnly: true },
         { id: 'verdure', label: '🥬 Verdure & Nitrati' },
         { id: 'frutta', label: '🍎 Frutta & Bosco' },
         { id: 'cereali', label: '🍚 Cereali Int.' },
@@ -2546,6 +2847,28 @@
           id: 's3', title: 'Pinzimonio di Carote, Finocchi e Peperoni con Hummus al Limone', region: 'Spuntino Saziante', mealType: 'spuntino', mode: 'rest', time: 5, kcal: 215, prot: 9, carbs: 22, fat: 9, na: 95, k: 780, periodontal: true, nitrate: true,
           ings: [{ id: 'hummus', qty: '80g', g: 80 }, { id: 'carote', qty: '80g', g: 80 }, { id: 'finocchi', qty: '80g', g: 80 }, { id: 'peperoni', qty: '80g', g: 80 }, { id: 'limone', qty: 'spruzzata', g: 15 }],
           steps: ['Taglia carote, finocchi e peperoni crudi a bastoncini croccanti.', 'Intingi nell\'hummus casalingo s/sale arricchito con succo di limone.']
+        },
+
+        // --- 4 RICETTE MEDITERRANEE PER AMICI VEGETARIANI / ONNIVORI ---
+        {
+          id: 'm1', title: 'Frittata al Forno alle Erbe Amare, Zucchine e Curcuma', region: 'Vegetariana', mealType: 'cena', mode: 'rest', time: 16, kcal: 390, prot: 30, carbs: 16, fat: 21, na: 185, k: 960, periodontal: false, nitrate: true,
+          ings: [{ id: 'uova_bio', qty: '2 uova (120g)', g: 120 }, { id: 'farina_ceci', qty: '45g', g: 45 }, { id: 'zucchine', qty: '150g', g: 150 }, { id: 'spinaci', qty: '100g', g: 100 }, { id: 'curcuma', qty: '½ cucchiaino', g: 3 }],
+          steps: ['Sbatti le uova biologiche con la farina di ceci, un goccio d\'acqua e curcuma + pepe nero.', 'Incorpora zucchine grattugiate e spinaci freschi.', 'Cuoci in forno o padella antiaderente coperta 12 minuti senza frittura.']
+        },
+        {
+          id: 'm2', title: 'Bowl Greca Proteica con Yogurt 0%, Mirtilli, Avena, Lino e Noci', region: 'Colazione Vegetariana', mealType: 'colazione', mode: 'workout', time: 4, kcal: 425, prot: 27, carbs: 42, fat: 15, na: 68, k: 680, periodontal: true, nitrate: false,
+          ings: [{ id: 'yogurt_greco', qty: '170g', g: 170 }, { id: 'avena', qty: '40g', g: 40 }, { id: 'mirtilli', qty: '100g', g: 100 }, { id: 'semi_lino', qty: '12g', g: 12 }, { id: 'noci', qty: '15g', g: 15 }],
+          steps: ['Versa lo yogurt greco magro senza lattosio in ciotola con i fiocchi d\'avena integrali.', 'Completa con mirtilli freschi, semi di lino macinati e noci croccanti.']
+        },
+        {
+          id: 'm3', title: 'Merluzzo alla Ligure con Patate con Buccia, Pomodorini e Prezzemolo', region: 'Mediterranea', mealType: 'pranzo', mode: 'workout', time: 20, kcal: 440, prot: 35, carbs: 48, fat: 9, na: 118, k: 1850, periodontal: false, nitrate: false,
+          ings: [{ id: 'merluzzo', qty: '180g', g: 180 }, { id: 'patate', qty: '240g', g: 240 }, { id: 'pomodori', qty: '140g', g: 140 }, { id: 'prezzemolo', qty: '1 ciuffo', g: 12 }, { id: 'aglio', qty: '1 spicchio', g: 5 }, { id: 'limone', qty: '½ succo', g: 25 }],
+          steps: ['Cuoci le patate con buccia a fette sottili in poca acqua e pomodorini per 12 minuti.', 'Adagia sopra il filetto di merluzzo con aglio e origano, copri e cuoci altri 7 minuti.', 'Completa fuori dal fuoco con prezzemolo fresco, limone e 1 cucchiaino di EVO a crudo.']
+        },
+        {
+          id: 'm4', title: 'Alici e Sgombro Azzurro al Forno con Finocchi Crudi e Arancia', region: 'Mediterranea Omega-3', mealType: 'cena', mode: 'rest', time: 18, kcal: 430, prot: 34, carbs: 24, fat: 21, na: 145, k: 1240, periodontal: true, nitrate: true,
+          ings: [{ id: 'sgombro', qty: '165g', g: 165 }, { id: 'finocchi', qty: '160g', g: 160 }, { id: 'arance', qty: '130g', g: 130 }, { id: 'origano', qty: '1 cucchiaino', g: 3 }, { id: 'limone', qty: '½ succo', g: 25 }],
+          steps: ['Cuoci il pesce azzurro al forno a 180°C per 14 minuti con succo di limone ed erbe aromatiche senza sale.', 'Prepara un\'insalata croccante di finocchi crudi affettati sottili e spicchi di arancia al vivo.', 'Servi insieme per un pieno naturale di EPA/DHA, Vitamina C e potassio.']
         }
       ];
 
@@ -2589,6 +2912,7 @@
           protocol: { b12: false, omega3: false, vitd: false, water500: false, vinegar: false },
           na: 0,
           k: 0,
+          health: { steps: 0, activeKcal: 0, syncedAt: null },
           meals: []
         };
       }
@@ -2599,12 +2923,14 @@
         yesterday.setHours(20, 0, 0, 0);
 
         const defaultProfile = {
+          onboarded: false,
           name: '',
           age: 52,
           weight: 72,
           height: 175,
           sex: 'M',
           goal: 'maintain',
+          dietType: 'vegan', // 'vegan' | 'vegetarian' | 'omnivore'
           plantBased: true,
           hypertension: true,
           over50Protein: true,
@@ -2616,6 +2942,7 @@
         };
 
         return {
+          updatedAt: Date.now(),
           profile: defaultProfile,
           limits: computeAutoLimits(defaultProfile),
           pantry: [
@@ -2671,14 +2998,19 @@
 
         if (raw.profile && typeof raw.profile === 'object') {
           const p = raw.profile;
+          const resolvedDiet = ['vegan', 'vegetarian', 'omnivore'].includes(p.dietType)
+            ? p.dietType
+            : (p.plantBased === false ? 'omnivore' : 'vegan');
           base.profile = {
+            onboarded: Boolean(p.onboarded || p.name),
             name: typeof p.name === 'string' ? p.name : '',
             age: Number(p.age) || 52,
             weight: Number(p.weight) || 72,
             height: Number(p.height) || 175,
             sex: p.sex === 'F' ? 'F' : 'M',
             goal: ['lose', 'maintain', 'gain'].includes(p.goal) ? p.goal : 'maintain',
-            plantBased: p.plantBased !== false,
+            dietType: resolvedDiet,
+            plantBased: resolvedDiet === 'vegan',
             hypertension: p.hypertension !== false,
             over50Protein: p.over50Protein !== false,
             periodontal: p.periodontal !== false,
@@ -2688,6 +3020,7 @@
             avoidFoods: Array.isArray(p.avoidFoods) ? p.avoidFoods : []
           };
         }
+        base.updatedAt = Number(raw.updatedAt) || Date.now();
 
         base.limits = (raw.limits && typeof raw.limits === 'object')
           ? { ...computeAutoLimits(base.profile), ...raw.limits }
@@ -2727,6 +3060,9 @@
                 },
                 na: Number(logVal.na) || 0,
                 k: Number(logVal.k) || 0,
+                health: (logVal.health && typeof logVal.health === 'object')
+                  ? { steps: Number(logVal.health.steps) || 0, activeKcal: Number(logVal.health.activeKcal) || 0, syncedAt: logVal.health.syncedAt || null }
+                  : { steps: 0, activeKcal: 0, syncedAt: null },
                 meals: Array.isArray(logVal.meals) ? logVal.meals : []
               };
             }
@@ -2794,10 +3130,16 @@
         return initial;
       }
 
-      function saveState(st) {
+      let cloudSyncHook = null;
+      function saveState(st, skipCloud) {
+        const target = st || state;
+        target.updatedAt = Date.now();
         try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(st || state));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(target));
         } catch (_) {}
+        if (!skipCloud && typeof cloudSyncHook === 'function') {
+          cloudSyncHook();
+        }
       }
 
       let state = loadStateWithMigration();
@@ -2869,6 +3211,9 @@
 
       function isFoodBlockedByProfile(food) {
         if (!food) return false;
+        const diet = state.profile.dietType || (state.profile.plantBased ? 'vegan' : 'omnivore');
+        if (food.diet === 'omnivore' && diet !== 'omnivore') return true;
+        if (food.diet === 'vegetarian' && diet === 'vegan') return true;
         if (food.allergen && state.profile.allergens.includes(food.allergen)) return true;
         if (state.profile.extraConditions.includes('celiac') && food.allergen === 'glutine') return true;
         const avoid = state.profile.avoidFoods || [];
@@ -3427,7 +3772,10 @@
       }
 
       function countReadyRecipes() {
-        return RECIPES.filter((r) => getRecipeAvailability(r).missingIds.length === 0).length;
+        return RECIPES.filter((r) => {
+          const av = getRecipeAvailability(r);
+          return !av.hasBlockedAllergen && av.missingIds.length === 0;
+        }).length;
       }
 
       function renderPantry() {
@@ -3435,13 +3783,15 @@
         document.getElementById('pantryCountBadge').textContent = totalInHouse + ' in casa';
         document.getElementById('expiringCountSpan').textContent = String(state.expiring.length);
 
+        const compatTotal = RECIPES.filter((r) => !getRecipeAvailability(r).hasBlockedAllergen).length;
         const readyN = countReadyRecipes();
         document.getElementById('pantryReadyRecipesText').innerHTML =
-          '<strong>' + readyN + ' ricette su ' + RECIPES.length + '</strong> pronte subito con quello che hai in casa';
+          '<strong>' + readyN + ' ricette su ' + compatTotal + '</strong> pronte subito con quello che hai in casa';
 
+        const isVegan = (state.profile.dietType || 'vegan') === 'vegan';
         const catBar = document.getElementById('pantryCatFilters');
         catBar.innerHTML = '';
-        PANTRY_CATS.forEach((cat) => {
+        PANTRY_CATS.filter((c) => !c.nonVeganOnly || !isVegan).forEach((cat) => {
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'chip chip-sm' + (ui.pantryCat === cat.id ? ' active' : '');
@@ -3611,9 +3961,9 @@
           if (forcedFood && !items.some((x) => x.id === forcedFood.id)) addRawItem(forcedFood, 70, 'Scelto da te');
         } else {
           // Pranzo o Cena: exact 30-35g protein target!
-          const protPool = pantryFoods.filter((f) => f.cat === 'legumi');
-          const allProt = FOOD_DB.filter((f) => f.cat === 'legumi');
-          const mainProt = (forcedFood && forcedFood.cat === 'legumi') ? forcedFood : pickFromPool(protPool, allProt, 0);
+          const protPool = pantryFoods.filter((f) => f.cat === 'legumi' || f.cat === 'proteine_animali');
+          const allProt = FOOD_DB.filter((f) => (f.cat === 'legumi' || f.cat === 'proteine_animali') && !isFoodBlockedByProfile(f));
+          const mainProt = (forcedFood && (forcedFood.cat === 'legumi' || forcedFood.cat === 'proteine_animali')) ? forcedFood : pickFromPool(protPool, allProt, 0);
           const secProt = pickFromPool(protPool.filter((f) => f.id !== mainProt.id), allProt.filter((f) => f.id !== mainProt.id), 1);
 
           const greenPool = pantryFoods.filter((f) => f.nitrate || f.g.includes('greens') || f.g.includes('cruciferous'));
@@ -4351,8 +4701,18 @@
           });
         }
 
-        // 1. 100% Plant-Based Check
-        if (state.profile.plantBased && ingText) {
+        // 1. Multi-Diet Check (100% Plant-Based / Vegetarian / Mediterranean Omnivore)
+        const diet = state.profile.dietType || (state.profile.plantBased ? 'vegan' : 'omnivore');
+        const NON_VEGETARIAN_TERMS = [
+          'manzo', 'maiale', 'suino', 'pollo', 'tacchino', 'tonno', 'acciughe',
+          'salmone', 'pesce', 'merluzzo', 'sgombro', 'alici', 'strutto', 'lardo',
+          'gelatina animale', 'colla di pesce', 'carmine', 'cocciniglia', 'e120'
+        ];
+        const PROCESSED_MEAT_TERMS = [
+          'nitrito di sodio', 'e250', 'nitrato di potassio', 'e252', 'wurstel', 'salame', 'pancetta', 'mortadella', 'strutto'
+        ];
+
+        if (diet === 'vegan' && ingText) {
           const hitAnimal = NON_VEGAN_TERMS.find((t) => {
             const re = new RegExp('(^|[^a-zà-ù])' + t.replace(/\s+/g, '\\s+') + '([^a-zà-ù]|$)', 'i');
             return re.test(ingText) && !ingText.includes('senza ' + t) && !ingText.includes('può contenere tracce di ' + t) && !ingText.includes('può contenere ' + t);
@@ -4361,6 +4721,23 @@
             score -= 60;
             escalate('ROSSO');
             reasons.push('🚫 [Plant-Based] Ingrediente di origine animale («' + hitAnimal + '»): non conforme al profilo 100% vegetale.');
+          }
+        } else if (diet === 'vegetarian' && ingText) {
+          const hitMeatFish = NON_VEGETARIAN_TERMS.find((t) => {
+            const re = new RegExp('(^|[^a-zà-ù])' + t.replace(/\s+/g, '\\s+') + '([^a-zà-ù]|$)', 'i');
+            return re.test(ingText);
+          });
+          if (hitMeatFish) {
+            score -= 60;
+            escalate('ROSSO');
+            reasons.push('🚫 [Vegetariano] Contiene carne/pesce o derivati («' + hitMeatFish + '»).');
+          }
+        } else if (diet === 'omnivore' && ingText) {
+          const hitProc = PROCESSED_MEAT_TERMS.find((t) => ingText.includes(t));
+          if (hitProc) {
+            score -= 45;
+            escalate('ROSSO');
+            reasons.push('🔴 [Mediterraneo Salutare] Carne processata / conservanti rilevati («' + hitProc + '»): da evitare.');
           }
         }
 
@@ -5333,15 +5710,21 @@
 
       function renderProfileSection() {
         const p = state.profile;
+        const diet = p.dietType || (p.plantBased ? 'vegan' : 'omnivore');
+        const dietNames = { vegan: 'Plant-Based', vegetarian: 'Vegetariano', omnivore: 'Mediterraneo' };
         const bmi = (p.weight / Math.pow((p.height || 175) / 100, 2)).toFixed(1).replace('.', ',');
         const lim = state.limits || computeAutoLimits(p);
 
         document.getElementById('profileSummaryBanner').innerHTML =
-          '<div><strong>' + (p.name || 'Profilo Atleta Plant-Based') + '</strong> · ' + p.age + ' anni · ' + p.weight + 'kg · ' + p.height + 'cm · BMI <strong class="num">' + bmi + '</strong></div>' +
+          '<div><strong>' + (p.name || ('Profilo ' + dietNames[diet])) + '</strong> · ' + dietNames[diet] + ' · ' + p.age + 'a · ' + p.weight + 'kg · BMI <strong class="num">' + bmi + '</strong></div>' +
           '<span class="badge ok num">Target: ' + lim.kcal + ' kcal · ' + lim.prot + 'g prot</span>';
 
+        document.querySelectorAll('#profileDietBar button').forEach((b) => {
+          b.classList.toggle('active', b.dataset.diet === diet);
+        });
+
         const defs = [
-          { key: 'plantBased', label: '🌱 100% Plant-Based Rigoroso', sub: 'Blocca derivati animali nello Scanner' },
+          { key: 'plantBased', label: '🌱 100% Plant-Based Rigoroso', sub: 'Attivo in modalità Vegana (blocca derivati animali)' },
           { key: 'hypertension', label: '❤️ Prevenzione Ipertensione', sub: 'Target Na <1500mg, K >4700mg, K:Na ≥ 3,1' },
           { key: 'over50Protein', label: '💪 Soglia Anabolica Over-50 & Sport', sub: 'Target 30–35g proteine per pasto principale' },
           { key: 'periodontal', label: '🦷 Scudo Parodontale & Controllo DII', sub: 'Penalizza zuccheri fermentabili >10g e sciroppi' }
@@ -5350,7 +5733,7 @@
         const wrap = document.getElementById('profileTogglesContainer');
         wrap.innerHTML = '';
         defs.forEach((d) => {
-          const active = Boolean(p[d.key]);
+          const active = d.key === 'plantBased' ? (diet === 'vegan') : Boolean(p[d.key]);
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'toggle-row';
@@ -5359,11 +5742,15 @@
             '<div><div>' + d.label + '</div><div style="font-size:0.74rem; font-weight:400; color:var(--ink-secondary);">' + d.sub + '</div></div>' +
             '<span class="badge ' + (active ? 'ok' : '') + '">' + (active ? 'Attivo' : 'Off') + '</span>';
           btn.addEventListener('click', () => {
-            p[d.key] = !active;
+            if (d.key === 'plantBased') {
+              p.dietType = diet === 'vegan' ? 'omnivore' : 'vegan';
+              p.plantBased = p.dietType === 'vegan';
+            } else {
+              p[d.key] = !active;
+            }
             state.limits = computeAutoLimits(p);
             saveState();
-            renderProfileSection();
-            updateScannerVerdict(false);
+            renderAll();
           });
           wrap.appendChild(btn);
         });
@@ -5474,6 +5861,593 @@
       }
 
       /* =====================================================================
+       * 12B. MULTI-USER ONBOARDING WIZARD, FIREBASE CLOUD & HEALTH CONNECT
+       * ===================================================================== */
+      const FB_CFG_STORAGE_KEY = 'pappa_pronta_fb_cfg';
+      let wizStep = 1;
+      let wizDraft = null;
+      let fbApp = null;
+      let fbAuth = null;
+      let fbDb = null;
+      let fbModules = null;
+      let fbCurrentUser = null;
+      let fbPushTimer = null;
+
+      function renderHealthAndCloudCard() {
+        const log = ensureTodayLog();
+        const h = log.health || { steps: 0, activeKcal: 0 };
+        const stepsEl = document.getElementById('hcStepsVal');
+        const stepsSub = document.getElementById('hcStepsSub');
+        const kcalEl = document.getElementById('hcActiveKcalVal');
+        if (stepsEl) stepsEl.textContent = (h.steps || 0).toLocaleString('it-IT');
+        if (stepsSub) stepsSub.textContent = (h.steps >= 7500) ? '✅ Workout attivo' : 'target 7.500';
+        if (kcalEl) kcalEl.textContent = String(Math.round(h.activeKcal || 0));
+
+        const shortSt = document.getElementById('cloudShortStatus');
+        const shortSub = document.getElementById('cloudShortSub');
+        const hdrBtn = document.getElementById('headerProfileBtn');
+        const fbBadge = document.getElementById('fbStatusBadge');
+
+        if (fbCurrentUser) {
+          const label = fbCurrentUser.displayName || fbCurrentUser.email || 'Utente Cloud';
+          if (shortSt) shortSt.textContent = '☁️ Attivo';
+          if (shortSub) shortSub.textContent = label.split(' ')[0];
+          if (hdrBtn) {
+            hdrBtn.classList.add('logged-in');
+            hdrBtn.textContent = (label[0] || 'U').toUpperCase();
+          }
+          if (fbBadge) {
+            fbBadge.textContent = '☁️ Sincronizzato';
+            fbBadge.className = 'badge ok';
+          }
+          document.getElementById('fbLoggedOutView').style.display = 'none';
+          document.getElementById('fbLoggedInView').style.display = 'block';
+          document.getElementById('fbUserLabel').textContent = label;
+        } else {
+          const hasCfg = Boolean(getActiveFirebaseConfig());
+          if (shortSt) shortSt.textContent = hasCfg ? 'Pronto' : 'Locale';
+          if (shortSub) shortSub.textContent = hasCfg ? 'premi per login' : '100% sul telefono';
+          if (hdrBtn) {
+            hdrBtn.classList.remove('logged-in');
+            hdrBtn.textContent = '👤';
+          }
+          if (fbBadge) {
+            fbBadge.textContent = hasCfg ? 'Cloud Pronto' : 'Locale';
+            fbBadge.className = 'badge';
+          }
+          document.getElementById('fbLoggedOutView').style.display = 'block';
+          document.getElementById('fbLoggedInView').style.display = 'none';
+        }
+
+        // Platform badge for Health Connect / Apple Salute
+        const hcBadge = document.getElementById('hcPlatformBadge');
+        if (hcBadge) {
+          const isNative = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+          const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+          hcBadge.textContent = isNative ? '🤖 Android Nativo' : isIos ? '🍎 Ponte iOS Salute' : '🌐 Web / PWA';
+        }
+      }
+
+      // --- 4-Step Onboarding Wizard ---
+      function openOnboardingWizard(startStep) {
+        wizStep = startStep || 1;
+        wizDraft = JSON.parse(JSON.stringify(state.profile));
+        if (!wizDraft.dietType) wizDraft.dietType = wizDraft.plantBased === false ? 'omnivore' : 'vegan';
+        renderOnboardingStep();
+        const dlg = document.getElementById('onboardingDialog');
+        if (dlg && !dlg.open) dlg.showModal();
+      }
+
+      function renderOnboardingStep() {
+        const stepLbl = document.getElementById('onboardStepLabel');
+        const body = document.getElementById('onboardStepBody');
+        const prevBtn = document.getElementById('onboardPrevBtn');
+        const nextBtn = document.getElementById('onboardNextBtn');
+        const bars = document.querySelectorAll('#onboardStepBars .wiz-step-bar');
+
+        bars.forEach((b, idx) => b.classList.toggle('active', idx < wizStep));
+        prevBtn.style.visibility = wizStep === 1 ? 'hidden' : 'visible';
+        nextBtn.textContent = wizStep === 4 ? '✅ Completa e Inizia' : 'Avanti →';
+
+        if (wizStep === 1) {
+          stepLbl.textContent = 'Passo 1 di 4 · Chi sei e qual è il tuo obiettivo';
+          const bmi = (wizDraft.weight / Math.pow((wizDraft.height || 175) / 100, 2)).toFixed(1).replace('.', ',');
+          const estLim = computeAutoLimits(wizDraft);
+          body.innerHTML =
+            '<div style="background:var(--primary-soft); border:1px solid var(--primary-border); border-radius:var(--radius-sm); padding:9px 11px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.8rem;">' +
+              '<span>Vuoi il profilo clinico-sportivo preconfigurato?</span>' +
+              '<button type="button" id="wizLeoPresetBtn" class="btn btn-xs btn-primary">⚡ Usa Preset Plant-Based Sport</button>' +
+            '</div>' +
+            '<div class="nutri-form-grid">' +
+              '<div class="field-wrap" style="grid-column:1/-1;"><label for="wizName">Il tuo nome</label><input type="text" id="wizName" class="nutri-input" placeholder="Es. Marco, Giulia, Leo..." value="' + (wizDraft.name || '').replace(/"/g, '&quot;') + '"></div>' +
+              '<div class="field-wrap"><label for="wizAge">Età (anni)</label><input type="number" id="wizAge" class="nutri-input" min="14" max="110" value="' + (wizDraft.age || 38) + '"></div>' +
+              '<div class="field-wrap"><label for="wizSex">Sesso</label><select id="wizSex" class="nutri-input"><option value="M"' + (wizDraft.sex !== 'F' ? ' selected' : '') + '>Uomo</option><option value="F"' + (wizDraft.sex === 'F' ? ' selected' : '') + '>Donna</option></select></div>' +
+              '<div class="field-wrap"><label for="wizWeight">Peso (kg)</label><input type="number" id="wizWeight" class="nutri-input" step="0.5" min="35" max="220" value="' + (wizDraft.weight || 72) + '"></div>' +
+              '<div class="field-wrap"><label for="wizHeight">Altezza (cm)</label><input type="number" id="wizHeight" class="nutri-input" min="120" max="230" value="' + (wizDraft.height || 175) + '"></div>' +
+              '<div class="field-wrap" style="grid-column:1/-1;"><label for="wizGoal">Obiettivo principale</label><select id="wizGoal" class="nutri-input">' +
+                '<option value="maintain"' + (wizDraft.goal === 'maintain' ? ' selected' : '') + '>Salute, Energia &amp; Mantenimento</option>' +
+                '<option value="lose"' + (wizDraft.goal === 'lose' ? ' selected' : '') + '>Dimagrimento &amp; Definizione</option>' +
+                '<option value="gain"' + (wizDraft.goal === 'gain' ? ' selected' : '') + '>Performance Sportiva &amp; Massa</option>' +
+              '</select></div>' +
+            '</div>' +
+            '<div id="wizBmiPreview" class="badge ok num" style="align-self:flex-start;">BMI ' + bmi + ' · Stima: ' + estLim.kcal + ' kcal/die · ' + estLim.prot + 'g proteine</div>';
+
+          const syncStep1 = () => {
+            wizDraft.name = document.getElementById('wizName').value.trim();
+            wizDraft.age = Number(document.getElementById('wizAge').value) || 38;
+            wizDraft.sex = document.getElementById('wizSex').value;
+            wizDraft.weight = Number(document.getElementById('wizWeight').value) || 72;
+            wizDraft.height = Number(document.getElementById('wizHeight').value) || 175;
+            wizDraft.goal = document.getElementById('wizGoal').value;
+            const b = (wizDraft.weight / Math.pow(wizDraft.height / 100, 2)).toFixed(1).replace('.', ',');
+            const l = computeAutoLimits(wizDraft);
+            const pv = document.getElementById('wizBmiPreview');
+            if (pv) pv.textContent = 'BMI ' + b + ' · Stima: ' + l.kcal + ' kcal/die · ' + l.prot + 'g proteine';
+          };
+
+          ['wizName', 'wizAge', 'wizSex', 'wizWeight', 'wizHeight', 'wizGoal'].forEach((id) => {
+            document.getElementById(id).addEventListener('input', syncStep1);
+            document.getElementById(id).addEventListener('change', syncStep1);
+          });
+
+          document.getElementById('wizLeoPresetBtn').addEventListener('click', () => {
+            state.profile.onboarded = true;
+            state.profile.dietType = 'vegan';
+            state.profile.plantBased = true;
+            state.limits = computeAutoLimits(state.profile);
+            saveState();
+            document.getElementById('onboardingDialog').close();
+            renderAll();
+            showToast('⚡ Preset Plant-Based Clinico-Sportivo attivato!');
+          });
+        } else if (wizStep === 2) {
+          stepLbl.textContent = 'Passo 2 di 4 · Stile alimentare e salute';
+          const diets = [
+            { id: 'vegan', title: '🌱 100% Plant-Based / Vegano', desc: 'Solo legumi, cereali integrali, verdure, frutta e semi + Daily Dozen completa.' },
+            { id: 'vegetarian', title: '🥚 Vegetariano', desc: 'Base vegetale + uova bio, yogurt greco magro e latticini leggeri.' },
+            { id: 'omnivore', title: '🐟 Mediterraneo / Onnivoro Salutare', desc: 'Base vegetale + pesce azzurro Omega-3 e carni bianche non processate.' }
+          ];
+          const dietHtml = diets.map((d) =>
+            '<button type="button" class="diet-card wiz-diet-btn ' + (wizDraft.dietType === d.id ? 'selected' : '') + '" data-d="' + d.id + '">' +
+              '<div><strong style="font-size:0.88rem;">' + d.title + '</strong><div style="font-size:0.75rem; color:var(--ink-secondary); margin-top:2px;">' + d.desc + '</div></div>' +
+              '<span class="badge ' + (wizDraft.dietType === d.id ? 'ok' : '') + '">' + (wizDraft.dietType === d.id ? 'Scelto' : 'Scegli') + '</span>' +
+            '</button>'
+          ).join('');
+
+          const coreConds = [
+            { k: 'hypertension', l: '❤️ Pressione / Poco Sale (<1500mg Na)' },
+            { k: 'over50Protein', l: '💪 Sport / Over-50 (30-35g prot/pasto)' },
+            { k: 'periodontal', l: '🦷 Gengive & Stop Zuccheri (>10g)' }
+          ];
+          const condHtml = coreConds.map((c) =>
+            '<button type="button" class="chip chip-sm wiz-core-cond ' + (wizDraft[c.k] ? 'active' : '') + '" data-k="' + c.k + '">' + (wizDraft[c.k] ? '✓ ' : '') + c.l + '</button>'
+          ).join('') + EXTRA_CONDITIONS.map((ec) => {
+            const on = (wizDraft.extraConditions || []).includes(ec.id);
+            return '<button type="button" class="chip chip-sm wiz-extra-cond ' + (on ? 'active' : '') + '" data-ec="' + ec.id + '">' + (on ? '✓ ' : '') + ec.label + '</button>';
+          }).join('');
+
+          body.innerHTML =
+            '<div style="font-size:0.82rem; font-weight:700;">Scegli il tuo regime alimentare:</div>' +
+            '<div class="diet-grid">' + dietHtml + '</div>' +
+            '<div style="font-size:0.82rem; font-weight:700; margin-top:4px;">Obiettivi clinici e condizioni da rispettare:</div>' +
+            '<div class="chip-row">' + condHtml + '</div>';
+
+          body.querySelectorAll('.wiz-diet-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              wizDraft.dietType = btn.dataset.d;
+              wizDraft.plantBased = wizDraft.dietType === 'vegan';
+              renderOnboardingStep();
+            });
+          });
+          body.querySelectorAll('.wiz-core-cond').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const k = btn.dataset.k;
+              wizDraft[k] = !wizDraft[k];
+              renderOnboardingStep();
+            });
+          });
+          body.querySelectorAll('.wiz-extra-cond').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const id = btn.dataset.ec;
+              const arr = wizDraft.extraConditions || [];
+              wizDraft.extraConditions = arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id];
+              renderOnboardingStep();
+            });
+          });
+        } else if (wizStep === 3) {
+          stepLbl.textContent = 'Passo 3 di 4 · Allergie e alimenti da escludere';
+          const alHtml = EU_ALLERGENS.map((al) => {
+            const on = (wizDraft.allergens || []).includes(al.id);
+            return '<button type="button" class="chip chip-sm wiz-al-btn ' + (on ? 'active' : '') + '" data-al="' + al.id + '">' + (on ? '⚠️ ' : '') + al.label + '</button>';
+          }).join('');
+
+          body.innerHTML =
+            '<div style="font-size:0.82rem; font-weight:700;">Seleziona eventuali allergie o intolleranze (verranno bloccate in Ricette e Scanner):</div>' +
+            '<div class="chip-row">' + alHtml + '</div>' +
+            '<div class="field-wrap" style="margin-top:6px;">' +
+              '<label for="wizAvoidInput">Altri cibi che non ti piacciono o vuoi evitare (separati da virgola)</label>' +
+              '<input type="text" id="wizAvoidInput" class="input-field" placeholder="Es. funghi, peperoncino, coriandolo..." value="' + (wizDraft.avoidFoods || []).join(', ').replace(/"/g, '&quot;') + '">' +
+            '</div>';
+
+          body.querySelectorAll('.wiz-al-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              wizDraft.avoidFoods = document.getElementById('wizAvoidInput').value.split(',').map((s) => s.trim()).filter(Boolean);
+              const id = btn.dataset.al;
+              const arr = wizDraft.allergens || [];
+              wizDraft.allergens = arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id];
+              renderOnboardingStep();
+            });
+          });
+          document.getElementById('wizAvoidInput').addEventListener('input', (e) => {
+            wizDraft.avoidFoods = e.target.value.split(',').map((s) => s.trim()).filter(Boolean);
+          });
+        } else if (wizStep === 4) {
+          stepLbl.textContent = 'Passo 4 di 4 · Riepilogo, Login Cloud e Salute';
+          const lim = computeAutoLimits(wizDraft);
+          const dietLabels = { vegan: '🌱 100% Plant-Based', vegetarian: '🥚 Vegetariano', omnivore: '🐟 Mediterraneo / Onnivoro' };
+          body.innerHTML =
+            '<div class="pantry-ready-bar" style="flex-direction:column; align-items:flex-start;">' +
+              '<strong>Piano pronto per ' + (wizDraft.name || 'te') + ' (' + dietLabels[wizDraft.dietType] + ')</strong>' +
+              '<span class="num" style="font-size:0.8rem;">Fabbisogno: <strong>' + lim.kcal + ' kcal</strong> · Proteine: <strong>' + lim.prot + 'g</strong> · Carboidrati: <strong>' + lim.carbs + 'g</strong> · Sale max: <strong>' + lim.salt + 'g</strong></span>' +
+            '</div>' +
+            '<div style="display:grid; gap:8px;">' +
+              '<button type="button" id="wizOpenCloudBtn" class="btn btn-soft btn-block">☁️ Accedi con Google / Cloud Sync (opzionale)</button>' +
+              '<button type="button" id="wizSyncHealthBtn" class="btn btn-block">❤️ Collega Google Health Connect / Apple Salute</button>' +
+            '</div>' +
+            '<p style="margin:2px 0 0; font-size:0.75rem; color:var(--ink-secondary);">' +
+              'ℹ️ Tutti i dati restano salvati sul tuo telefono anche offline. Le indicazioni nutrizionali hanno scopo informativo e non sostituiscono il parere medico.' +
+            '</p>';
+
+          document.getElementById('wizOpenCloudBtn').addEventListener('click', () => {
+            finalizeOnboardingDraft();
+            openAccountHealthModal();
+          });
+          document.getElementById('wizSyncHealthBtn').addEventListener('click', () => {
+            finalizeOnboardingDraft();
+            syncNativeHealthConnect();
+          });
+        }
+      }
+
+      function finalizeOnboardingDraft() {
+        if (!wizDraft) return;
+        wizDraft.onboarded = true;
+        wizDraft.plantBased = wizDraft.dietType === 'vegan';
+        state.profile = JSON.parse(JSON.stringify(wizDraft));
+        state.limits = computeAutoLimits(state.profile);
+
+        // Add starter staples for vegetarian / omnivore friends if selected
+        if (state.profile.dietType === 'vegetarian') {
+          ['uova_bio', 'yogurt_greco'].forEach((id) => {
+            if (!state.pantry.includes(id) && !isFoodBlockedByProfile(FOOD_MAP[id])) state.pantry.push(id);
+          });
+        } else if (state.profile.dietType === 'omnivore') {
+          ['uova_bio', 'yogurt_greco', 'merluzzo', 'sgombro'].forEach((id) => {
+            if (!state.pantry.includes(id) && !isFoodBlockedByProfile(FOOD_MAP[id])) state.pantry.push(id);
+          });
+        } else {
+          // Remove animal items if switching to 100% vegan
+          state.pantry = state.pantry.filter((id) => !FOOD_MAP[id] || !FOOD_MAP[id].diet);
+        }
+
+        saveState();
+        const dlg = document.getElementById('onboardingDialog');
+        if (dlg && dlg.open) dlg.close();
+        renderAll();
+        showToast('🎉 Piano configurato' + (state.profile.name ? (' per ' + state.profile.name) : '') + '!');
+      }
+
+      // --- Firebase Cloud Auth & Firestore Sync ---
+      function parseFirebaseConfigInput(rawText) {
+        if (!rawText) return null;
+        try {
+          const direct = JSON.parse(rawText);
+          if (direct && direct.apiKey && direct.projectId) return direct;
+        } catch (_) {}
+        // Extract JS object properties (e.g. pasted straight from Firebase Console)
+        const keys = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+        const extracted = {};
+        keys.forEach((k) => {
+          const m = rawText.match(new RegExp(k + '\\s*:\\s*["\']([^"\']+)["\']'));
+          if (m && m[1]) extracted[k] = m[1];
+        });
+        return (extracted.apiKey && extracted.projectId) ? extracted : null;
+      }
+
+      function getActiveFirebaseConfig() {
+        if (FIREBASE_DEFAULT_CONFIG && FIREBASE_DEFAULT_CONFIG.apiKey) return FIREBASE_DEFAULT_CONFIG;
+        try {
+          const saved = localStorage.getItem(FB_CFG_STORAGE_KEY);
+          if (saved) return JSON.parse(saved);
+        } catch (_) {}
+        return null;
+      }
+
+      async function ensureFirebaseInitialized() {
+        const cfg = getActiveFirebaseConfig();
+        if (!cfg || !cfg.apiKey || !cfg.projectId) return false;
+        if (fbAuth && fbDb && fbModules) return true;
+        if (navigator.onLine === false) return false;
+
+        try {
+          const [appMod, authMod, fsMod] = await Promise.all([
+            import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
+            import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js'),
+            import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js')
+          ]);
+          fbModules = { ...appMod, ...authMod, ...fsMod };
+          fbApp = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(cfg);
+          fbAuth = authMod.getAuth(fbApp);
+          fbDb = fsMod.getFirestore(fbApp);
+
+          authMod.onAuthStateChanged(fbAuth, async (user) => {
+            fbCurrentUser = user || null;
+            renderHealthAndCloudCard();
+            if (user) {
+              await pullCloudState(false);
+            }
+          });
+          return true;
+        } catch (_) {
+          return false;
+        }
+      }
+
+      async function pullCloudState(manualNotify) {
+        if (!fbCurrentUser || !fbDb || !fbModules) return;
+        try {
+          const ref = fbModules.doc(fbDb, 'users', fbCurrentUser.uid);
+          const snap = await fbModules.getDoc(ref);
+          if (snap.exists()) {
+            const remote = snap.data();
+            if (remote && (!state.profile.onboarded || (remote.updatedAt || 0) >= (state.updatedAt || 0))) {
+              state = normalizeAndMergeState(remote);
+              state.profile.onboarded = true;
+              saveState(state, true);
+              const obDlg = document.getElementById('onboardingDialog');
+              if (obDlg && obDlg.open) obDlg.close();
+              renderAll();
+              if (manualNotify) showToast('☁️ Dati scaricati e sincronizzati dal Cloud!');
+              return;
+            }
+          }
+          await pushCloudState(manualNotify);
+        } catch (_) {
+          if (manualNotify) showToast('⚠️ Verifica le regole Firestore per completare il sync');
+        }
+      }
+
+      async function pushCloudState(manualNotify) {
+        if (!fbCurrentUser || !fbDb || !fbModules) return;
+        try {
+          const ref = fbModules.doc(fbDb, 'users', fbCurrentUser.uid);
+          const payload = JSON.parse(JSON.stringify(state));
+          payload.updatedAt = Date.now();
+          await fbModules.setDoc(ref, payload, { merge: true });
+          if (manualNotify) showToast('☁️ Salvato nel Cloud con successo!');
+        } catch (_) {
+          if (manualNotify) showToast('⚠️ Errore scrittura Firestore: controlla le regole di sicurezza');
+        }
+      }
+
+      cloudSyncHook = function () {
+        if (!fbCurrentUser || !fbDb) return;
+        clearTimeout(fbPushTimer);
+        fbPushTimer = setTimeout(() => pushCloudState(false), 1800);
+      };
+
+      async function signInWithFirebaseGoogle() {
+        const ok = await ensureFirebaseInitialized();
+        if (!ok) {
+          showToast('Configura prima il progetto Firebase nella sezione ⚙️ qui sotto');
+          return;
+        }
+        try {
+          const provider = new fbModules.GoogleAuthProvider();
+          await fbModules.signInWithPopup(fbAuth, provider);
+          showToast('🔐 Accesso con Google completato!');
+        } catch (err) {
+          if (err && err.code === 'auth/popup-blocked') {
+            await fbModules.signInWithRedirect(fbAuth, new fbModules.GoogleAuthProvider());
+          } else {
+            showToast('Accesso Google non completato (abilita Google in Firebase Auth e aggiungi il dominio autorizzato)');
+          }
+        }
+      }
+
+      async function signInOrUpWithEmail(isSignUp) {
+        const ok = await ensureFirebaseInitialized();
+        if (!ok) {
+          showToast('Configura prima il progetto Firebase nella sezione ⚙️ qui sotto');
+          return;
+        }
+        const email = document.getElementById('fbEmailInput').value.trim();
+        const pass = document.getElementById('fbPassInput').value;
+        if (!email || pass.length < 6) {
+          showToast('Inserisci un\'email valida e una password di almeno 6 caratteri');
+          return;
+        }
+        try {
+          if (isSignUp) {
+            await fbModules.createUserWithEmailAndPassword(fbAuth, email, pass);
+            showToast('🎉 Account creato e sincronizzato!');
+          } else {
+            await fbModules.signInWithEmailAndPassword(fbAuth, email, pass);
+            showToast('🔐 Accesso effettuato!');
+          }
+        } catch (_) {
+          showToast(isSignUp ? 'Impossibile creare account (email già in uso o Auth Email disabilitata)' : 'Credenziali non valide');
+        }
+      }
+
+      function buildFriendInviteUrl() {
+        const base = window.location.origin + window.location.pathname;
+        const cfg = getActiveFirebaseConfig();
+        if (cfg && cfg.apiKey) {
+          try {
+            const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));
+            return base + '?fb=' + encodeURIComponent(encoded);
+          } catch (_) {}
+        }
+        return base;
+      }
+
+      function openAccountHealthModal() {
+        const cfg = getActiveFirebaseConfig();
+        const ta = document.getElementById('fbConfigTextarea');
+        if (ta && cfg && !ta.value) {
+          ta.value = JSON.stringify(cfg, null, 2);
+        }
+        const h = ensureTodayLog().health || { steps: 0, activeKcal: 0 };
+        document.getElementById('manualStepsInput').value = h.steps || '';
+        document.getElementById('manualActiveKcalInput').value = h.activeKcal || '';
+        document.getElementById('manualWeightSyncInput').value = state.profile.weight || '';
+        renderHealthAndCloudCard();
+        const dlg = document.getElementById('accountHealthDialog');
+        if (dlg && !dlg.open) dlg.showModal();
+      }
+
+      // --- Google Health Connect (Android Capacitor) & Apple Salute Bridge ---
+      function applyHealthMetrics(metrics) {
+        const log = ensureTodayLog();
+        log.health = log.health || { steps: 0, activeKcal: 0, syncedAt: null };
+        if (metrics.steps !== undefined && !isNaN(metrics.steps)) log.health.steps = Math.max(0, Math.round(Number(metrics.steps)));
+        if (metrics.activeKcal !== undefined && !isNaN(metrics.activeKcal)) log.health.activeKcal = Math.max(0, Math.round(Number(metrics.activeKcal)));
+        log.health.syncedAt = Date.now();
+
+        if (metrics.weight !== undefined && !isNaN(metrics.weight) && Number(metrics.weight) >= 35) {
+          state.profile.weight = Number(Number(metrics.weight).toFixed(1));
+          state.limits = computeAutoLimits(state.profile);
+        }
+
+        // Auto-trigger Workout Carb Cycling + Daily Dozen Exercise if threshold reached
+        let triggeredWorkout = false;
+        if (log.health.steps >= 7500 || log.health.activeKcal >= 300) {
+          log.dozen.exercise = 1;
+          if (state.profile.dayMode !== 'workout') {
+            state.profile.dayMode = 'workout';
+            state.limits = computeAutoLimits(state.profile);
+            triggeredWorkout = true;
+          }
+        }
+
+        saveState();
+        renderAll();
+        renderHealthAndCloudCard();
+        showToast(
+          '❤️ ' + (metrics.source || 'Salute') + ': ' + log.health.steps + ' passi' +
+          (triggeredWorkout ? ' → attivato ⚡ Giorno Workout + 🏃 Movimento!' : ' sincronizzati!')
+        );
+      }
+
+      async function syncNativeHealthConnect() {
+        const cap = window.Capacitor;
+        const healthPlugin = cap && cap.Plugins && (cap.Plugins.Health || cap.Plugins.CapacitorHealth);
+
+        if (cap && cap.isNativePlatform && cap.isNativePlatform() && healthPlugin) {
+          try {
+            const avail = await healthPlugin.isAvailable();
+            if (!avail || !avail.available) {
+              showToast('Installa o aggiorna l\'app Google Health Connect dal Play Store');
+              if (healthPlugin.openHealthConnectSettings) await healthPlugin.openHealthConnectSettings();
+              return;
+            }
+
+            await healthPlugin.requestAuthorization({
+              read: ['steps', 'calories', 'weight', 'workouts'],
+              write: ['calories', 'weight', 'dietaryEnergyConsumed', 'dietaryProtein', 'dietaryWater']
+            });
+
+            const startOfDay = new Date();
+            startOfDay.setHours(0, 0, 0, 0);
+            const startIso = startOfDay.toISOString();
+            const nowIso = new Date().toISOString();
+
+            let totalSteps = 0;
+            let totalActiveKcal = 0;
+            let latestWeight = state.profile.weight;
+
+            if (healthPlugin.queryAggregated) {
+              const stepAgg = await healthPlugin.queryAggregated({ dataType: 'steps', startDate: startIso, endDate: nowIso, bucket: 'day' });
+              const stepBuckets = (stepAgg && (stepAgg.samples || stepAgg.buckets)) || [];
+              totalSteps = stepBuckets.reduce((s, b) => s + (Number(b.value) || 0), 0);
+
+              const calAgg = await healthPlugin.queryAggregated({ dataType: 'calories', startDate: startIso, endDate: nowIso, bucket: 'day' });
+              const calBuckets = (calAgg && (calAgg.samples || calAgg.buckets)) || [];
+              totalActiveKcal = calBuckets.reduce((s, b) => s + (Number(b.value) || 0), 0);
+            } else if (healthPlugin.readSamples) {
+              const sRes = await healthPlugin.readSamples({ dataType: 'steps', startDate: startIso, endDate: nowIso, limit: 500 });
+              if (sRes && Array.isArray(sRes.samples)) {
+                totalSteps = sRes.samples.reduce((s, x) => s + (Number(x.value) || 0), 0);
+              }
+            }
+
+            if (healthPlugin.readSamples) {
+              const wStart = new Date(Date.now() - 30 * 86400000).toISOString();
+              const wRes = await healthPlugin.readSamples({ dataType: 'weight', startDate: wStart, endDate: nowIso, limit: 5 });
+              if (wRes && Array.isArray(wRes.samples) && wRes.samples.length > 0) {
+                latestWeight = Number(wRes.samples[wRes.samples.length - 1].value) || latestWeight;
+              }
+            }
+
+            applyHealthMetrics({ steps: totalSteps, activeKcal: totalActiveKcal, weight: latestWeight, source: 'Google Health Connect' });
+            return;
+          } catch (_) {
+            showToast('Permessi Health Connect non concessi: apri Impostazioni Health Connect');
+            return;
+          }
+        }
+
+        // Web / PWA fallback -> open modal with iOS Apple Salute Bridge & quick sync
+        openAccountHealthModal();
+      }
+
+      async function pushTodayNutritionToHealth() {
+        const log = ensureTodayLog();
+        const totals = log.meals.reduce((acc, m) => {
+          acc.kcal += Number(m.kcal) || 0;
+          acc.prot += Number(m.prot) || 0;
+          acc.carbs += Number(m.carbs) || 0;
+          return acc;
+        }, { kcal: 0, prot: 0, carbs: 0 });
+
+        const payload = {
+          date: getLocalDateKey(),
+          kcal: Math.round(totals.kcal),
+          protein_g: Math.round(totals.prot),
+          carbs_g: Math.round(totals.carbs),
+          sodium_mg: Math.round(log.na || 0),
+          potassium_mg: Math.round(log.k || 0),
+          water_ml: (Number(log.dozen.beverages) || 0) * 250,
+          weight_kg: state.profile.weight
+        };
+
+        const cap = window.Capacitor;
+        const healthPlugin = cap && cap.Plugins && (cap.Plugins.Health || cap.Plugins.CapacitorHealth);
+        if (cap && cap.isNativePlatform && cap.isNativePlatform() && healthPlugin && healthPlugin.saveSample) {
+          try {
+            const nowIso = new Date().toISOString();
+            if (payload.kcal > 0) {
+              await healthPlugin.saveSample({ dataType: 'dietaryEnergyConsumed', value: payload.kcal, unit: 'kilocalorie', startDate: nowIso, endDate: nowIso });
+            }
+            if (payload.protein_g > 0) {
+              await healthPlugin.saveSample({ dataType: 'dietaryProtein', value: payload.protein_g, unit: 'gram', startDate: nowIso, endDate: nowIso });
+            }
+            if (payload.water_ml > 0) {
+              await healthPlugin.saveSample({ dataType: 'dietaryWater', value: Number((payload.water_ml / 1000).toFixed(2)), unit: 'liter', startDate: nowIso, endDate: nowIso });
+            }
+            if (payload.weight_kg) {
+              await healthPlugin.saveSample({ dataType: 'weight', value: payload.weight_kg, unit: 'kilogram', startDate: nowIso, endDate: nowIso });
+            }
+            showToast('📤 Kcal, proteine, acqua e peso inviati a Google Health Connect!');
+            return;
+          } catch (_) {}
+        }
+
+        copyTextToClipboard(JSON.stringify(payload, null, 2), '📤 Riepilogo nutrizionale copiato per Apple Salute / Comandi Rapidi!');
+      }
+
+      /* =====================================================================
        * 13. RENDER ORCHESTRATION & EVENT BINDINGS
        * ===================================================================== */
       function renderOggi() {
@@ -5481,6 +6455,7 @@
         renderDailyDozenAndElectrolytes();
         render7DayChart();
         renderProtocolChips();
+        renderHealthAndCloudCard();
         renderPantry();
       }
 
@@ -5518,12 +6493,7 @@
         });
 
         document.getElementById('dayModeBtn').addEventListener('click', toggleDayMode);
-        document.getElementById('headerProfileBtn').addEventListener('click', () => {
-          switchTab('menu');
-          const det = document.getElementById('fullProfileDetails');
-          if (det) det.open = true;
-          document.getElementById('profileSectionCard').scrollIntoView({ behavior: 'smooth' });
-        });
+        document.getElementById('headerProfileBtn').addEventListener('click', openAccountHealthModal);
 
         // 16:8
         document.getElementById('applyFastTimeBtn').addEventListener('click', applyManualFastingTime);
@@ -5954,19 +6924,154 @@
         document.getElementById('dismissInstallBannerBtn').addEventListener('click', () => {
           if (installBanner) installBanner.style.display = 'none';
         });
+
+        // Multi-Diet Bar in Profile
+        document.querySelectorAll('#profileDietBar button').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            state.profile.dietType = btn.dataset.diet;
+            state.profile.plantBased = state.profile.dietType === 'vegan';
+            state.limits = computeAutoLimits(state.profile);
+            saveState();
+            renderAll();
+            showToast('Regime aggiornato: ' + btn.textContent.trim());
+          });
+        });
+
+        // Onboarding Wizard Controls
+        document.getElementById('reopenOnboardingBtn').addEventListener('click', () => openOnboardingWizard(1));
+        document.getElementById('skipOnboardingBtn').addEventListener('click', () => {
+          state.profile.onboarded = true;
+          saveState();
+          document.getElementById('onboardingDialog').close();
+        });
+        document.getElementById('onboardPrevBtn').addEventListener('click', () => {
+          if (wizStep > 1) {
+            wizStep--;
+            renderOnboardingStep();
+          }
+        });
+        document.getElementById('onboardNextBtn').addEventListener('click', () => {
+          if (wizStep < 4) {
+            wizStep++;
+            renderOnboardingStep();
+          } else {
+            finalizeOnboardingDraft();
+          }
+        });
+
+        // Cloud & Health Modal Controls
+        document.getElementById('openHealthCloudModalBtn').addEventListener('click', openAccountHealthModal);
+        document.getElementById('openCloudFromProfileBtn').addEventListener('click', openAccountHealthModal);
+        document.getElementById('closeAccHealthBtn').addEventListener('click', () => document.getElementById('accountHealthDialog').close());
+
+        document.getElementById('quickSyncHealthBtn').addEventListener('click', syncNativeHealthConnect);
+        document.getElementById('connectNativeHealthBtn').addEventListener('click', syncNativeHealthConnect);
+        document.getElementById('pushNutritionHealthBtn').addEventListener('click', pushTodayNutritionToHealth);
+
+        const copyInviteAction = () => {
+          copyTextToClipboard(buildFriendInviteUrl(), '🔗 Link d\'invito copiato! Invialo ai tuoi amici su WhatsApp.');
+        };
+        document.getElementById('quickShareFriendsBtn').addEventListener('click', copyInviteAction);
+        document.getElementById('copyFriendInviteBtn').addEventListener('click', copyInviteAction);
+
+        document.getElementById('copyIosShortcutUrlBtn').addEventListener('click', () => {
+          const base = window.location.origin + window.location.pathname;
+          copyTextToClipboard(base + '?hc_steps=[Passi]&hc_kcal=[EnergiaAttiva]&hc_weight=[Peso]', '📋 URL Comando Rapido iOS copiato negli appunti!');
+        });
+
+        document.getElementById('applyManualHealthBtn').addEventListener('click', () => {
+          const st = document.getElementById('manualStepsInput').value;
+          const kc = document.getElementById('manualActiveKcalInput').value;
+          const wg = document.getElementById('manualWeightSyncInput').value;
+          applyHealthMetrics({
+            steps: st !== '' ? Number(st) : undefined,
+            activeKcal: kc !== '' ? Number(kc) : undefined,
+            weight: wg !== '' ? Number(wg) : undefined,
+            source: 'Salute'
+          });
+          document.getElementById('accountHealthDialog').close();
+        });
+
+        document.getElementById('simHealthWorkoutBtn').addEventListener('click', () => {
+          document.getElementById('manualStepsInput').value = '8500';
+          document.getElementById('manualActiveKcalInput').value = '410';
+          applyHealthMetrics({ steps: 8500, activeKcal: 410, source: 'Simulazione Salute' });
+        });
+
+        // Firebase Config & Auth Buttons
+        document.getElementById('saveFbConfigBtn').addEventListener('click', async () => {
+          const parsed = parseFirebaseConfigInput(document.getElementById('fbConfigTextarea').value);
+          if (!parsed) {
+            showToast('Formato non valido: incolla l\'oggetto firebaseConfig con apiKey e projectId');
+            return;
+          }
+          localStorage.setItem(FB_CFG_STORAGE_KEY, JSON.stringify(parsed));
+          fbApp = null; fbAuth = null; fbDb = null;
+          await ensureFirebaseInitialized();
+          renderHealthAndCloudCard();
+          showToast('✅ Progetto Firebase collegato! Ora puoi usare «Accedi con Google».');
+        });
+
+        document.getElementById('clearFbConfigBtn').addEventListener('click', () => {
+          localStorage.removeItem(FB_CFG_STORAGE_KEY);
+          document.getElementById('fbConfigTextarea').value = '';
+          fbCurrentUser = null; fbAuth = null; fbDb = null;
+          renderHealthAndCloudCard();
+          showToast('Configurazione Firebase rimossa');
+        });
+
+        document.getElementById('fbGoogleLoginBtn').addEventListener('click', signInWithFirebaseGoogle);
+        document.getElementById('fbEmailSignInBtn').addEventListener('click', () => signInOrUpWithEmail(false));
+        document.getElementById('fbEmailSignUpBtn').addEventListener('click', () => signInOrUpWithEmail(true));
+        document.getElementById('fbSyncNowBtn').addEventListener('click', () => pullCloudState(true));
+        document.getElementById('fbLogoutBtn').addEventListener('click', async () => {
+          if (fbAuth && fbModules && fbModules.signOut) {
+            await fbModules.signOut(fbAuth);
+            fbCurrentUser = null;
+            renderHealthAndCloudCard();
+            showToast('Disconnesso dal Cloud (i dati locali restano sul dispositivo)');
+          }
+        });
       }
+
+      // 0. Check URL parameters (?fb= invite config, ?hc_steps= Apple Salute bridge, ?tab= shortcut)
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const fbParam = params.get('fb');
+        if (fbParam) {
+          const decodedCfg = JSON.parse(decodeURIComponent(escape(atob(fbParam))));
+          if (decodedCfg && decodedCfg.apiKey && decodedCfg.projectId) {
+            localStorage.setItem(FB_CFG_STORAGE_KEY, JSON.stringify(decodedCfg));
+          }
+        }
+        if (params.has('hc_steps') || params.has('hc_kcal') || params.has('hc_weight')) {
+          setTimeout(() => {
+            applyHealthMetrics({
+              steps: params.has('hc_steps') ? Number(params.get('hc_steps')) : undefined,
+              activeKcal: params.has('hc_kcal') ? Number(params.get('hc_kcal')) : undefined,
+              weight: params.has('hc_weight') ? Number(params.get('hc_weight')) : undefined,
+              source: 'Apple Salute'
+            });
+          }, 250);
+        }
+      } catch (_) {}
 
       bindEvents();
       updateNetworkIndicator();
       initStoragePersistence();
       initServiceWorker();
+      ensureFirebaseInitialized();
       renderAll();
 
       // Support manifest shortcuts (?tab=oggi|cucina|scanner|menu)
       try {
-        const urlTab = new URLSearchParams(window.location.search).get('tab');
+        const params = new URLSearchParams(window.location.search);
+        const urlTab = params.get('tab');
         if (urlTab && ['oggi', 'cucina', 'scanner', 'menu'].includes(urlTab)) {
           switchTab(urlTab);
+        } else if (!state.profile.onboarded && !params.has('skip_onboard')) {
+          // Open friendly 4-step Onboarding Wizard for new friends on first visit!
+          setTimeout(() => openOnboardingWizard(1), 120);
         }
       } catch (_) {}
 
