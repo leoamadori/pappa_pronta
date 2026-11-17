@@ -1,0 +1,152 @@
+name: Build Pappa Pronta Android APK (Camera + Health Connect)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-android-apk:
+    name: Capacitor Android APK with Health Connect
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Prepare Web Assets (www) & Capacitor + Health Connect Plugin
+        run: |
+          mkdir -p www
+          cp index.html www/
+          cp manifest.json www/
+          cp sw.js www/
+          if [ -d icons ]; then cp -r icons www/; fi
+
+          cat << 'EOF' > package.json
+          {
+            "name": "pappa-pronta",
+            "version": "3.0.0",
+            "private": true,
+            "description": "Pappa Pronta — Multi-User Nutrition, Scanner & Google Health Connect"
+          }
+          EOF
+
+          npm install --no-audit --no-fund \
+            @capacitor/core@^7.0.0 \
+            @capacitor/cli@^7.0.0 \
+            @capacitor/android@^7.0.0 \
+            @capgo/capacitor-health@^7.0.0
+
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "it.pappapronta.app",
+            "appName": "Pappa Pronta",
+            "webDir": "www",
+            "server": {
+              "androidScheme": "https"
+            },
+            "android": {
+              "allowMixedContent": false
+            }
+          }
+          EOF
+
+          npx cap add android
+
+          cat << 'EOF' > android/healthfitness.config.json
+          {
+            "permissions": {
+              "steps": "READ",
+              "calories": "READWRITE",
+              "weight": "READWRITE",
+              "workouts": "READ"
+            }
+          }
+          EOF
+
+          npx cap sync android
+
+      - name: Configure minSdkVersion 26, CAMERA & Health Connect Manifest
+        run: |
+          node -e '
+            const fs = require("fs");
+
+            // 1. Ensure minSdkVersion >= 26 in variables.gradle for Health Connect SDK
+            const varsPath = "android/variables.gradle";
+            if (fs.existsSync(varsPath)) {
+              let vars = fs.readFileSync(varsPath, "utf8");
+              vars = vars.replace(/minSdkVersion\s*=\s*\d+/, "minSdkVersion = 26");
+              fs.writeFileSync(varsPath, vars, "utf8");
+            }
+
+            // 2. Inject CAMERA, Health Connect permissions & package visibility in AndroidManifest.xml
+            const manifestPath = "android/app/src/main/AndroidManifest.xml";
+            let xml = fs.readFileSync(manifestPath, "utf8");
+
+            const requiredPerms = [
+              "android.permission.CAMERA",
+              "android.permission.health.READ_STEPS",
+              "android.permission.health.READ_EXERCISE",
+              "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
+              "android.permission.health.READ_WEIGHT",
+              "android.permission.health.WRITE_WEIGHT",
+              "android.permission.health.WRITE_NUTRITION",
+              "android.permission.health.WRITE_HYDRATION"
+            ];
+
+            const missingLines = [];
+            for (const perm of requiredPerms) {
+              if (!xml.includes(perm)) {
+                missingLines.push(`    <uses-permission android:name="${perm}" />`);
+              }
+            }
+            if (!xml.includes("android.hardware.camera")) {
+              missingLines.push("    <uses-feature android:name=\"android.hardware.camera\" android:required=\"false\" />");
+            }
+            if (!xml.includes("com.google.android.apps.healthdata")) {
+              missingLines.push("    <queries><package android:name=\"com.google.android.apps.healthdata\" /></queries>");
+            }
+
+            // Health Connect permission rationale intent filter so Android displays Pappa Pronta in Health Connect settings
+            if (!xml.includes("ACTION_SHOW_PERMISSIONS_RATIONALE")) {
+              xml = xml.replace(
+                "</activity>",
+                `            <intent-filter>\n                <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />\n            </intent-filter>\n        </activity>`
+              );
+            }
+
+            if (missingLines.length > 0) {
+              xml = xml.replace("</manifest>", missingLines.join("\n") + "\n</manifest>");
+            }
+            fs.writeFileSync(manifestPath, xml, "utf8");
+          '
+          grep -q "android.permission.CAMERA" android/app/src/main/AndroidManifest.xml
+          grep -q "android.permission.health.READ_STEPS" android/app/src/main/AndroidManifest.xml
+          echo "Verified CAMERA & Google Health Connect permissions in AndroidManifest.xml"
+
+      - name: Build Debug APK with Gradle
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Upload app-debug.apk Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
