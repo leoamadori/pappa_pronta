@@ -527,6 +527,208 @@
       flex: 1;
     }
 
+    /* Intuitive Fasting Timeline & Phase Guide */
+    .fast-plain-box {
+      background: var(--primary-soft);
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-size: 0.84rem;
+      line-height: 1.42;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .fast-plain-box.eating {
+      background: var(--warn-bg);
+      border-color: var(--warn-border);
+    }
+
+    .fast-phase-stepper {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 5px;
+      margin: 10px 0 8px;
+    }
+
+    .fast-phase-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 6px 3px;
+      min-height: 52px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      color: var(--ink-secondary);
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.15;
+      transition: background-color 140ms ease, border-color 140ms ease, transform 100ms ease;
+    }
+
+    .fast-phase-btn .fp-ico {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .fast-phase-btn.reached {
+      background: #EEF7F1;
+      border-color: var(--primary-border);
+      color: var(--primary-hover);
+    }
+
+    .fast-phase-btn.current {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(27, 107, 70, 0.24);
+    }
+
+    .fast-phase-btn.selected:not(.current) {
+      border-color: var(--ink);
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    .fast-phase-detail {
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+
+    /* Sync Exchange Summary, Goal Scorecard & Coach Advice */
+    .sync-split-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 370px) {
+      .sync-split-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sync-io-card {
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 10px;
+      font-size: 0.77rem;
+      line-height: 1.35;
+    }
+
+    .sync-io-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .sync-log-list {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+      max-height: 190px;
+      overflow-y: auto;
+    }
+
+    .sync-log-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 9px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.75rem;
+    }
+
+    .goal-history-list {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .goal-day-row {
+      display: grid;
+      grid-template-columns: 62px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+    }
+
+    .goal-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .goal-mini-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 6px;
+      border-radius: 99px;
+      font-size: 0.69rem;
+      font-weight: 600;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--ink-secondary);
+    }
+
+    .goal-mini-pill.hit {
+      background: var(--ok-bg);
+      border-color: var(--ok-border);
+      color: var(--ok-ink);
+    }
+
+    .goal-mini-pill.mid {
+      background: var(--warn-bg);
+      border-color: var(--warn-border);
+      color: var(--warn-ink);
+    }
+
+    .advice-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .advice-card {
+      background: var(--surface-muted);
+      border-left: 3px solid var(--primary);
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 11px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .advice-card.warn {
+      border-left-color: #D97706;
+    }
+
     /* Daily Dozen 3x4 Grid */
     .dozen-grid {
       display: grid;
@@ -1608,50 +1810,84 @@
          TAB 1: OGGI
          ================================================================ -->
     <section id="panel-oggi" class="tab-panel active" role="tabpanel" aria-labelledby="tab-oggi">
-      <!-- Card 1: 16:8 Intermittent Fasting -->
+      <!-- Card 1: Digiuno Intermittente Guidato (16:8 / 14:10 / 12:12 / Libero) -->
       <article class="card">
         <div class="card-head">
           <div>
-            <h2 class="card-title">Finestra Digiuno 16:8</h2>
-            <p class="card-desc">Sincronizzata con il primo e l'ultimo pasto registrato</p>
+            <h2 class="card-title" id="fastCardTitle">Digiuno Intermittente Guidato</h2>
+            <p class="card-desc">Scegli il tuo ritmo: si aggiorna da solo quando registri un pasto</p>
           </div>
-          <span id="fastStateBadge" class="badge ok">⏳ Digiuno in corso</span>
+          <span id="fastStateBadge" class="badge ok">⏳ Digiuno attivo</span>
         </div>
 
-        <div class="kpi-grid">
-          <div class="kpi-box">
-            <span class="kpi-label" id="fastKpi1Label">Digiuno</span>
-            <strong class="kpi-value num" id="fastDurationVal">14h 00m</strong>
-            <span class="kpi-sub" id="fastKpi1Sub">su 16h target</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label" id="fastKpi2Label">Ultimo pasto</span>
-            <strong class="kpi-value num" id="fastRefTimeVal">20:00</strong>
-            <span class="kpi-sub" id="fastKpi2Sub">ieri sera</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label" id="fastKpi3Label">Target 16h</span>
-            <strong class="kpi-value num" id="fastTargetTimeVal">12:00</strong>
-            <span class="kpi-sub" id="fastKpi3Sub">apertura 8h</span>
+        <!-- Protocol Selector -->
+        <div class="chip-row" id="fastProtocolBar" role="group" aria-label="Protocollo digiuno intermittente" style="margin-bottom:10px;">
+          <button type="button" class="chip chip-sm active" data-fproto="16:8">16:8 Classico</button>
+          <button type="button" class="chip chip-sm" data-fproto="14:10">14:10 Morbido</button>
+          <button type="button" class="chip chip-sm" data-fproto="12:12">12:12 Notturno</button>
+          <button type="button" class="chip chip-sm" data-fproto="off">Libero (Off)</button>
+        </div>
+
+        <div id="fastOffBody" style="display:none;">
+          <div class="empty-box" style="padding:12px;">
+            Modalità <strong>Pasti Liberi</strong> attiva: nessun timer di digiuno. Puoi riattivare <strong>12:12</strong>, <strong>14:10</strong> o <strong>16:8</strong> in qualsiasi momento qui sopra.
           </div>
         </div>
 
-        <div class="fast-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="85" id="fastProgressBarWrap">
-          <div id="fastProgressFill" class="fast-progress-fill" style="width: 85%;"></div>
-        </div>
-
-        <div class="metabolic-banner">
-          <span id="fastPhaseText">🔥 12–16h: Lipolisi attiva &amp; mobilizzazione acidi grassi</span>
-          <span class="num" id="fastPctText" style="font-weight:700;">88%</span>
-        </div>
-
-        <div class="fast-controls">
-          <div class="time-edit-group">
-            <label for="fastTimeInput" id="fastTimeEditLabel">Ultimo pasto:</label>
-            <input type="time" id="fastTimeInput" value="20:00">
-            <button type="button" id="applyFastTimeBtn" class="btn btn-sm btn-soft">Salva</button>
+        <div id="fastActiveBody">
+          <!-- Plain-language status explanation -->
+          <div id="fastPlainHeadline" class="fast-plain-box">
+            Sei a digiuno da <strong>14h 00m</strong>.
           </div>
-          <button type="button" id="closeDinnerBtn" class="btn btn-sm">🔒 Cena conclusa</button>
+
+          <div class="kpi-grid">
+            <div class="kpi-box">
+              <span class="kpi-label" id="fastKpi1Label">Digiuno</span>
+              <strong class="kpi-value num" id="fastDurationVal">14h 00m</strong>
+              <span class="kpi-sub" id="fastKpi1Sub">su 16h obiettivo</span>
+            </div>
+            <div class="kpi-box">
+              <span class="kpi-label" id="fastKpi2Label">Ultimo pasto</span>
+              <strong class="kpi-value num" id="fastRefTimeVal">20:00</strong>
+              <span class="kpi-sub" id="fastKpi2Sub">ieri sera</span>
+            </div>
+            <div class="kpi-box">
+              <span class="kpi-label" id="fastKpi3Label">Fine digiuno</span>
+              <strong class="kpi-value num" id="fastTargetTimeVal">12:00</strong>
+              <span class="kpi-sub" id="fastKpi3Sub">finestra 8h</span>
+            </div>
+          </div>
+
+          <div class="fast-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="85" id="fastProgressBarWrap">
+            <div id="fastProgressFill" class="fast-progress-fill" style="width: 85%;"></div>
+          </div>
+
+          <!-- Interactive 5-Phase Metabolic Guide -->
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-top:8px;">
+            <span style="font-size:0.76rem; font-weight:700; color:var(--ink-secondary);">Cosa succede ora nel tuo corpo (tocca una fase per leggerla):</span>
+            <span class="num" id="fastPctText" style="font-size:0.78rem; font-weight:700; color:var(--primary);">88%</span>
+          </div>
+          <div id="fastPhaseStepper" class="fast-phase-stepper" role="group" aria-label="Fasi metaboliche del digiuno"></div>
+          <div id="fastPhaseDetailBox" class="fast-phase-detail"></div>
+
+          <!-- Primary 1-Tap Action + Optional Time Correction -->
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <button type="button" id="closeDinnerBtn" class="btn btn-primary btn-sm" style="flex:1 1 210px;">
+              🍽 Ho iniziato a mangiare (Apri finestra)
+            </button>
+            <details id="fastManualDetails" style="flex:1 1 160px;">
+              <summary class="btn btn-sm" style="width:100%; list-style:none; cursor:pointer;">✏️ Correggi orario</summary>
+              <div class="time-edit-group" style="margin-top:6px; width:100%;">
+                <label for="fastTimeInput" id="fastTimeEditLabel">Ultimo pasto:</label>
+                <input type="time" id="fastTimeInput" value="20:00">
+                <button type="button" id="applyFastTimeBtn" class="btn btn-sm btn-soft">Salva</button>
+              </div>
+            </details>
+          </div>
+
+          <div style="margin-top:8px; font-size:0.74rem; color:var(--ink-secondary);">
+            💧 <strong>Cosa puoi bere a digiuno:</strong> acqua naturale o frizzante, tè verde, tisane e caffè amaro (senza zucchero, miele o latte).
+          </div>
         </div>
       </article>
 
@@ -1729,12 +1965,12 @@
         <div id="protocolChips" class="chip-row" role="group" aria-label="Checklist integratori e tweaks giornalieri"></div>
       </article>
 
-      <!-- Card 4B: Salute & Cloud Sync (Google Health Connect / Apple Salute + Account) -->
-      <article class="card">
+      <!-- Card 4B: Salute, Riepilogo Dati Scambiati, Storico Obiettivi & Consigli -->
+      <article class="card" id="syncAndGoalsCard">
         <div class="card-head">
           <div>
-            <h2 class="card-title">Salute &amp; Sincronizzazione</h2>
-            <p class="card-desc">Google Health Connect (Android), Apple Salute (iPhone) e Cloud</p>
+            <h2 class="card-title">Salute, Sync &amp; Riepilogo Obiettivi</h2>
+            <p class="card-desc">Dati scambiati con Health Connect / Cloud, andamento 7gg e consigli</p>
           </div>
           <button type="button" id="openHealthCloudModalBtn" class="btn btn-sm btn-soft">⚙️ Connetti</button>
         </div>
@@ -1761,6 +1997,15 @@
           <button type="button" id="quickSyncHealthBtn" class="btn btn-sm btn-primary" style="flex:1 1 170px;">❤️ Sincronizza Salute</button>
           <button type="button" id="quickShareFriendsBtn" class="btn btn-sm" style="flex:1 1 150px;">🔗 Invita un amico</button>
         </div>
+
+        <!-- 1. Riepilogo Dati Scambiati (Ricevuti vs Inviati + Log) -->
+        <div id="syncExchangeSummaryWrap" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);"></div>
+
+        <!-- 2. Cronologia Raggiungimento Obiettivi (Ultimi 7 Giorni) -->
+        <div id="goalHistorySummaryWrap" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);"></div>
+
+        <!-- 3. Consigli Personalizzati per Migliorare -->
+        <div id="coachAdviceWrap" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);"></div>
       </article>
 
       <!-- Card 5: Dispensa ("Cosa hai in casa?") -->
@@ -2351,7 +2596,7 @@
     </div>
 
     <div class="modal-body-scroll">
-      <!-- 1. Firebase Cloud Login Box -->
+      <!-- 1. Firebase Cloud Login Box (Zero Exposed Keys, Native Android Google Auth + Direct Email/Password) -->
       <section style="border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; background:var(--surface-muted);">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
           <strong style="font-size:0.9rem;">☁️ Account &amp; Sincronizzazione Cloud</strong>
@@ -2360,51 +2605,40 @@
 
         <div id="fbLoggedOutView">
           <p style="margin:0 0 10px; font-size:0.8rem; color:var(--ink-secondary);">
-            Accedi per salvare profilo, dispensa, ricette e progressi nel cloud e ritrovarli su qualsiasi telefono o PC.
+            Accedi per salvare profilo, dispensa, ricette e progressi nel tuo spazio Cloud privato (server UE) e ritrovarli su telefono, APK Android e PC.
           </p>
           <button type="button" id="fbGoogleLoginBtn" class="btn btn-primary btn-block" style="margin-bottom:8px;">
             🔐 Accedi con Google
           </button>
 
-          <details style="margin-top:6px;">
-            <summary style="cursor:pointer; font-size:0.78rem; font-weight:600; color:var(--ink-secondary);">Oppure accedi / registrati con Email e Password</summary>
-            <div style="display:grid; gap:6px; margin-top:8px;">
-              <input type="email" id="fbEmailInput" class="input-field" placeholder="La tua email">
-              <input type="password" id="fbPassInput" class="input-field" placeholder="Password (min. 6 caratteri)">
+          <div style="border-top:1px solid var(--border); margin-top:8px; padding-top:8px;">
+            <div style="font-size:0.77rem; font-weight:700; color:var(--ink-secondary); margin-bottom:6px;">
+              ✉️ Oppure usa Email e Password (universale su Web, iPhone e APK Android):
+            </div>
+            <div style="display:grid; gap:6px;">
+              <input type="email" id="fbEmailInput" class="input-field" autocomplete="email" placeholder="La tua email">
+              <input type="password" id="fbPassInput" class="input-field" autocomplete="current-password" placeholder="Password (min. 6 caratteri)">
               <div style="display:flex; gap:6px;">
-                <button type="button" id="fbEmailSignInBtn" class="btn btn-sm btn-soft" style="flex:1;">Accedi</button>
+                <button type="button" id="fbEmailSignInBtn" class="btn btn-sm btn-soft" style="flex:1;">Accedi con Email</button>
                 <button type="button" id="fbEmailSignUpBtn" class="btn btn-sm" style="flex:1;">Crea account</button>
               </div>
             </div>
-          </details>
+          </div>
         </div>
 
         <div id="fbLoggedInView" style="display:none;">
           <div style="font-size:0.84rem; margin-bottom:8px;">
-            Connesso come: <strong id="fbUserLabel">—</strong>
+            Connesso in privato come: <strong id="fbUserLabel">—</strong>
           </div>
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
             <button type="button" id="fbSyncNowBtn" class="btn btn-sm btn-primary" style="flex:1;">🔄 Sincronizza ora</button>
-            <button type="button" id="fbLogoutBtn" class="btn btn-sm btn-danger">Esci</button>
+            <button type="button" id="fbLogoutBtn" class="btn btn-sm">Esci</button>
           </div>
         </div>
 
-        <!-- Share Invite Link & Firebase Config -->
+        <!-- Clean Friend Invite Link (No API keys in URL!) -->
         <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border); display:flex; gap:6px; flex-wrap:wrap;">
-          <button type="button" id="copyFriendInviteBtn" class="btn btn-xs btn-soft" style="flex:1;">🔗 Copia Link d'Invito per Amici</button>
-          <details style="width:100%; margin-top:4px;">
-            <summary style="cursor:pointer; font-size:0.75rem; color:var(--ink-secondary);">⚙️ Configurazione Progetto Firebase (per l'amministratore)</summary>
-            <div style="margin-top:6px; display:grid; gap:6px;">
-              <textarea id="fbConfigTextarea" rows="3" class="input-field" style="font-size:0.76rem; font-family:monospace;" placeholder="Incolla qui l'oggetto firebaseConfig dalla Console Firebase (apiKey, authDomain, projectId, appId)..."></textarea>
-              <div style="display:flex; gap:6px;">
-                <button type="button" id="saveFbConfigBtn" class="btn btn-xs btn-primary">Salva Configurazione Firebase</button>
-                <button type="button" id="clearFbConfigBtn" class="btn btn-xs">Rimuovi</button>
-              </div>
-              <div style="font-size:0.72rem; color:var(--ink-secondary);">
-                Una volta salvata, premendo «🔗 Copia Link d'Invito per Amici» anche i tuoi amici riceveranno il link già pronto per il Login Google senza dover configurare nulla!
-              </div>
-            </div>
-          </details>
+          <button type="button" id="copyFriendInviteBtn" class="btn btn-xs btn-soft" style="flex:1;">🔗 Copia Link Pulito per Invitare Amici</button>
         </div>
       </section>
 
@@ -2460,6 +2694,23 @@
             <button type="button" id="applyManualHealthBtn" class="btn btn-xs btn-primary" style="flex:1;">Applica e Aggiorna Carb Cycling</button>
             <button type="button" id="simHealthWorkoutBtn" class="btn btn-xs btn-soft">🧪 Simula 8.500 passi</button>
           </div>
+        </div>
+      </section>
+
+      <!-- 3. Live Sync Exchange Preview inside Modal -->
+      <section id="modalSyncPreviewSection" style="border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; background:var(--surface-muted);"></section>
+
+      <!-- 4. Privacy, Isolamento Utenti & GDPR (Diritto all'oblio) -->
+      <section style="border:1px solid var(--primary-border); border-radius:var(--radius-md); padding:12px; background:var(--primary-soft);">
+        <strong style="font-size:0.86rem; display:block; margin-bottom:5px;">🛡️ Privacy &amp; Protezione Dati Personali (GDPR)</strong>
+        <ul style="margin:0; padding-left:16px; font-size:0.76rem; color:var(--ink); display:grid; gap:4px; line-height:1.38;">
+          <li><strong>Isolamento totale tra utenti:</strong> ogni account può leggere e scrivere esclusivamente il proprio documento privato (<code>/users/{uid}</code> su server UE <code>eur3</code>). L'elenco utenti è bloccato lato server (<code>allow list: if false</code>): nessun amico può vedere i dati altrui.</li>
+          <li><strong>Zero tracker o pubblicità:</strong> nessun dato nutrizionale o di Google Health Connect viene condiviso con terze parti. Senza login Cloud, tutto resta 100% nella memoria locale del tuo telefono.</li>
+        </ul>
+        <div id="gdprDeleteCloudWrap" style="display:none; margin-top:8px; padding-top:8px; border-top:1px solid var(--primary-border);">
+          <button type="button" id="deleteCloudDataBtn" class="btn btn-xs btn-danger btn-block">
+            🗑️ Elimina definitivamente i miei dati dal Cloud
+          </button>
         </div>
       </section>
     </div>
@@ -2962,8 +3213,11 @@
           eanCache: {},
           fasting: {
             manualLastMealTs: yesterday.getTime(),
-            windowClosedDate: null
-          }
+            windowClosedDate: null,
+            protocol: '16:8',
+            eatingStartTs: null
+          },
+          syncHistory: []
         };
       }
 
@@ -3081,10 +3335,17 @@
         }
 
         if (raw.fasting && typeof raw.fasting === 'object') {
+          const proto = ['16:8', '14:10', '12:12', 'off'].includes(raw.fasting.protocol) ? raw.fasting.protocol : '16:8';
           base.fasting = {
             manualLastMealTs: raw.fasting.manualLastMealTs || base.fasting.manualLastMealTs,
-            windowClosedDate: raw.fasting.windowClosedDate || null
+            windowClosedDate: raw.fasting.windowClosedDate || null,
+            protocol: proto,
+            eatingStartTs: raw.fasting.eatingStartTs || null
           };
+        }
+
+        if (Array.isArray(raw.syncHistory)) {
+          base.syncHistory = raw.syncHistory.slice(0, 50);
         }
 
         return base;
@@ -3177,7 +3438,8 @@
         barcodeStream: null,
         barcodeRaf: null,
         semaforoSearch: '',
-        semaforoFilter: 'all'
+        semaforoFilter: 'all',
+        selectedFastPhase: null
       };
 
       let toastTimer = null;
@@ -3343,21 +3605,92 @@
         return Math.floor(totalMin / 60) + 'h ' + String(totalMin % 60).padStart(2, '0') + 'm';
       }
 
-      function getMetabolicPhase(hoursFasting, isEatingWindow) {
-        if (isEatingWindow) return '🍽 Fase anabolica: sintesi proteica & ricarica nutrienti (finestra 8h)';
-        if (hoursFasting < 4) return '🌿 0–4h: Digestione post-prandiale & assorbimento aminoacidi';
-        if (hoursFasting < 8) return '📉 4–8h: Calo insulinico & stabilizzazione glicemica';
-        if (hoursFasting < 12) return '⚡ 8–12h: Deplezione glicogeno epatico & flessibilità metabolica';
-        if (hoursFasting < 16) return '🔥 12–16h: Lipolisi attiva & mobilizzazione acidi grassi';
-        return '🧬 16h+: Autofagia cellulare, riduzione infiammazione & controllo cortisolo';
+      const FASTING_PROTOCOLS = {
+        '16:8': { fastH: 16, eatH: 8, label: '16:8 Classico' },
+        '14:10': { fastH: 14, eatH: 10, label: '14:10 Morbido' },
+        '12:12': { fastH: 12, eatH: 12, label: '12:12 Notturno' },
+        'off': { fastH: 0, eatH: 24, label: 'Libero (Off)' }
+      };
+
+      const FASTING_PHASES = [
+        {
+          id: 'p0',
+          range: '0–4h',
+          short: 'Digestione',
+          icon: '🌿',
+          minH: 0,
+          maxH: 4,
+          title: 'Fase 1 (0–4 ore) · Digestione e Ricarica Muscolare',
+          desc: 'Il corpo digerisce l\'ultimo pasto, usa gli zuccheri appena assorbiti per darti energia pronta e utilizza le proteine per riparare i muscoli.'
+        },
+        {
+          id: 'p1',
+          range: '4–8h',
+          short: 'Calma Insulina',
+          icon: '📉',
+          minH: 4,
+          maxH: 8,
+          title: 'Fase 2 (4–8 ore) · Calo dell\'Insulina e Riposo Digestivo',
+          desc: 'Finisce il picco digestivo: l\'insulina nel sangue scende, la glicemia si stabilizza e stomaco e intestino iniziano il loro riposo fisiologico.'
+        },
+        {
+          id: 'p2',
+          range: '8–12h',
+          short: 'Cambio Fuel',
+          icon: '⚡',
+          minH: 8,
+          maxH: 12,
+          title: 'Fase 3 (8–12 ore) · Esaurimento Scorte Rapide (Cambio Carburante)',
+          desc: 'Le riserve rapide di zuccheri nel fegato (glicogeno) si svuotano gradualmente: l\'organismo impara a passare dagli zuccheri ai grassi senza cali di energia.'
+        },
+        {
+          id: 'p3',
+          range: '12–16h',
+          short: 'Brucia-Grassi',
+          icon: '🔥',
+          minH: 12,
+          maxH: 16,
+          title: 'Fase 4 (12–16 ore) · Brucia-Grassi Attivo (Lipolisi)',
+          desc: 'Con l\'insulina al minimo il corpo attinge alle riserve di grasso per produrre energia pulita, migliorando sensibilità insulinica, pressione e lucidità.'
+        },
+        {
+          id: 'p4',
+          range: '16h+',
+          short: 'Pulizia Cell.',
+          icon: '🧬',
+          minH: 16,
+          maxH: 999,
+          title: 'Fase 5 (oltre 16 ore) · Pulizia e Riciclo Cellulare (Autofagia)',
+          desc: 'Le cellule attivano le "pulizie di primavera": riciclano componenti usurati e abbassano l\'infiammazione sistemica e gengivale.'
+        }
+      ];
+
+      function getPhaseIndexForHours(hoursFasting) {
+        if (hoursFasting < 4) return 0;
+        if (hoursFasting < 8) return 1;
+        if (hoursFasting < 12) return 2;
+        if (hoursFasting < 16) return 3;
+        return 4;
       }
 
       function computeFastingState() {
+        const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol]) ? state.fasting.protocol : '16:8';
+        if (protoKey === 'off') {
+          return { mode: 'off', protoKey: 'off' };
+        }
+        const proto = FASTING_PROTOCOLS[protoKey];
+        const fastMs = proto.fastH * 3600 * 1000;
+        const eatMs = proto.eatH * 3600 * 1000;
+
         const now = Date.now();
         const todayKey = getLocalDateKey();
         const todayLog = ensureTodayLog();
         const sortedTodayMeals = [...todayLog.meals].sort((a, b) => a.ts - b.ts);
         const dinnerClosedToday = state.fasting.windowClosedDate === todayKey;
+
+        const manualEatStartToday = (state.fasting.eatingStartTs && getLocalDateKey(new Date(state.fasting.eatingStartTs)) === todayKey)
+          ? state.fasting.eatingStartTs
+          : null;
 
         const yDate = new Date();
         yDate.setDate(yDate.getDate() - 1);
@@ -3366,61 +3699,82 @@
           ? [...state.logs[yKey].meals].sort((a, b) => a.ts - b.ts)
           : [];
 
-        if (sortedTodayMeals.length > 0 && !dinnerClosedToday) {
-          const firstTs = sortedTodayMeals[0].ts;
-          const lastTs = sortedTodayMeals[sortedTodayMeals.length - 1].ts;
-          const windowEndTs = firstTs + 8 * 3600 * 1000;
+        const hasOpenedWindowToday = (sortedTodayMeals.length > 0 || Boolean(manualEatStartToday)) && !dinnerClosedToday;
+
+        if (hasOpenedWindowToday) {
+          const firstTs = sortedTodayMeals.length > 0
+            ? (manualEatStartToday ? Math.min(manualEatStartToday, sortedTodayMeals[0].ts) : sortedTodayMeals[0].ts)
+            : manualEatStartToday;
+          const lastTs = sortedTodayMeals.length > 0 ? sortedTodayMeals[sortedTodayMeals.length - 1].ts : firstTs;
+          const windowEndTs = firstTs + eatMs;
 
           if (now < windowEndTs) {
             const elapsed = Math.max(0, now - firstTs);
-            const pct = Math.min(100, Math.round((elapsed / (8 * 3600 * 1000)) * 100));
+            const remMs = Math.max(0, windowEndTs - now);
+            const pct = Math.min(100, Math.round((elapsed / eatMs) * 100));
             return {
               mode: 'eating',
-              badgeText: '🍽 Finestra 8h Attiva',
+              protoKey,
+              proto,
+              badgeText: '🍽 Finestra ' + proto.eatH + 'h Aperta',
               badgeClass: 'badge warn',
-              kpi1Label: 'Finestra 8h',
+              headlineHtml:
+                '🍽 <strong>Finestra pasti aperta</strong> dalle <strong>' + formatHHMM(firstTs) + '</strong> alle <strong>' + formatHHMM(windowEndTs) + '</strong> (ti restano <strong>' + formatDuration(remMs) + '</strong>). Quando hai finito di cenare premi il pulsante verde qui sotto.',
+              kpi1Label: 'Finestra pasti',
               kpi1Val: formatDuration(elapsed),
-              kpi1Sub: 'Restano ' + formatDuration(windowEndTs - now),
+              kpi1Sub: 'restano ' + formatDuration(remMs),
               kpi2Label: '1° pasto',
               kpi2Val: formatHHMM(firstTs),
-              kpi2Sub: 'Ultimo: ' + formatHHMM(lastTs),
-              kpi3Label: 'Chiusura 8h',
+              kpi2Sub: 'ultimo: ' + formatHHMM(lastTs),
+              kpi3Label: 'Cena entro',
               kpi3Val: formatHHMM(windowEndTs),
-              kpi3Sub: 'target cena',
+              kpi3Sub: 'finestra ' + proto.eatH + 'h',
               pct,
-              phase: getMetabolicPhase(0, true),
-              editLabel: '1° pasto oggi:',
+              hours: 0,
+              phaseIdx: -1,
+              editLabel: 'Inizio pasti oggi:',
               editValue: formatHHMM(firstTs),
-              dinnerClosedToday: false
+              primaryBtnText: '🌙 Ho finito di cenare (Inizia digiuno ' + proto.fastH + 'h)',
+              primaryBtnClass: 'btn btn-primary btn-sm'
             };
           }
+
           const fastElapsed = Math.max(0, now - lastTs);
           const hours = fastElapsed / 3600000;
-          const pct = Math.min(100, Math.round((hours / 16) * 100));
+          const pct = Math.min(100, Math.round((hours / proto.fastH) * 100));
+          const targetTs = lastTs + fastMs;
+          const reached = hours >= proto.fastH;
           return {
-            mode: hours >= 16 ? 'done' : 'fasting',
-            badgeText: hours >= 16 ? '✅ Target 16h Raggiunto' : '⏳ Digiuno in corso',
-            badgeClass: hours >= 16 ? 'badge ok' : 'badge rest',
+            mode: reached ? 'done' : 'fasting',
+            protoKey,
+            proto,
+            badgeText: reached ? ('✅ ' + proto.fastH + 'h Completate') : '⏳ Digiuno in corso',
+            badgeClass: reached ? 'badge ok' : 'badge rest',
+            headlineHtml: reached
+              ? '🎉 <strong>Obiettivo di ' + proto.fastH + ' ore raggiunto!</strong> Sei a digiuno da <strong>' + formatDuration(fastElapsed) + '</strong>: apri la finestra quando vuoi fare il primo pasto.'
+              : '⏳ Finestra pasti chiusa: sei a <strong>digiuno da ' + formatDuration(fastElapsed) + '</strong>. Mancano <strong>' + formatDuration(targetTs - now) + '</strong> (fino alle <strong>' + formatHHMM(targetTs) + '</strong>).',
             kpi1Label: 'Digiuno',
             kpi1Val: formatDuration(fastElapsed),
-            kpi1Sub: 'su 16h target',
+            kpi1Sub: 'su ' + proto.fastH + 'h obiettivo',
             kpi2Label: 'Ultimo pasto',
             kpi2Val: formatHHMM(lastTs),
             kpi2Sub: 'oggi',
-            kpi3Label: 'Target 16h',
-            kpi3Val: formatHHMM(lastTs + 16 * 3600 * 1000),
-            kpi3Sub: 'domani',
+            kpi3Label: 'Fine ' + proto.fastH + 'h',
+            kpi3Val: formatHHMM(targetTs),
+            kpi3Sub: getLocalDateKey(new Date(targetTs)) === todayKey ? 'oggi' : 'domani',
             pct,
-            phase: getMetabolicPhase(hours, false),
+            hours,
+            phaseIdx: getPhaseIndexForHours(hours),
             editLabel: 'Ultimo pasto:',
             editValue: formatHHMM(lastTs),
-            dinnerClosedToday: false
+            primaryBtnText: '🍽 Ho iniziato a mangiare (Apri finestra ' + proto.eatH + 'h)',
+            primaryBtnClass: reached ? 'btn btn-primary btn-sm' : 'btn btn-soft btn-sm'
           };
         }
 
         let anchorTs = state.fasting.manualLastMealTs;
         if (dinnerClosedToday && sortedTodayMeals.length > 0) {
-          anchorTs = sortedTodayMeals[sortedTodayMeals.length - 1].ts;
+          anchorTs = Math.max(anchorTs || 0, sortedTodayMeals[sortedTodayMeals.length - 1].ts);
         } else if (yMeals.length > 0) {
           const yLast = yMeals[yMeals.length - 1].ts;
           if (!anchorTs || yLast > anchorTs) anchorTs = yLast;
@@ -3434,34 +3788,68 @@
         const anchorDayLabel = dinnerClosedToday ? 'cena chiusa' : (getLocalDateKey(new Date(anchorTs)) === todayKey ? 'oggi' : 'ieri sera');
         const fastElapsed = Math.max(0, now - anchorTs);
         const hours = fastElapsed / 3600000;
-        const pct = Math.min(100, Math.round((hours / 16) * 100));
-        const targetTs = anchorTs + 16 * 3600 * 1000;
+        const pct = Math.min(100, Math.round((hours / proto.fastH) * 100));
+        const targetTs = anchorTs + fastMs;
+        const reached = hours >= proto.fastH;
 
         return {
-          mode: hours >= 16 ? 'done' : 'fasting',
-          badgeText: hours >= 16 ? '✅ Target 16h Raggiunto' : '⏳ Digiuno in corso',
-          badgeClass: hours >= 16 ? 'badge ok' : 'badge rest',
+          mode: reached ? 'done' : 'fasting',
+          protoKey,
+          proto,
+          badgeText: reached ? ('✅ ' + proto.fastH + 'h Completate') : '⏳ Digiuno attivo',
+          badgeClass: reached ? 'badge ok' : 'badge rest',
+          headlineHtml: reached
+            ? '🎉 <strong>Obiettivo ' + proto.fastH + 'h raggiunto!</strong> Hai digiunato per <strong>' + formatDuration(fastElapsed) + '</strong>. Appena fai colazione o pranzo premi il pulsante qui sotto (o registra una ricetta).'
+            : '⏳ Sei a <strong>digiuno da ' + formatDuration(fastElapsed) + '</strong>. Mancano <strong>' + formatDuration(Math.max(0, targetTs - now)) + '</strong> per arrivare alle <strong>' + formatHHMM(targetTs) + '</strong> (obiettivo ' + proto.fastH + 'h).',
           kpi1Label: 'Digiuno',
           kpi1Val: formatDuration(fastElapsed),
-          kpi1Sub: hours >= 16 ? '+' + formatDuration(fastElapsed - 16 * 3600000) + ' bonus' : 'su 16h target',
+          kpi1Sub: reached ? '+' + formatDuration(fastElapsed - fastMs) + ' extra' : ('su ' + proto.fastH + 'h obiettivo'),
           kpi2Label: 'Ultimo pasto',
           kpi2Val: formatHHMM(anchorTs),
           kpi2Sub: anchorDayLabel,
-          kpi3Label: 'Target 16h',
+          kpi3Label: 'Fine ' + proto.fastH + 'h',
           kpi3Val: formatHHMM(targetTs),
-          kpi3Sub: getLocalDateKey(new Date(targetTs)) === todayKey ? 'oggi' : 'domani',
+          kpi3Sub: getLocalDateKey(new Date(targetTs)) === todayKey ? ('finestra ' + proto.eatH + 'h') : 'domani',
           pct,
-          phase: getMetabolicPhase(hours, false),
+          hours,
+          phaseIdx: getPhaseIndexForHours(hours),
           editLabel: 'Ultimo pasto:',
           editValue: formatHHMM(anchorTs),
-          dinnerClosedToday
+          primaryBtnText: dinnerClosedToday ? '🔓 Riapri finestra pasti di oggi' : ('🍽 Ho iniziato a mangiare (Apri finestra ' + proto.eatH + 'h)'),
+          primaryBtnClass: reached ? 'btn btn-primary btn-sm' : 'btn btn-soft btn-sm'
         };
       }
 
       function renderFastingCard() {
+        const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol]) ? state.fasting.protocol : '16:8';
+        document.querySelectorAll('#fastProtocolBar button').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.fproto === protoKey);
+        });
+
+        const offBody = document.getElementById('fastOffBody');
+        const activeBody = document.getElementById('fastActiveBody');
+        const badge = document.getElementById('fastStateBadge');
+
+        if (protoKey === 'off') {
+          if (offBody) offBody.style.display = 'block';
+          if (activeBody) activeBody.style.display = 'none';
+          badge.textContent = 'Pasti Liberi';
+          badge.className = 'badge';
+          return;
+        }
+
+        if (offBody) offBody.style.display = 'none';
+        if (activeBody) activeBody.style.display = 'block';
+
         const f = computeFastingState();
-        document.getElementById('fastStateBadge').textContent = f.badgeText;
-        document.getElementById('fastStateBadge').className = f.badgeClass;
+        document.getElementById('fastCardTitle').textContent = 'Digiuno Guidato (' + f.protoKey + ')';
+        badge.textContent = f.badgeText;
+        badge.className = f.badgeClass;
+
+        const hl = document.getElementById('fastPlainHeadline');
+        hl.innerHTML = f.headlineHtml;
+        hl.className = 'fast-plain-box' + (f.mode === 'eating' ? ' eating' : '');
+
         document.getElementById('fastKpi1Label').textContent = f.kpi1Label;
         document.getElementById('fastDurationVal').textContent = f.kpi1Val;
         document.getElementById('fastKpi1Sub').textContent = f.kpi1Sub;
@@ -3476,7 +3864,6 @@
         fill.style.width = f.pct + '%';
         fill.className = 'fast-progress-fill ' + (f.mode === 'eating' ? 'eating' : f.mode === 'done' ? 'done' : '');
         document.getElementById('fastProgressBarWrap').setAttribute('aria-valuenow', String(f.pct));
-        document.getElementById('fastPhaseText').textContent = f.phase;
         document.getElementById('fastPctText').textContent = f.pct + '%';
         document.getElementById('fastTimeEditLabel').textContent = f.editLabel;
 
@@ -3484,8 +3871,56 @@
         if (document.activeElement !== timeInp) timeInp.value = f.editValue;
 
         const closeBtn = document.getElementById('closeDinnerBtn');
-        closeBtn.textContent = f.dinnerClosedToday ? '🔓 Riapri finestra' : '🔒 Cena conclusa';
-        closeBtn.className = f.dinnerClosedToday ? 'btn btn-sm btn-soft' : 'btn btn-sm';
+        closeBtn.textContent = f.primaryBtnText;
+        closeBtn.className = f.primaryBtnClass;
+
+        // Render Interactive 5-Phase Metabolic Stepper + Plain Italian Explanation
+        const stepper = document.getElementById('fastPhaseStepper');
+        const detailBox = document.getElementById('fastPhaseDetailBox');
+        stepper.innerHTML = '';
+
+        const activeIdx = f.mode === 'eating' ? -1 : f.phaseIdx;
+        const shownIdx = (ui.selectedFastPhase !== null && ui.selectedFastPhase >= 0 && ui.selectedFastPhase < FASTING_PHASES.length)
+          ? ui.selectedFastPhase
+          : (activeIdx >= 0 ? activeIdx : -1);
+
+        FASTING_PHASES.forEach((ph, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          let cls = 'fast-phase-btn';
+          if (activeIdx === idx) cls += ' current';
+          else if (activeIdx > idx) cls += ' reached';
+          if (ui.selectedFastPhase === idx) cls += ' selected';
+          btn.className = cls;
+          btn.innerHTML = '<span class="fp-ico" aria-hidden="true">' + ph.icon + '</span><span>' + ph.range + '</span><span style="font-weight:500; font-size:0.62rem;">' + ph.short + '</span>';
+          btn.addEventListener('click', () => {
+            ui.selectedFastPhase = (ui.selectedFastPhase === idx) ? null : idx;
+            renderFastingCard();
+          });
+          stepper.appendChild(btn);
+        });
+
+        if (shownIdx === -1) {
+          detailBox.innerHTML =
+            '<strong>🍽 Fase Nutrizione &amp; Ricarica (Finestra ' + f.proto.eatH + 'h attiva)</strong>' +
+            '<div style="color:var(--ink-secondary); margin-top:3px;">In queste ore il tuo corpo assorbe proteine, vitamine, minerali e antiossidanti per nutrire muscoli e cervello. Tocca una delle 5 tappe sopra per scoprire cosa accadrà dopo cena!</div>';
+        } else {
+          const ph = FASTING_PHASES[shownIdx];
+          const isLive = shownIdx === activeIdx;
+          detailBox.innerHTML =
+            '<div style="display:flex; justify-content:space-between; align-items:center; gap:6px; flex-wrap:wrap;">' +
+              '<strong>' + ph.icon + ' ' + ph.title + '</strong>' +
+              (isLive ? '<span class="badge ok">Fase attuale</span>' : '<button type="button" id="resetPhasePreviewBtn" class="btn btn-xs">Torna alla fase attuale</button>') +
+            '</div>' +
+            '<div style="color:var(--ink-secondary); margin-top:4px;">' + ph.desc + '</div>';
+          const resetPhBtn = document.getElementById('resetPhasePreviewBtn');
+          if (resetPhBtn) {
+            resetPhBtn.addEventListener('click', () => {
+              ui.selectedFastPhase = null;
+              renderFastingCard();
+            });
+          }
+        }
       }
 
       function applyManualFastingTime() {
@@ -3495,42 +3930,60 @@
         const todayKey = getLocalDateKey();
         const todayLog = ensureTodayLog();
         const sortedMeals = [...todayLog.meals].sort((a, b) => a.ts - b.ts);
-        const dinnerClosedToday = state.fasting.windowClosedDate === todayKey;
+        const f = computeFastingState();
 
         const targetDate = new Date();
         targetDate.setHours(hh, mm, 0, 0);
 
-        if (sortedMeals.length > 0 && !dinnerClosedToday) {
-          sortedMeals[0].ts = targetDate.getTime();
-          sortedMeals[0].time = val;
-          todayLog.meals = sortedMeals;
-        } else if (dinnerClosedToday && sortedMeals.length > 0) {
-          sortedMeals[sortedMeals.length - 1].ts = targetDate.getTime();
-          sortedMeals[sortedMeals.length - 1].time = val;
-          todayLog.meals = sortedMeals;
-          state.fasting.manualLastMealTs = targetDate.getTime();
+        if (f.mode === 'eating') {
+          if (sortedMeals.length > 0) {
+            sortedMeals[0].ts = targetDate.getTime();
+            sortedMeals[0].time = val;
+            todayLog.meals = sortedMeals;
+          }
+          state.fasting.eatingStartTs = targetDate.getTime();
         } else {
           if (targetDate.getTime() > Date.now()) targetDate.setDate(targetDate.getDate() - 1);
           state.fasting.manualLastMealTs = targetDate.getTime();
+          if (state.fasting.windowClosedDate === todayKey && sortedMeals.length > 0) {
+            sortedMeals[sortedMeals.length - 1].ts = targetDate.getTime();
+            sortedMeals[sortedMeals.length - 1].time = val;
+            todayLog.meals = sortedMeals;
+          }
         }
+        const det = document.getElementById('fastManualDetails');
+        if (det) det.open = false;
         saveState();
         renderFastingCard();
         renderMealsDiary();
-        showToast('Orario 16:8 aggiornato alle ' + val);
+        if (typeof renderSyncAndGoalSummary === 'function') renderSyncAndGoalSummary();
+        showToast('⏰ Orario aggiornato alle ' + val);
       }
 
       function toggleDinnerClosed() {
         const todayKey = getLocalDateKey();
-        if (state.fasting.windowClosedDate === todayKey) {
-          state.fasting.windowClosedDate = null;
-          showToast('Finestra alimentare riaperta');
-        } else {
+        const f = computeFastingState();
+        if (f.mode === 'eating') {
+          // User finished dinner -> close window & start fasting from right now!
           state.fasting.windowClosedDate = todayKey;
-          if (ensureTodayLog().meals.length === 0) state.fasting.manualLastMealTs = Date.now();
-          showToast('🔒 Cena conclusa: avviato conto alla rovescia 16h');
+          state.fasting.manualLastMealTs = Date.now();
+          ui.selectedFastPhase = null;
+          showToast('🌙 Cena conclusa! Avviato il digiuno di ' + f.proto.fastH + ' ore.');
+        } else if (state.fasting.windowClosedDate === todayKey) {
+          // Reopen window if closed accidentally today
+          state.fasting.windowClosedDate = null;
+          state.fasting.eatingStartTs = Date.now();
+          showToast('🍽 Finestra pasti riaperta');
+        } else {
+          // User was fasting since yesterday and tapped "Ho iniziato a mangiare"!
+          state.fasting.windowClosedDate = null;
+          state.fasting.eatingStartTs = Date.now();
+          ui.selectedFastPhase = null;
+          showToast('🍽 Buon appetito! Finestra pasti di ' + f.proto.eatH + ' ore aperta.');
         }
         saveState();
         renderFastingCard();
+        if (typeof renderSyncAndGoalSummary === 'function') renderSyncAndGoalSummary();
       }
 
       function computeDozenTotal(dozenObj) {
@@ -3585,6 +4038,7 @@
             saveState();
             renderDailyDozenAndElectrolytes();
             render7DayChart();
+            if (typeof renderSyncAndGoalSummary === 'function') renderSyncAndGoalSummary();
           });
           grid.appendChild(btn);
         });
@@ -3719,6 +4173,7 @@
             renderProtocolChips();
             renderDailyDozenAndElectrolytes();
             render7DayChart();
+            if (typeof renderSyncAndGoalSummary === 'function') renderSyncAndGoalSummary();
           });
           wrap.appendChild(btn);
         });
@@ -4261,12 +4716,16 @@
           appliedDozen
         });
 
+        if (state.fasting.windowClosedDate === getLocalDateKey()) {
+          state.fasting.windowClosedDate = null;
+        }
         saveState();
         renderFastingCard();
         renderDailyDozenAndElectrolytes();
         render7DayChart();
         renderMealsDiary();
-        showToast('🍽 Pasto registrato: sincronizzati 16:8, Daily Dozen ed elettroliti');
+        if (typeof renderSyncAndGoalSummary === 'function') renderSyncAndGoalSummary();
+        showToast('🍽 Pasto registrato: sincronizzati digiuno, Daily Dozen ed elettroliti');
       }
 
       function removeMealById(mealId) {
@@ -4289,6 +4748,7 @@
         renderDailyDozenAndElectrolytes();
         render7DayChart();
         renderMealsDiary();
+        if (typeof renderSyncAndGoalSummary === 'function') renderSyncAndGoalSummary();
         showToast('Pasto rimosso dal diario di oggi');
       }
 
@@ -5861,9 +6321,12 @@
       }
 
       /* =====================================================================
-       * 12B. MULTI-USER ONBOARDING WIZARD, FIREBASE CLOUD & HEALTH CONNECT
+       * 12B. MULTI-USER ONBOARDING, PRIVACY-SAFE CLOUD SYNC, NATIVE GOOGLE AUTH,
+       *      HEALTH CONNECT SUMMARY, 7D GOAL SCORECARD & PERSONALIZED COACH
        * ===================================================================== */
-      const FB_CFG_STORAGE_KEY = 'pappa_pronta_fb_cfg';
+      // Clean up any legacy exposed config key stored by older builds
+      try { localStorage.removeItem('pappa_pronta_fb_cfg'); } catch (_) {}
+
       let wizStep = 1;
       let wizDraft = null;
       let fbApp = null;
@@ -5872,6 +6335,360 @@
       let fbModules = null;
       let fbCurrentUser = null;
       let fbPushTimer = null;
+
+      function formatSyncTimestamp(ts) {
+        if (!ts) return 'mai';
+        const d = new Date(ts);
+        const isToday = getLocalDateKey(d) === getLocalDateKey();
+        const hhmm = formatHHMM(ts);
+        if (isToday) return 'Oggi ' + hhmm;
+        return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + ' ' + hhmm;
+      }
+
+      function recordSyncEvent(entry, skipCloudSave) {
+        state.syncHistory = Array.isArray(state.syncHistory) ? state.syncHistory : [];
+        const item = {
+          ts: Date.now(),
+          channel: String(entry.channel || 'Sync').slice(0, 32),
+          dir: String(entry.dir || '🔄').slice(0, 20),
+          summary: String(entry.summary || '').slice(0, 140)
+        };
+        // Avoid duplicate rapid auto-push noise within 15s on identical channel+dir
+        if (state.syncHistory.length > 0) {
+          const head = state.syncHistory[0];
+          if (head.channel === item.channel && head.dir === item.dir && (item.ts - (head.ts || 0)) < 15000) {
+            state.syncHistory[0] = item;
+            saveState(state, Boolean(skipCloudSave));
+            renderSyncAndGoalSummary();
+            return;
+          }
+        }
+        state.syncHistory.unshift(item);
+        if (state.syncHistory.length > 40) state.syncHistory = state.syncHistory.slice(0, 40);
+        saveState(state, Boolean(skipCloudSave));
+        renderSyncAndGoalSummary();
+      }
+
+      function computeDayGoalScore(dateKey, logObj, isSim, simIdx) {
+        if (isSim) {
+          const simPresets = [
+            { dozen: 17, protPct: 88, knaOk: true, fastOk: true, moveOk: false },
+            { dozen: 20, protPct: 96, knaOk: true, fastOk: true, moveOk: true },
+            { dozen: 19, protPct: 92, knaOk: false, fastOk: true, moveOk: true },
+            { dozen: 22, protPct: 100, knaOk: true, fastOk: true, moveOk: true },
+            { dozen: 18, protPct: 82, knaOk: true, fastOk: false, moveOk: false },
+            { dozen: 23, protPct: 102, knaOk: true, fastOk: true, moveOk: true },
+            { dozen: 21, protPct: 95, knaOk: true, fastOk: true, moveOk: true }
+          ];
+          const sp = simPresets[simIdx % simPresets.length];
+          const pills = [
+            { label: '🥗 ' + sp.dozen + '/24', st: sp.dozen >= 18 ? 'hit' : 'mid' },
+            { label: '💪 ' + sp.protPct + '%', st: sp.protPct >= 85 ? 'hit' : 'mid' },
+            { label: '🧂 K:Na', st: sp.knaOk ? 'hit' : 'mid' },
+            { label: '⏳ Digiuno', st: sp.fastOk ? 'hit' : 'none' },
+            { label: '🏃 Passi', st: sp.moveOk ? 'hit' : 'mid' }
+          ];
+          const pts = pills.reduce((s, p) => s + (p.st === 'hit' ? 20 : p.st === 'mid' ? 10 : 0), 0);
+          return { pct: pts, pills, hasData: true };
+        }
+
+        const l = logObj || null;
+        const dozenVal = l ? computeDozenTotal(l.dozen) : 0;
+        const meals = (l && Array.isArray(l.meals)) ? l.meals : [];
+        const totalProt = meals.reduce((s, m) => s + (Number(m.prot) || 0), 0);
+        const protTarget = Math.max(55, Number(state.limits && state.limits.prot) || 110);
+        const protPct = Math.round((totalProt / protTarget) * 100);
+        const na = l ? Math.round(l.na || 0) : 0;
+        const k = l ? Math.round(l.k || 0) : 0;
+        const steps = (l && l.health && Number(l.health.steps)) || 0;
+        const activeKcal = (l && l.health && Number(l.health.activeKcal)) || 0;
+        const exChecked = Boolean(l && l.dozen && Number(l.dozen.exercise) >= 1);
+
+        const hasData = dozenVal > 0 || meals.length > 0 || steps > 0 || activeKcal > 0 || na > 0 || k > 0;
+
+        // 1. Daily Dozen
+        const dSt = dozenVal >= 18 ? 'hit' : dozenVal >= 10 ? 'mid' : 'none';
+        // 2. Proteine
+        const pSt = protPct >= 85 ? 'hit' : protPct >= 50 ? 'mid' : 'none';
+        // 3. Sodio & K:Na
+        let kSt = 'none';
+        if (na > 0 || k > 0) {
+          const ratio = k / Math.max(na, 50);
+          if (na <= 1500 && ratio >= 3.1) kSt = 'hit';
+          else if (na <= 1500) kSt = 'mid';
+        }
+        // 4. Digiuno
+        const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol]) ? state.fasting.protocol : '16:8';
+        let fSt = 'none';
+        if (protoKey === 'off') {
+          fSt = hasData ? 'hit' : 'none';
+        } else {
+          const eatLimitMs = FASTING_PROTOCOLS[protoKey].eatH * 3600000;
+          if (meals.length >= 2) {
+            const sorted = [...meals].sort((a, b) => a.ts - b.ts);
+            const span = sorted[sorted.length - 1].ts - sorted[0].ts;
+            fSt = span <= eatLimitMs + 900000 ? 'hit' : 'mid';
+          } else if (dateKey === getLocalDateKey()) {
+            const curF = computeFastingState();
+            fSt = curF.mode === 'done' ? 'hit' : (curF.pct >= 70 || meals.length === 1) ? 'mid' : 'none';
+          } else if (meals.length === 1) {
+            fSt = 'hit';
+          }
+        }
+        // 5. Movimento / Health Connect
+        const mSt = (steps >= 7500 || activeKcal >= 300 || exChecked) ? 'hit' : (steps >= 4000 || activeKcal >= 150) ? 'mid' : 'none';
+
+        const pills = [
+          { label: '🥗 ' + dozenVal + '/24', st: dSt },
+          { label: '💪 ' + Math.min(199, protPct) + '%', st: pSt },
+          { label: '🧂 K:Na', st: kSt },
+          { label: '⏳ ' + (protoKey === 'off' ? 'Libero' : protoKey), st: fSt },
+          { label: '🏃 ' + (steps > 0 ? Math.round(steps / 1000) + 'k' : (exChecked ? 'OK' : '0')), st: mSt }
+        ];
+        const pts = pills.reduce((s, p) => s + (p.st === 'hit' ? 20 : p.st === 'mid' ? 10 : 0), 0);
+        return { pct: pts, pills, hasData, dozenVal, totalProt, protTarget, na, k, steps, activeKcal };
+      }
+
+      function computeCoachAdvice(todayStats) {
+        const tips = [];
+        const log = ensureTodayLog();
+        const d = log.dozen || {};
+
+        // 1. Protein check
+        const protGap = Math.round(todayStats.protTarget - todayStats.totalProt);
+        if (protGap > 22) {
+          const diet = state.profile.dietType || 'vegan';
+          const sugFood = diet === 'vegan' ? 'Tempeh, Tofu o Lupini' : (diet === 'vegetarian' ? 'Tofu, Legumi o Yogurt greco' : 'Legumi, Tempeh o Pesce azzurro');
+          tips.push({
+            tone: 'warn',
+            html: '💪 <strong>Proteine di oggi (' + Math.round(todayStats.totalProt) + '/' + todayStats.protTarget + 'g):</strong> ti mancano <strong>' + protGap + 'g</strong> per proteggere massa muscolare e sazietà. Nel prossimo pasto inserisci una quota di <strong>' + sugFood + '</strong>.',
+            btnLabel: '🎲 Genera piatto proteico',
+            action: 'gen_prot'
+          });
+        }
+
+        // 2. Electrolytes / Sodium & Potassium
+        if (todayStats.na > 1500) {
+          tips.push({
+            tone: 'warn',
+            html: '🧂 <strong>Sodio sopra soglia (' + todayStats.na + ' mg):</strong> compensa a cena con verdure ricche di potassio (spinaci, cavolo nero, patate dolci, legumi non salati) e condisci con <strong>limone, aglio ed erbe</strong>.',
+            btnLabel: null,
+            action: null
+          });
+        } else if (todayStats.k < 2600) {
+          tips.push({
+            tone: 'ok',
+            html: '🥑 <strong>Alza il Potassio (' + todayStats.k + '/4700 mg):</strong> per ottimizzare il rapporto K:Na e la pressione arteriosa, aggiungi 1 porzione di <strong>verdura a foglia verde, ceci/cannellini o kiwi/banana</strong>.',
+            btnLabel: '🥗 Vedi ricette pronte',
+            action: 'jump_ready'
+          });
+        }
+
+        // 3. Key Daily Dozen gaps (Flaxseeds, Berries, Cruciferous, Greens)
+        const missingKey = [];
+        if (!(Number(d.flaxseeds) >= 1)) missingKey.push('🌾 Semi di lino (1 cucchiaio)');
+        if (!(Number(d.cruciferous) >= 1)) missingKey.push('🥦 Crucifere (rucola/broccoli)');
+        if (!(Number(d.berries) >= 1)) missingKey.push('🫐 Frutti di bosco');
+        if (missingKey.length > 0 && tips.length < 3) {
+          tips.push({
+            tone: 'ok',
+            html: '🌱 <strong>Micronutrienti chiave mancanti oggi:</strong> non hai ancora registrato ' + missingKey.slice(0, 2).join(' e ') + '. Bastano pochi grammi per coprire Omega-3 ALA e sulforafano!',
+            btnLabel: '✅ Spunta nella Daily Dozen',
+            action: 'scroll_dozen'
+          });
+        }
+
+        // 4. Steps / Movement from Health Connect
+        const exDone = todayStats.steps >= 7500 || todayStats.activeKcal >= 300 || Number(d.exercise) >= 1;
+        if (!exDone && tips.length < 3) {
+          const remSteps = Math.max(1500, 7500 - todayStats.steps);
+          tips.push({
+            tone: 'ok',
+            html: '🏃 <strong>Movimento &amp; Sensibilità Insulinica:</strong> ' +
+              (todayStats.steps > 0
+                ? ('sei a <strong>' + todayStats.steps.toLocaleString('it-IT') + ' passi</strong> (mancano ' + remSteps.toLocaleString('it-IT') + ' passi ai 7.500). ')
+                : 'sincronizza Health Connect o fai ') +
+              'una camminata veloce di <strong>20 minuti dopo i pasti</strong> per abbassare del 30% il picco glicemico.',
+            btnLabel: '❤️ Sincronizza Salute',
+            action: 'sync_health'
+          });
+        }
+
+        // 5. Supplements / Water pre-meal fallback
+        if (tips.length < 3 && (!log.protocol.b12 || !log.protocol.water500)) {
+          tips.push({
+            tone: 'ok',
+            html: '💧 <strong>Tweaks metabolici:</strong> ricorda di bere <strong>500 ml d\'acqua prima del pasto</strong> e verificare l\'assunzione regolare di <strong>Vitamina B12</strong>.',
+            btnLabel: null,
+            action: null
+          });
+        }
+
+        if (tips.length === 0) {
+          tips.push({
+            tone: 'ok',
+            html: '🏆 <strong>Giornata esemplare!</strong> Hai centrato proteine, bilancio K:Na, Daily Dozen e movimento. Chiudi la cena con calma e lascia lavorare il riposo digestivo notturno.',
+            btnLabel: null,
+            action: null
+          });
+        }
+
+        return tips.slice(0, 3);
+      }
+
+      function renderSyncAndGoalSummary() {
+        const syncWrap = document.getElementById('syncExchangeSummaryWrap');
+        const goalWrap = document.getElementById('goalHistorySummaryWrap');
+        const adviceWrap = document.getElementById('coachAdviceWrap');
+        const modalPreview = document.getElementById('modalSyncPreviewSection');
+
+        const log = ensureTodayLog();
+        const h = log.health || { steps: 0, activeKcal: 0, syncedAt: null };
+        const mealTotals = (log.meals || []).reduce((acc, m) => {
+          acc.kcal += Number(m.kcal) || 0;
+          acc.prot += Number(m.prot) || 0;
+          return acc;
+        }, { kcal: 0, prot: 0 });
+        const dozenToday = computeDozenTotal(log.dozen);
+
+        // 1. Exchanged Data Summary (Received vs Sent)
+        const receivedText = (h.syncedAt || h.steps > 0 || h.activeKcal > 0)
+          ? ('<strong>' + (h.steps || 0).toLocaleString('it-IT') + ' passi</strong> · <strong>' + Math.round(h.activeKcal || 0) + ' kcal</strong> attive · Peso <strong>' + state.profile.weight + ' kg</strong>' +
+             (h.syncedAt ? '<div style="font-size:0.7rem; color:var(--ink-secondary); margin-top:2px;">Aggiornato: ' + formatSyncTimestamp(h.syncedAt) + '</div>' : ''))
+          : '<span style="color:var(--ink-secondary);">Nessuna lettura oggi. Premi «❤️ Sincronizza Salute» per importare passi, calorie e peso.</span>';
+
+        const sentText =
+          '<strong>' + Math.round(mealTotals.kcal) + ' kcal</strong> pasti · <strong>' + Math.round(mealTotals.prot) + 'g</strong> prot · Daily Dozen <strong>' + dozenToday + '/24</strong>' +
+          '<div style="font-size:0.7rem; color:var(--ink-secondary); margin-top:2px;">' +
+            (fbCurrentUser ? ('☁️ Cloud sincronizzato (' + formatSyncTimestamp(state.updatedAt) + ')') : '💾 Salvato in locale (accedi al Cloud per backup multi-dispositivo)') +
+          '</div>';
+
+        const hist = Array.isArray(state.syncHistory) ? state.syncHistory : [];
+        const histHtml = hist.length > 0
+          ? '<details style="margin-top:8px;">' +
+              '<summary style="cursor:pointer; font-size:0.76rem; font-weight:700; color:var(--primary);">🕒 Cronologia scambi dati recenti (' + hist.length + ')</summary>' +
+              '<div class="sync-log-list">' +
+                hist.slice(0, 10).map((it) =>
+                  '<div class="sync-log-item">' +
+                    '<div><strong>' + it.dir + ' ' + it.channel + '</strong><div style="color:var(--ink-secondary); margin-top:1px;">' + it.summary + '</div></div>' +
+                    '<span class="num" style="color:var(--ink-secondary); white-space:nowrap; font-size:0.7rem;">' + formatSyncTimestamp(it.ts) + '</span>' +
+                  '</div>'
+                ).join('') +
+              '</div>' +
+            '</details>'
+          : '';
+
+        const exchangeBlockHtml =
+          '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">' +
+            '<strong style="font-size:0.86rem;">🔄 Riepilogo Dati Scambiati</strong>' +
+            '<span class="badge ' + ((fbCurrentUser || h.syncedAt) ? 'ok' : '') + '">' +
+              (fbCurrentUser && h.syncedAt ? 'Salute + Cloud attivi' : fbCurrentUser ? 'Cloud attivo' : h.syncedAt ? 'Salute attiva' : 'Pronto al sync') +
+            '</span>' +
+          '</div>' +
+          '<div class="sync-split-grid">' +
+            '<div class="sync-io-card"><span class="sync-io-title">⬇️ Dati Ricevuti (Salute / Cloud)</span>' + receivedText + '</div>' +
+            '<div class="sync-io-card"><span class="sync-io-title">⬆️ Dati Registrati &amp; Inviati</span>' + sentText + '</div>' +
+          '</div>' +
+          histHtml;
+
+        if (syncWrap) syncWrap.innerHTML = exchangeBlockHtml;
+        if (modalPreview) modalPreview.innerHTML = exchangeBlockHtml;
+
+        // 2. 7-Day Goal Achievement History
+        if (goalWrap) {
+          const dayNames = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+          const rows = [];
+          let activeDaysCount = 0;
+          let sumPct = 0;
+          let todayScore = null;
+
+          for (let i = 0; i < 7; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const k = getLocalDateKey(d);
+            const lbl = i === 0 ? 'Oggi' : (i === 1 ? 'Ieri' : (dayNames[d.getDay()] + ' ' + d.getDate()));
+            const sc = computeDayGoalScore(k, state.logs[k], ui.sim7d, 6 - i);
+            if (i === 0) todayScore = sc;
+            if (sc.hasData || i === 0) {
+              activeDaysCount++;
+              sumPct += sc.pct;
+            }
+            rows.push({ lbl, isToday: i === 0, sc });
+          }
+
+          const avgPct = activeDaysCount > 0 ? Math.round(sumPct / activeDaysCount) : 0;
+          const avgClass = avgPct >= 75 ? 'badge ok num' : avgPct >= 45 ? 'badge warn num' : 'badge num';
+
+          goalWrap.innerHTML =
+            '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">' +
+              '<div>' +
+                '<strong style="font-size:0.86rem;">📈 Cronologia Obiettivi (Ultimi 7 Giorni)</strong>' +
+                '<div style="font-size:0.74rem; color:var(--ink-secondary);">5 pilastri: Daily Dozen · Proteine · K:Na · Digiuno · Movimento</div>' +
+              '</div>' +
+              '<span class="' + avgClass + '">Media ' + avgPct + '%</span>' +
+            '</div>' +
+            '<div class="goal-history-list">' +
+              rows.slice(0, 4).map((r) => renderGoalDayRowHtml(r)).join('') +
+            '</div>' +
+            '<details style="margin-top:6px;">' +
+              '<summary style="cursor:pointer; font-size:0.75rem; font-weight:600; color:var(--ink-secondary);">Mostra tutti i 7 giorni precedenti</summary>' +
+              '<div class="goal-history-list" style="margin-top:6px;">' +
+                rows.slice(4).map((r) => renderGoalDayRowHtml(r)).join('') +
+              '</div>' +
+            '</details>';
+
+          // 3. Personalized Actionable Coach Recommendations
+          if (adviceWrap && todayScore) {
+            const realToday = ui.sim7d ? computeDayGoalScore(getLocalDateKey(), log, false, 0) : todayScore;
+            const adviceItems = computeCoachAdvice(realToday);
+            adviceWrap.innerHTML =
+              '<strong style="font-size:0.86rem; display:block;">💡 Consigli Personalizzati per Migliorare</strong>' +
+              '<div class="advice-list">' +
+                adviceItems.map((ad, idx) =>
+                  '<div class="advice-card ' + (ad.tone === 'warn' ? 'warn' : '') + '">' +
+                    '<div>' + ad.html + '</div>' +
+                    (ad.btnLabel ? '<div><button type="button" class="btn btn-xs btn-soft coach-act-btn" data-cact="' + ad.action + '" data-cidx="' + idx + '">' + ad.btnLabel + '</button></div>' : '') +
+                  '</div>'
+                ).join('') +
+              '</div>';
+
+            adviceWrap.querySelectorAll('.coach-act-btn').forEach((btn) => {
+              btn.addEventListener('click', () => {
+                const act = btn.dataset.cact;
+                if (act === 'gen_prot') {
+                  switchTab('cucina');
+                  generateClinicalBowl(true);
+                  document.getElementById('generatedBowlContainer').scrollIntoView({ behavior: 'smooth' });
+                } else if (act === 'jump_ready') {
+                  ui.recipeFilter = 'ready';
+                  switchTab('cucina');
+                  document.getElementById('recipeListContainer').scrollIntoView({ behavior: 'smooth' });
+                } else if (act === 'scroll_dozen') {
+                  document.getElementById('dozenGrid').scrollIntoView({ behavior: 'smooth' });
+                } else if (act === 'sync_health') {
+                  syncNativeHealthConnect();
+                }
+              });
+            });
+          }
+        }
+      }
+
+      function renderGoalDayRowHtml(r) {
+        const badgeCls = !r.sc.hasData && !r.isToday
+          ? 'badge num'
+          : (r.sc.pct >= 75 ? 'badge ok num' : r.sc.pct >= 45 ? 'badge warn num' : 'badge num');
+        const pillsHtml = r.sc.pills.map((p) =>
+          '<span class="goal-mini-pill ' + (p.st === 'hit' ? 'hit' : p.st === 'mid' ? 'mid' : '') + '">' + p.label + '</span>'
+        ).join('');
+        return (
+          '<div class="goal-day-row">' +
+            '<strong style="font-size:0.77rem;">' + r.lbl + '</strong>' +
+            '<div class="goal-pills">' + pillsHtml + '</div>' +
+            '<span class="' + badgeCls + '">' + (r.sc.hasData || r.isToday ? (r.sc.pct + '%') : '—') + '</span>' +
+          '</div>'
+        );
+      }
 
       function renderHealthAndCloudCard() {
         const log = ensureTodayLog();
@@ -5887,6 +6704,7 @@
         const shortSub = document.getElementById('cloudShortSub');
         const hdrBtn = document.getElementById('headerProfileBtn');
         const fbBadge = document.getElementById('fbStatusBadge');
+        const gdprDelWrap = document.getElementById('gdprDeleteCloudWrap');
 
         if (fbCurrentUser) {
           const label = fbCurrentUser.displayName || fbCurrentUser.email || 'Utente Cloud';
@@ -5903,6 +6721,7 @@
           document.getElementById('fbLoggedOutView').style.display = 'none';
           document.getElementById('fbLoggedInView').style.display = 'block';
           document.getElementById('fbUserLabel').textContent = label;
+          if (gdprDelWrap) gdprDelWrap.style.display = 'block';
         } else {
           const hasCfg = Boolean(getActiveFirebaseConfig());
           if (shortSt) shortSt.textContent = hasCfg ? 'Pronto' : 'Locale';
@@ -5917,15 +6736,17 @@
           }
           document.getElementById('fbLoggedOutView').style.display = 'block';
           document.getElementById('fbLoggedInView').style.display = 'none';
+          if (gdprDelWrap) gdprDelWrap.style.display = 'none';
         }
 
-        // Platform badge for Health Connect / Apple Salute
         const hcBadge = document.getElementById('hcPlatformBadge');
         if (hcBadge) {
           const isNative = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
           const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
           hcBadge.textContent = isNative ? '🤖 Android Nativo' : isIos ? '🍎 Ponte iOS Salute' : '🌐 Web / PWA';
         }
+
+        renderSyncAndGoalSummary();
       }
 
       // --- 4-Step Onboarding Wizard ---
@@ -6137,30 +6958,9 @@
         showToast('🎉 Piano configurato' + (state.profile.name ? (' per ' + state.profile.name) : '') + '!');
       }
 
-      // --- Firebase Cloud Auth & Firestore Sync ---
-      function parseFirebaseConfigInput(rawText) {
-        if (!rawText) return null;
-        try {
-          const direct = JSON.parse(rawText);
-          if (direct && direct.apiKey && direct.projectId) return direct;
-        } catch (_) {}
-        // Extract JS object properties (e.g. pasted straight from Firebase Console)
-        const keys = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
-        const extracted = {};
-        keys.forEach((k) => {
-          const m = rawText.match(new RegExp(k + '\\s*:\\s*["\']([^"\']+)["\']'));
-          if (m && m[1]) extracted[k] = m[1];
-        });
-        return (extracted.apiKey && extracted.projectId) ? extracted : null;
-      }
-
+      // --- Privacy-Safe Firebase Cloud Auth (Web + Native Android Capacitor) & Firestore Sync ---
       function getActiveFirebaseConfig() {
-        if (FIREBASE_DEFAULT_CONFIG && FIREBASE_DEFAULT_CONFIG.apiKey) return FIREBASE_DEFAULT_CONFIG;
-        try {
-          const saved = localStorage.getItem(FB_CFG_STORAGE_KEY);
-          if (saved) return JSON.parse(saved);
-        } catch (_) {}
-        return null;
+        return (FIREBASE_DEFAULT_CONFIG && FIREBASE_DEFAULT_CONFIG.apiKey) ? FIREBASE_DEFAULT_CONFIG : null;
       }
 
       async function ensureFirebaseInitialized() {
@@ -6179,6 +6979,8 @@
           fbApp = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(cfg);
           fbAuth = authMod.getAuth(fbApp);
           fbDb = fsMod.getFirestore(fbApp);
+
+          try { await authMod.getRedirectResult(fbAuth); } catch (_) {}
 
           authMod.onAuthStateChanged(fbAuth, async (user) => {
             fbCurrentUser = user || null;
@@ -6203,30 +7005,70 @@
             if (remote && (!state.profile.onboarded || (remote.updatedAt || 0) >= (state.updatedAt || 0))) {
               state = normalizeAndMergeState(remote);
               state.profile.onboarded = true;
-              saveState(state, true);
+              const daysCount = Object.keys(state.logs || {}).length;
+              recordSyncEvent({
+                channel: 'Cloud Firebase',
+                dir: '⬇️ Ricevuti',
+                summary: 'Profilo, dispensa (' + state.pantry.length + ' cibi) e ' + daysCount + ' gg di diario'
+              }, true);
               const obDlg = document.getElementById('onboardingDialog');
               if (obDlg && obDlg.open) obDlg.close();
               renderAll();
-              if (manualNotify) showToast('☁️ Dati scaricati e sincronizzati dal Cloud!');
+              if (manualNotify) showToast('☁️ Dati scaricati e sincronizzati dal tuo spazio Cloud!');
               return;
             }
           }
           await pushCloudState(manualNotify);
         } catch (_) {
-          if (manualNotify) showToast('⚠️ Verifica le regole Firestore per completare il sync');
+          if (manualNotify) showToast('⚠️ Connessione Cloud non riuscita: riprova tra qualche istante');
         }
       }
 
       async function pushCloudState(manualNotify) {
         if (!fbCurrentUser || !fbDb || !fbModules) return;
         try {
+          const log = ensureTodayLog();
+          const mealKcal = Math.round((log.meals || []).reduce((s, m) => s + (Number(m.kcal) || 0), 0));
+          recordSyncEvent({
+            channel: 'Cloud Firebase',
+            dir: '⬆️ Inviati',
+            summary: 'Backup privato: ' + state.pantry.length + ' cibi in casa · Oggi ' + mealKcal + ' kcal, Dozen ' + computeDozenTotal(log.dozen) + '/24'
+          }, true);
+
           const ref = fbModules.doc(fbDb, 'users', fbCurrentUser.uid);
           const payload = JSON.parse(JSON.stringify(state));
           payload.updatedAt = Date.now();
           await fbModules.setDoc(ref, payload, { merge: true });
-          if (manualNotify) showToast('☁️ Salvato nel Cloud con successo!');
+          if (manualNotify) showToast('☁️ Salvato nel tuo spazio Cloud privato!');
         } catch (_) {
-          if (manualNotify) showToast('⚠️ Errore scrittura Firestore: controlla le regole di sicurezza');
+          if (manualNotify) showToast('⚠️ Errore salvataggio Cloud: verifica la connessione');
+        }
+      }
+
+      async function deleteCloudUserData() {
+        if (!fbCurrentUser || !fbDb || !fbModules) return;
+        if (!window.confirm('Vuoi eliminare definitivamente tutti i tuoi dati salvati sul server Cloud? (I dati locali sul tuo telefono resteranno intatti finché non li cancelli dalla sezione Profilo)')) {
+          return;
+        }
+        try {
+          const ref = fbModules.doc(fbDb, 'users', fbCurrentUser.uid);
+          await fbModules.deleteDoc(ref);
+          const cap = window.Capacitor;
+          const nativeAuth = cap && cap.Plugins && cap.Plugins.FirebaseAuthentication;
+          if (cap && cap.isNativePlatform && cap.isNativePlatform() && nativeAuth && nativeAuth.signOut) {
+            try { await nativeAuth.signOut(); } catch (_) {}
+          }
+          await fbModules.signOut(fbAuth);
+          fbCurrentUser = null;
+          recordSyncEvent({
+            channel: 'Privacy GDPR',
+            dir: '🗑️ Cancellato',
+            summary: 'Documento utente rimosso definitivamente dal server Cloud UE'
+          }, true);
+          renderHealthAndCloudCard();
+          showToast('🗑️ Dati Cloud eliminati definitivamente e account disconnesso');
+        } catch (_) {
+          showToast('⚠️ Riaccedi di recente prima di eliminare i dati dal Cloud');
         }
       }
 
@@ -6239,9 +7081,51 @@
       async function signInWithFirebaseGoogle() {
         const ok = await ensureFirebaseInitialized();
         if (!ok) {
-          showToast('Configura prima il progetto Firebase nella sezione ⚙️ qui sotto');
+          showToast('Connettiti a Internet per accedere all\'account Cloud');
           return;
         }
+
+        const cap = window.Capacitor;
+        const isNative = Boolean(cap && cap.isNativePlatform && cap.isNativePlatform());
+
+        // Native Android APK Path: Google blocks WebView OAuth popups (403 disallowed_useragent),
+        // so we use @capacitor-firebase/authentication native Credential Manager / Play Services!
+        if (isNative) {
+          const nativeAuth = cap.Plugins && cap.Plugins.FirebaseAuthentication;
+          if (!nativeAuth || !nativeAuth.signInWithGoogle) {
+            showToast('📲 Aggiorna l\'APK per il Login Google nativo, oppure accedi subito qui sotto con Email e Password!');
+            const em = document.getElementById('fbEmailInput');
+            if (em) em.focus();
+            return;
+          }
+          try {
+            let res;
+            try {
+              res = await nativeAuth.signInWithGoogle({ skipNativeAuth: true, useCredentialManager: true });
+            } catch (_) {
+              res = await nativeAuth.signInWithGoogle({ skipNativeAuth: true, useCredentialManager: false });
+            }
+            const idToken = res && res.credential && res.credential.idToken;
+            const accessToken = res && res.credential && res.credential.accessToken;
+            if (!idToken && !accessToken) throw new Error('Missing native Google token');
+            const cred = fbModules.GoogleAuthProvider.credential(idToken || null, accessToken || null);
+            await fbModules.signInWithCredential(fbAuth, cred);
+            showToast('🔐 Accesso Google nativo Android completato!');
+            return;
+          } catch (nativeErr) {
+            const msg = String((nativeErr && nativeErr.message) || nativeErr || '');
+            if (/cancel|dismiss/i.test(msg)) {
+              showToast('Accesso Google annullato');
+            } else {
+              showToast('⚠️ Firma APK (SHA-1) non allineata: aggiungi il secret su GitHub o accedi subito qui sotto con Email e Password!');
+              const em = document.getElementById('fbEmailInput');
+              if (em) em.focus();
+            }
+            return;
+          }
+        }
+
+        // Web / PWA Path
         try {
           const provider = new fbModules.GoogleAuthProvider();
           await fbModules.signInWithPopup(fbAuth, provider);
@@ -6249,8 +7133,8 @@
         } catch (err) {
           if (err && err.code === 'auth/popup-blocked') {
             await fbModules.signInWithRedirect(fbAuth, new fbModules.GoogleAuthProvider());
-          } else {
-            showToast('Accesso Google non completato (abilita Google in Firebase Auth e aggiungi il dominio autorizzato)');
+          } else if (err && err.code !== 'auth/popup-closed-by-user') {
+            showToast('Accesso Google non riuscito su questo dominio: usa l\'URL ufficiale o Email e Password');
           }
         }
       }
@@ -6258,7 +7142,7 @@
       async function signInOrUpWithEmail(isSignUp) {
         const ok = await ensureFirebaseInitialized();
         if (!ok) {
-          showToast('Configura prima il progetto Firebase nella sezione ⚙️ qui sotto');
+          showToast('Connettiti a Internet per accedere al Cloud');
           return;
         }
         const email = document.getElementById('fbEmailInput').value.trim();
@@ -6270,34 +7154,27 @@
         try {
           if (isSignUp) {
             await fbModules.createUserWithEmailAndPassword(fbAuth, email, pass);
-            showToast('🎉 Account creato e sincronizzato!');
+            showToast('🎉 Account privato creato e sincronizzato!');
           } else {
             await fbModules.signInWithEmailAndPassword(fbAuth, email, pass);
-            showToast('🔐 Accesso effettuato!');
+            showToast('🔐 Accesso effettuato e dati sincronizzati!');
           }
-        } catch (_) {
-          showToast(isSignUp ? 'Impossibile creare account (email già in uso o Auth Email disabilitata)' : 'Credenziali non valide');
+        } catch (err) {
+          const code = (err && err.code) || '';
+          if (code === 'auth/email-already-in-use') showToast('Questa email è già registrata: premi «Accedi con Email»');
+          else showToast(isSignUp ? 'Impossibile creare l\'account: controlla il formato email' : 'Email o password non corretti');
         }
       }
 
       function buildFriendInviteUrl() {
-        const base = window.location.origin + window.location.pathname;
-        const cfg = getActiveFirebaseConfig();
-        if (cfg && cfg.apiKey) {
-          try {
-            const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));
-            return base + '?fb=' + encodeURIComponent(encoded);
-          } catch (_) {}
+        const isNative = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+        if (isNative || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          return 'https://pappa-pronta-leo.web.app/';
         }
-        return base;
+        return window.location.origin + window.location.pathname;
       }
 
       function openAccountHealthModal() {
-        const cfg = getActiveFirebaseConfig();
-        const ta = document.getElementById('fbConfigTextarea');
-        if (ta && cfg && !ta.value) {
-          ta.value = JSON.stringify(cfg, null, 2);
-        }
         const h = ensureTodayLog().health || { steps: 0, activeKcal: 0 };
         document.getElementById('manualStepsInput').value = h.steps || '';
         document.getElementById('manualActiveKcalInput').value = h.activeKcal || '';
@@ -6331,11 +7208,16 @@
           }
         }
 
-        saveState();
+        recordSyncEvent({
+          channel: metrics.source || 'Salute',
+          dir: '⬇️ Ricevuti',
+          summary: (log.health.steps || 0).toLocaleString('it-IT') + ' passi · ' + Math.round(log.health.activeKcal || 0) + ' kcal attive · Peso ' + state.profile.weight + ' kg'
+        });
+
         renderAll();
         renderHealthAndCloudCard();
         showToast(
-          '❤️ ' + (metrics.source || 'Salute') + ': ' + log.health.steps + ' passi' +
+          '❤️ ' + (metrics.source || 'Salute') + ': ' + log.health.steps.toLocaleString('it-IT') + ' passi' +
           (triggeredWorkout ? ' → attivato ⚡ Giorno Workout + 🏃 Movimento!' : ' sincronizzati!')
         );
       }
@@ -6439,11 +7321,21 @@
             if (payload.weight_kg) {
               await healthPlugin.saveSample({ dataType: 'weight', value: payload.weight_kg, unit: 'kilogram', startDate: nowIso, endDate: nowIso });
             }
+            recordSyncEvent({
+              channel: 'Google Health Connect',
+              dir: '⬆️ Inviati',
+              summary: payload.kcal + ' kcal · ' + payload.protein_g + 'g prot · ' + payload.water_ml + 'ml acqua · Peso ' + payload.weight_kg + ' kg'
+            });
             showToast('📤 Kcal, proteine, acqua e peso inviati a Google Health Connect!');
             return;
           } catch (_) {}
         }
 
+        recordSyncEvent({
+          channel: 'Apple Salute / JSON',
+          dir: '⬆️ Esportati',
+          summary: payload.kcal + ' kcal · ' + payload.protein_g + 'g prot · ' + payload.water_ml + 'ml acqua'
+        });
         copyTextToClipboard(JSON.stringify(payload, null, 2), '📤 Riepilogo nutrizionale copiato per Apple Salute / Comandi Rapidi!');
       }
 
@@ -6495,24 +7387,34 @@
         document.getElementById('dayModeBtn').addEventListener('click', toggleDayMode);
         document.getElementById('headerProfileBtn').addEventListener('click', openAccountHealthModal);
 
-        // 16:8
+        // Guided Intermittent Fasting (16:8 / 14:10 / 12:12 / Off)
+        document.querySelectorAll('#fastProtocolBar button').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            state.fasting.protocol = btn.dataset.fproto;
+            ui.selectedFastPhase = null;
+            saveState();
+            renderFastingCard();
+            renderSyncAndGoalSummary();
+            showToast('⏳ Protocollo impostato su: ' + btn.textContent.trim());
+          });
+        });
         document.getElementById('applyFastTimeBtn').addEventListener('click', applyManualFastingTime);
         document.getElementById('closeDinnerBtn').addEventListener('click', toggleDinnerClosed);
 
         // Electrolytes
         document.getElementById('addKBtn').addEventListener('click', () => {
           ensureTodayLog().k = (Number(ensureTodayLog().k) || 0) + 350;
-          saveState(); renderDailyDozenAndElectrolytes(); render7DayChart();
+          saveState(); renderDailyDozenAndElectrolytes(); render7DayChart(); renderSyncAndGoalSummary();
         });
         document.getElementById('addNaBtn').addEventListener('click', () => {
           ensureTodayLog().na = (Number(ensureTodayLog().na) || 0) + 150;
-          saveState(); renderDailyDozenAndElectrolytes(); render7DayChart();
+          saveState(); renderDailyDozenAndElectrolytes(); render7DayChart(); renderSyncAndGoalSummary();
         });
         document.getElementById('resetElectrolytesBtn').addEventListener('click', () => {
           const log = ensureTodayLog();
           log.na = log.meals.reduce((s, m) => s + (Number(m.na) || 0), 0);
           log.k = log.meals.reduce((s, m) => s + (Number(m.k) || 0), 0);
-          saveState(); renderDailyDozenAndElectrolytes(); render7DayChart();
+          saveState(); renderDailyDozenAndElectrolytes(); render7DayChart(); renderSyncAndGoalSummary();
           showToast('Elettroliti riallineati ai pasti di oggi');
         });
 
@@ -6520,6 +7422,7 @@
         document.getElementById('sim7dBtn').addEventListener('click', () => {
           ui.sim7d = !ui.sim7d;
           render7DayChart();
+          renderSyncAndGoalSummary();
           showToast(ui.sim7d ? '👁️ Simulazione 7gg attiva (dati reali intatti)' : 'Tornato ai tuoi dati reali');
         });
 
@@ -6998,33 +7901,18 @@
           applyHealthMetrics({ steps: 8500, activeKcal: 410, source: 'Simulazione Salute' });
         });
 
-        // Firebase Config & Auth Buttons
-        document.getElementById('saveFbConfigBtn').addEventListener('click', async () => {
-          const parsed = parseFirebaseConfigInput(document.getElementById('fbConfigTextarea').value);
-          if (!parsed) {
-            showToast('Formato non valido: incolla l\'oggetto firebaseConfig con apiKey e projectId');
-            return;
-          }
-          localStorage.setItem(FB_CFG_STORAGE_KEY, JSON.stringify(parsed));
-          fbApp = null; fbAuth = null; fbDb = null;
-          await ensureFirebaseInitialized();
-          renderHealthAndCloudCard();
-          showToast('✅ Progetto Firebase collegato! Ora puoi usare «Accedi con Google».');
-        });
-
-        document.getElementById('clearFbConfigBtn').addEventListener('click', () => {
-          localStorage.removeItem(FB_CFG_STORAGE_KEY);
-          document.getElementById('fbConfigTextarea').value = '';
-          fbCurrentUser = null; fbAuth = null; fbDb = null;
-          renderHealthAndCloudCard();
-          showToast('Configurazione Firebase rimossa');
-        });
-
+        // Privacy-Safe Firebase Auth & GDPR Cloud Data Deletion Buttons
         document.getElementById('fbGoogleLoginBtn').addEventListener('click', signInWithFirebaseGoogle);
         document.getElementById('fbEmailSignInBtn').addEventListener('click', () => signInOrUpWithEmail(false));
         document.getElementById('fbEmailSignUpBtn').addEventListener('click', () => signInOrUpWithEmail(true));
         document.getElementById('fbSyncNowBtn').addEventListener('click', () => pullCloudState(true));
+        document.getElementById('deleteCloudDataBtn').addEventListener('click', deleteCloudUserData);
         document.getElementById('fbLogoutBtn').addEventListener('click', async () => {
+          const cap = window.Capacitor;
+          const nativeAuth = cap && cap.Plugins && cap.Plugins.FirebaseAuthentication;
+          if (cap && cap.isNativePlatform && cap.isNativePlatform() && nativeAuth && nativeAuth.signOut) {
+            try { await nativeAuth.signOut(); } catch (_) {}
+          }
           if (fbAuth && fbModules && fbModules.signOut) {
             await fbModules.signOut(fbAuth);
             fbCurrentUser = null;
@@ -7034,16 +7922,9 @@
         });
       }
 
-      // 0. Check URL parameters (?fb= invite config, ?hc_steps= Apple Salute bridge, ?tab= shortcut)
+      // 0. Check URL parameters (?hc_steps= Apple Salute bridge, ?tab= shortcut)
       try {
         const params = new URLSearchParams(window.location.search);
-        const fbParam = params.get('fb');
-        if (fbParam) {
-          const decodedCfg = JSON.parse(decodeURIComponent(escape(atob(fbParam))));
-          if (decodedCfg && decodedCfg.apiKey && decodedCfg.projectId) {
-            localStorage.setItem(FB_CFG_STORAGE_KEY, JSON.stringify(decodedCfg));
-          }
-        }
         if (params.has('hc_steps') || params.has('hc_kcal') || params.has('hc_weight')) {
           setTimeout(() => {
             applyHealthMetrics({

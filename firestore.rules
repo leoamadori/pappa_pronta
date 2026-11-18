@@ -1,0 +1,205 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model — Pappa Pronta PWA
+// ===============================================================
+//
+// This security rules file assumes the following data structures:
+//
+// Collection: users
+// Document ID: {userId} (must match Firebase Auth UID: request.auth.uid)
+// Access Pattern: Strictly private 1:1 user state document synced via
+//   getDoc(doc(db, 'users', uid)) and setDoc(doc(db, 'users', uid), state, { merge: true }).
+//   Collection-level listing (`list`) is explicitly denied to prevent user enumeration.
+// Fields (all top-level keys optional to support partial `{ merge: true }` writes,
+//   strictly allowlisted to the 14 state properties, bounded to <= 20 keys):
+//   - updatedAt: number (optional, >= 0) - epoch ms timestamp of last sync
+//   - profile: map (optional, <= 16 keys) - user clinical/dietary profile & preferences:
+//       - onboarded: bool (optional)
+//       - name: string (optional, <= 120 chars) - PII, owner-only
+//       - age: number (optional, 0..150)
+//       - weight: number (optional, 0..600)
+//       - height: number (optional, 0..300)
+//       - sex: string (optional, 'M' | 'F')
+//       - goal: string (optional, 'lose' | 'maintain' | 'gain')
+//       - dietType: string (optional, 'vegan' | 'vegetarian' | 'omnivore')
+//       - plantBased: bool (optional)
+//       - hypertension: bool (optional)
+//       - over50Protein: bool (optional)
+//       - periodontal: bool (optional)
+//       - dayMode: string (optional, 'workout' | 'rest')
+//       - extraConditions: list (optional, <= 30 items)
+//       - allergens: list (optional, <= 30 items)
+//       - avoidFoods: list (optional, <= 100 items)
+//   - limits: map (optional, <= 12 keys) - daily macro/electrolyte targets
+//       (kcal, prot, carbs, fat, sat, sugars, fiber, salt)
+//   - pantry: list (optional, <= 500 items) - food IDs currently at home
+//   - customPantry: list (optional, <= 300 items) - user-created custom food items
+//   - expiring: list (optional, <= 500 items) - prioritized expiring food IDs
+//   - savedRecipes: list (optional, <= 300 items) - saved generated dishes
+//   - logs: map (optional, <= 1500 date keys) - daily nutrition, Daily Dozen & health logs
+//   - weeklyMenu: list (optional, <= 50 items) - generated 7-day meal plan
+//   - weekMealCount: number (optional, 1..28) - weekly meal count setting (2 or 4)
+//   - extraShopping: list (optional, <= 500 items) - manual shopping list food IDs
+//   - eanCache: map (optional, <= 1000 EAN keys) - local barcode nutrition cache
+//   - fasting: map (optional, <= 6 keys) - intermittent fasting state
+//       (manualLastMealTs: number|null, windowClosedDate: string|null,
+//        protocol: '16:8'|'14:10'|'12:12'|'off', eatingStartTs: number|null)
+//   - syncHistory: list (optional, <= 100 items) - recent cloud sync history entries
+//
+// All other collections, subcollections, and documents are denied by default.
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the authenticated user owns the user-scoped document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Verify UID field (if present) has not been spoofed on create
+    function uidUnchanged() {
+      return !('uid' in request.resource.data) ||
+        request.resource.data.uid == request.auth.uid;
+    }
+
+    // Ensure UID field (if present) is not modified on update
+    function uidNotModified() {
+      return !('uid' in request.resource.data) ||
+        ('uid' in resource.data && request.resource.data.uid == resource.data.uid);
+    }
+
+    // Validate that the incoming/merged document contains only allowed top-level fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // Validate that a map contains only allowed keys and stays within max key count
+    function isValidMap(mapData, allowedKeys, maxKeys) {
+      return mapData is map &&
+        mapData.keys().size() <= maxKeys &&
+        mapData.keys().hasOnly(allowedKeys);
+    }
+
+    // Validate that a list is a list and enforces an upper size bound
+    function isValidList(listData, maxSize) {
+      return listData is list && listData.size() <= maxSize;
+    }
+
+    // Validate a numeric value (int or float) within inclusive bounds
+    function isBoundedNumber(val, minVal, maxVal) {
+      return val is number && val >= minVal && val <= maxVal;
+    }
+
+    // ===============================================================
+    // Domain Validators (Called on BOTH create and update)
+    // ===============================================================
+
+    function isValidProfile(profile) {
+      return isValidMap(profile, [
+          'onboarded', 'name', 'age', 'weight', 'height', 'sex', 'goal',
+          'dietType', 'plantBased', 'hypertension', 'over50Protein',
+          'periodontal', 'dayMode', 'extraConditions', 'allergens', 'avoidFoods'
+        ], 16) &&
+        (!('onboarded' in profile) || profile.onboarded is bool) &&
+        (!('name' in profile) || (profile.name is string && profile.name.size() <= 120)) &&
+        (!('age' in profile) || isBoundedNumber(profile.age, 0, 150)) &&
+        (!('weight' in profile) || isBoundedNumber(profile.weight, 0, 600)) &&
+        (!('height' in profile) || isBoundedNumber(profile.height, 0, 300)) &&
+        (!('sex' in profile) || (profile.sex is string && profile.sex.size() <= 4 && profile.sex in ['M', 'F'])) &&
+        (!('goal' in profile) || (profile.goal is string && profile.goal.size() <= 12 && profile.goal in ['lose', 'maintain', 'gain'])) &&
+        (!('dietType' in profile) || (profile.dietType is string && profile.dietType.size() <= 16 && profile.dietType in ['vegan', 'vegetarian', 'omnivore'])) &&
+        (!('plantBased' in profile) || profile.plantBased is bool) &&
+        (!('hypertension' in profile) || profile.hypertension is bool) &&
+        (!('over50Protein' in profile) || profile.over50Protein is bool) &&
+        (!('periodontal' in profile) || profile.periodontal is bool) &&
+        (!('dayMode' in profile) || (profile.dayMode is string && profile.dayMode.size() <= 12 && profile.dayMode in ['workout', 'rest'])) &&
+        (!('extraConditions' in profile) || isValidList(profile.extraConditions, 30)) &&
+        (!('allergens' in profile) || isValidList(profile.allergens, 30)) &&
+        (!('avoidFoods' in profile) || isValidList(profile.avoidFoods, 100));
+    }
+
+    function isValidLimits(limits) {
+      return isValidMap(limits, [
+          'kcal', 'prot', 'carbs', 'fat', 'sat', 'sugars', 'fiber', 'salt'
+        ], 12) &&
+        (!('kcal' in limits) || isBoundedNumber(limits.kcal, 0, 25000)) &&
+        (!('prot' in limits) || isBoundedNumber(limits.prot, 0, 2000)) &&
+        (!('carbs' in limits) || isBoundedNumber(limits.carbs, 0, 5000)) &&
+        (!('fat' in limits) || isBoundedNumber(limits.fat, 0, 2000)) &&
+        (!('sat' in limits) || isBoundedNumber(limits.sat, 0, 1000)) &&
+        (!('sugars' in limits) || isBoundedNumber(limits.sugars, 0, 2000)) &&
+        (!('fiber' in limits) || isBoundedNumber(limits.fiber, 0, 1000)) &&
+        (!('salt' in limits) || isBoundedNumber(limits.salt, 0, 500));
+    }
+
+    function isValidFasting(fasting) {
+      return isValidMap(fasting, [
+          'manualLastMealTs', 'windowClosedDate', 'protocol', 'eatingStartTs'
+        ], 6) &&
+        (!('manualLastMealTs' in fasting) || fasting.manualLastMealTs == null || isBoundedNumber(fasting.manualLastMealTs, 0, 9999999999999)) &&
+        (!('windowClosedDate' in fasting) || fasting.windowClosedDate == null || (fasting.windowClosedDate is string && fasting.windowClosedDate.size() <= 20)) &&
+        (!('protocol' in fasting) || (fasting.protocol is string && fasting.protocol.size() <= 10 && fasting.protocol in ['16:8', '14:10', '12:12', 'off'])) &&
+        (!('eatingStartTs' in fasting) || fasting.eatingStartTs == null || isBoundedNumber(fasting.eatingStartTs, 0, 9999999999999));
+    }
+
+    function isValidUserState(data) {
+      return data is map &&
+        data.keys().size() >= 1 &&
+        data.keys().size() <= 20 &&
+        hasOnlyAllowedFields([
+          'updatedAt', 'profile', 'limits', 'pantry', 'customPantry',
+          'expiring', 'savedRecipes', 'logs', 'weeklyMenu', 'weekMealCount',
+          'extraShopping', 'eanCache', 'fasting', 'syncHistory'
+        ]) &&
+        (!('updatedAt' in data) || isBoundedNumber(data.updatedAt, 0, 9999999999999)) &&
+        (!('profile' in data) || isValidProfile(data.profile)) &&
+        (!('limits' in data) || isValidLimits(data.limits)) &&
+        (!('pantry' in data) || isValidList(data.pantry, 500)) &&
+        (!('customPantry' in data) || isValidList(data.customPantry, 300)) &&
+        (!('expiring' in data) || isValidList(data.expiring, 500)) &&
+        (!('savedRecipes' in data) || isValidList(data.savedRecipes, 300)) &&
+        (!('logs' in data) || (data.logs is map && data.logs.keys().size() <= 1500)) &&
+        (!('weeklyMenu' in data) || isValidList(data.weeklyMenu, 50)) &&
+        (!('weekMealCount' in data) || isBoundedNumber(data.weekMealCount, 1, 28)) &&
+        (!('extraShopping' in data) || isValidList(data.extraShopping, 500)) &&
+        (!('eanCache' in data) || (data.eanCache is map && data.eanCache.keys().size() <= 1000)) &&
+        (!('fasting' in data) || isValidFasting(data.fasting)) &&
+        (!('syncHistory' in data) || isValidList(data.syncHistory, 100));
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      // Strictly private per user: allow direct document fetch (`get`) by owner only;
+      // deny collection queries (`list`) to prevent user enumeration.
+      allow get: if isOwner(userId);
+      allow list: if false;
+
+      // Validate schema, types, and field/collection bounds on both create and update
+      // (supports full sync and partial `setDoc(..., { merge: true })` updates).
+      allow create: if isOwner(userId) && uidUnchanged() && isValidUserState(request.resource.data);
+      allow update: if isOwner(userId) && uidNotModified() && isValidUserState(request.resource.data);
+
+      // Allow the authenticated owner to delete their own cloud state document.
+      allow delete: if isOwner(userId);
+    }
+
+    // Default deny on all other collections, subcollections, and paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

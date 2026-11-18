@@ -1,5 +1,5 @@
 /* Pappa Pronta — Offline-First Service Worker (App Shell + Tesseract.js v5 + .traineddata) */
-const APP_CACHE = 'pappa-pronta-shell-v9';
+const APP_CACHE = 'pappa-pronta-shell-v10';
 const OCR_CACHE = 'pappa-pronta-ocr-v2';
 const API_CACHE = 'pappa-pronta-api-v2';
 
@@ -185,11 +185,26 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. App Shell & Same-Origin Assets -> Stale-While-Revalidate with index.html navigation fallback
+  // 3. App Shell: Network-First for HTML navigation (instant updates), Stale-While-Revalidate for static icons/manifest
   event.respondWith(
     (async () => {
       const cache = await caches.open(APP_CACHE);
-      const cached = await cache.match(req, { ignoreSearch: req.mode === 'navigate' });
+      const isHtmlNav = req.mode === 'navigate' || url.endsWith('/index.html');
+      if (isHtmlNav) {
+        try {
+          const fresh = await fetch(req);
+          if (fresh && fresh.ok) {
+            cache.put('./index.html', fresh.clone());
+            cache.put(req, fresh.clone());
+            return fresh;
+          }
+        } catch (_) {}
+        const cachedNav = (await cache.match(req, { ignoreSearch: true })) || (await cache.match('./index.html'));
+        if (cachedNav) return cachedNav;
+        return new Response('Offline', { status: 503, statusText: 'Offline' });
+      }
+
+      const cached = await cache.match(req);
       const networkFetch = fetch(req)
         .then((fresh) => {
           if (fresh && fresh.ok && new URL(url).origin === self.location.origin) {
@@ -206,11 +221,6 @@ self.addEventListener('fetch', (event) => {
 
       const fresh = await networkFetch;
       if (fresh) return fresh;
-
-      if (req.mode === 'navigate') {
-        const fallback = await cache.match('./index.html');
-        if (fallback) return fallback;
-      }
       return new Response('Offline', { status: 503, statusText: 'Offline' });
     })()
   );

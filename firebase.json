@@ -1,0 +1,47 @@
+{
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Pappa Pronta",
+        "supportEmail": "leo.amadori@gmail.com",
+        "authorizedRedirectUris": [
+          "https://pappa-pronta-leo.firebaseapp.com/__/auth/handler",
+          "https://pappa-pronta-leo.web.app/__/auth/handler",
+          "https://leoamadori.github.io/pappa_pronta/",
+          "http://localhost:8080"
+        ]
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json",
+    "database": "(default)",
+    "location": "eur3"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "firestore.rules",
+      "firestore.indexes.json",
+      "google-services.json",
+      "*.md",
+      "*.zip"
+    ],
+    "headers": [
+      {
+        "source": "/sw.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      }
+    ]
+  }
+}

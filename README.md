@@ -20,9 +20,10 @@ Al primo avvio un wizard guidato in **4 passi** configura automaticamente fabbis
 - **Moduli salute personalizzabili:** Prevenzione Ipertensione (`< 1.500 mg` sodio/die, rapporto `K:Na ≥ 3,1:1`), Soglia Anabolica Sport / Over-50 (`30–35 g` proteine/pasto), Scudo Parodontale & Controllo Infiammazione/Zuccheri (`DII`), Colesterolo, Glicemia e **12 allergeni UE**.
 - **Login Google / Email (opzionale):** l'app funziona al 100% in locale senza registrazione; chi desidera sincronizzare profilo, dispensa e progressi tra smartphone e PC può accedere con un tocco tramite **Firebase Cloud Sync** (con dati strettamente privati per singolo utente).
 
-### 🏠 Tab «Oggi» — Digiuno 16:8, Daily Dozen & Dispensa
-- **Tracker Digiuno Intermittente `16:8`:** sincronizzato in automatico con il primo e l'ultimo pasto registrato, barra di avanzamento, indicatore della fase metabolica (calo insulinico, lipolisi, autofagia), rettifica rapida `HH:MM` e chiusura finestra serale.
+### 🏠 Tab «Oggi» — Digiuno Guidato, Daily Dozen, Riepilogo Sync & Dispensa
+- **Digiuno Intermittente Guidato (`16:8` · `14:10` · `12:12` · `Libero`):** selettore rapido del ritmo preferito, stato spiegato in italiano semplice, **1 solo pulsante principale** (`🍽 Ho iniziato a mangiare` / `🌙 Ho finito di cenare`) e **guida interattiva alle 5 fasi metaboliche** (`0–4h Digestione`, `4–8h Calma Insulina`, `8–12h Cambio Carburante`, `12–16h Brucia-Grassi`, `16h+ Pulizia Cellulare / Autofagia`).
 - **Daily Dozen & Bilancio Elettroliti:** griglia interattiva delle 12 categorie del Dr. Michael Greger (`X/24`) + monitoraggio live di **Sodio** (`max 1500 mg`) e **Potassio** (`target 4700 mg`).
+- **Riepilogo Dati Scambiati, Cronologia Obiettivi & Consigli:** riepilogo trasparente dei dati **ricevuti** (Passi, Kcal attive, Peso) e **inviati** (Kcal pasti, Proteine, Acqua, Backup Cloud), **pagella ultimi 7 giorni** sui 5 pilastri giornalieri e **consigli personalizzati** con azioni rapide.
 - **Trend SVG 7 Giorni:** grafico vettoriale nativo a doppio quadrante con curva Daily Dozen e barre normalizzate Sodio/Potassio.
 - **Dispensa Italiana (105+ alimenti):** ricerca istantanea, contatore live delle ricette pronte subito, aggiunta alimenti personalizzati (*Altro*), **tap singolo** = *in casa* (`✅`), **doppio tap** = *da consumare presto* (`⏳`).
 
@@ -77,13 +78,14 @@ Ad ogni modifica sul branch `main`, **GitHub Actions** compila automaticamente l
 | `manifest.json` | Web App Manifest standalone con icone adattive e scorciatoie rapide da schermata Home |
 | `sw.js` | Service Worker offline-first per App Shell, `Tesseract.js` v5 e modelli `.traineddata.gz` |
 | `icons/` | Icone PNG anti-aliasate (`180x180`, `192x192`, `512x512`, `512x512 maskable`) |
-| `firestore.rules` | Regole di sicurezza Cloud Firestore con isolamento rigoroso per singolo utente (`/users/{uid}`) |
-| `.github/workflows/build-apk.yml` | Pipeline CI/CD GitHub Actions con `@capacitor/android` e `@capgo/capacitor-health` |
+| `firestore.rules` | Regole di sicurezza Cloud Firestore con isolamento rigoroso per singolo utente (`/users/{uid}`, `allow list: if false`) |
+| `google-services.json` | Configurazione client Android OAuth pubblica per il Login Google nativo nell'APK |
+| `.github/workflows/build-apk.yml` | Pipeline CI/CD GitHub Actions con `@capacitor/android`, `@capgo/capacitor-health` e `@capacitor-firebase/authentication` |
 
 ---
 
-## ⚖️ Note & Privacy
+## ⚖️ Note, Sicurezza & Privacy (GDPR)
 
-- **Privacy by Design:** nessun tracciamento pubblicitario. In modalità locale i dati risiedono unicamente sul dispositivo (`localStorage` con `navigator.storage.persist()`); con Cloud Sync attivo ogni utente accede esclusivamente al proprio documento privato.
+- **Privacy by Design & Zero Chiavi Esposte in UI:** nessun tracciamento pubblicitario, nessuna chiave o configurazione esposta nell'interfaccia o nei link d'invito. In modalità locale i dati risiedono unicamente sul dispositivo (`localStorage` con `navigator.storage.persist()`); con Cloud Sync attivo ogni utente accede esclusivamente al proprio documento privato su server europei (`eur3`) e può cancellare definitivamente i propri dati Cloud con un clic (**Diritto all'oblio**).
 - **Fonti Dati Prodotti:** ricerca codici EAN tramite [Open Food Facts](https://world.openfoodfacts.org/) (licenza ODbL).
 - **Avvertenza Medica:** i calcoli e le valutazioni nutrizionali hanno finalità puramente informativa e organizzativa e non sostituiscono in alcun modo il parere di un medico, biologo nutrizionista o dietista.
