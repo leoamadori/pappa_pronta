@@ -1,0 +1,13 @@
+.firebase/
+.firebaserc
+node_modules/
+pappa-pronta-pwa.zip
+*.apk
+firestore-debug.log
+firebase-debug.log
+firestore.indexes.json
+PAPPA_PRONTA_ANTIGRAVITY.md
+.github/index.html
+.github/sw.js
+.github/manifest.json
+.github/icons/

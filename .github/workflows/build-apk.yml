@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build-android-apk:
-    name: Capacitor Android APK (Pappa Pronta v3.2)
+    name: Capacitor Android APK (Pappa Pronta v3.4)
     runs-on: ubuntu-24.04
 
     steps:
@@ -76,6 +76,7 @@ jobs:
             "@capacitor/cli@8.6.2" \
             "@capacitor/android@8.6.2" \
             "@capacitor/app@8.0.0" \
+            "@capacitor/browser@8.0.0" \
             "@capgo/capacitor-health@8.13.0" \
             "@capacitor-firebase/authentication@8.6.0" \
             "firebase@^12.6.0" \
@@ -216,8 +217,8 @@ jobs:
           node -e '
             const fs = require("fs");
             const runNum = parseInt(process.env.RUN_NUM || "1", 10) || 1;
-            const verCode = 100 + runNum;
-            const verName = "3.2." + runNum;
+            const verCode = 200 + runNum;
+            const verName = "3.4." + runNum;
 
             // 1. Align minSdkVersion = 26 and enable rgcfaIncludeGoogle = true in variables.gradle
             const varsPath = "android/variables.gradle";
