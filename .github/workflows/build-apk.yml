@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build-android-apk:
-    name: Capacitor Android APK (Pappa Pronta v3.4)
+    name: Capacitor Android APK (Pappa Pronta v3.5 Release)
     runs-on: ubuntu-24.04
 
     steps:
@@ -29,45 +29,55 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Cache Persistent Android Debug Keystore across Builds
+      - name: Cache Persistent Android Signing Keystore across Builds
         uses: actions/cache@v6
         with:
           path: ~/.android/debug.keystore
           key: pappa-pronta-signing-keystore-v1
 
-      - name: Restore & Validate Firebase Debug Keystore (for Consistent APK Updates & Google Auth)
+      - name: Restore & Validate Signing Keystore Safely (Never Clobber Valid Cache)
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
         run: |
           mkdir -p ~/.android
           if [ -n "$KEYSTORE_B64" ]; then
-            echo "$KEYSTORE_B64" | tr -d ' \n\r\t"' | base64 --decode > ~/.android/debug.keystore
-            if keytool -list -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey >/dev/null 2>&1; then
-              echo "✅ Chiave di firma registrata su Firebase validata con successo."
+            echo "$KEYSTORE_B64" | tr -d ' \n\r\t"' | base64 --decode > /tmp/candidate.keystore || true
+            if keytool -list -keystore /tmp/candidate.keystore -storepass android -alias androiddebugkey >/dev/null 2>&1; then
+              mv /tmp/candidate.keystore ~/.android/debug.keystore
+              echo "✅ Chiave di firma dal secret validata e installata."
             else
-              echo "⚠️ Secret ANDROID_DEBUG_KEYSTORE_BASE64 non valido: rigenero debug.keystore standard."
-              rm -f ~/.android/debug.keystore
+              rm -f /tmp/candidate.keystore
+              echo "⚠️ Secret ANDROID_DEBUG_KEYSTORE_BASE64 non valido: mantengo intatta la chiave in cache."
             fi
-          elif [ -f ~/.android/debug.keystore ]; then
-            echo "✅ Chiave di firma persistente ripristinata dalla cache GitHub Actions."
+          fi
+          if [ ! -f ~/.android/debug.keystore ]; then
+            keytool -genkeypair -v \
+              -keystore ~/.android/debug.keystore \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+            echo "ℹ️ Generata chiave persistente iniziale (verrà salvata in cache)."
           else
-            echo "ℹ️ Nessuna chiave precedente trovata: Gradle ne genererà una e la salverà in cache."
+            echo "✅ Chiave di firma persistente pronta."
           fi
 
-      - name: Prepare Web Assets (www) & Capacitor 8 + Health Connect + Firebase Auth
+      - name: Prepare Web Assets (www — without sw.js so Capacitor Bridge Always Injects) & Plugins
         run: |
           mkdir -p www
           cp index.html www/
           cp manifest.json www/
-          cp sw.js www/
           if [ -d icons ]; then cp -r icons www/; fi
 
           cat << 'EOF' > package.json
           {
             "name": "pappa-pronta",
-            "version": "3.3.0",
+            "version": "3.5.0",
             "private": true,
-            "description": "Pappa Pronta — Multi-User Nutrition, Scanner, Google Health Connect & Native Google Auth"
+            "description": "Pappa Pronta — Cucina Sana, Scanner, Google Health Connect & Native Google Auth"
           }
           EOF
 
@@ -210,15 +220,18 @@ jobs:
           EOF
           node gen-android-icons.cjs
 
-      - name: Configure minSdkVersion 26, Auto-Increment versionCode, Google Auth & CAMERA Permission
+      - name: Configure Signed Release Build, Health Connect Permissions, Verified App Links & Google Auth
         env:
           RUN_NUM: ${{ github.run_number }}
         run: |
           node -e '
             const fs = require("fs");
+            const os = require("os");
+            const path = require("path");
             const runNum = parseInt(process.env.RUN_NUM || "1", 10) || 1;
-            const verCode = 200 + runNum;
-            const verName = "3.4." + runNum;
+            const verCode = 300 + runNum;
+            const verName = "3.5." + runNum;
+            const ksPath = path.join(os.homedir(), ".android", "debug.keystore").replace(/\\/g, "/");
 
             // 1. Align minSdkVersion = 26 and enable rgcfaIncludeGoogle = true in variables.gradle
             const varsPath = "android/variables.gradle";
@@ -234,37 +247,118 @@ jobs:
               fs.writeFileSync(varsPath, vars, "utf8");
             }
 
-            // 2. Bump versionCode & versionName automatically in android/app/build.gradle
+            // 2. Bump versionCode/versionName & sign release buildType with persistent keystore (debuggable=false)
             const appGradlePath = "android/app/build.gradle";
             if (fs.existsSync(appGradlePath)) {
               let ag = fs.readFileSync(appGradlePath, "utf8");
               ag = ag.replace(/versionCode\s+\d+/, "versionCode " + verCode);
               ag = ag.replace(/versionName\s+"[^"]*"/, "versionName \"" + verName + "\"");
+              const signingBlock =
+                "    signingConfigs {\n" +
+                "        pappaRelease {\n" +
+                "            storeFile file(\"" + ksPath + "\")\n" +
+                "            storePassword \"android\"\n" +
+                "            keyAlias \"androiddebugkey\"\n" +
+                "            keyPassword \"android\"\n" +
+                "        }\n" +
+                "    }\n";
+              if (!ag.includes("pappaRelease")) {
+                ag = ag.replace(/buildTypes\s*\{/, signingBlock + "    buildTypes {");
+                ag = ag.replace(/release\s*\{/, "release {\n            signingConfig signingConfigs.pappaRelease");
+              }
               fs.writeFileSync(appGradlePath, ag, "utf8");
-              console.log("Set APK versionCode=" + verCode + ", versionName=" + verName);
+              console.log("Set signed release APK versionCode=" + verCode + ", versionName=" + verName);
             }
 
-            // 3. Inject pappapronta://auth Deep-Link Intent Filter & CAMERA permission into AndroidManifest.xml
+            // 3. Inject singleTask, Verified App Links + Custom Scheme, Health Connect Rationale & Permissions
             const manifestPath = "android/app/src/main/AndroidManifest.xml";
             let xml = fs.readFileSync(manifestPath, "utf8");
+
+            // Ensure MainActivity uses singleTask so OAuth callbacks reuse the running instance
+            if (xml.includes("android:launchMode=")) {
+              xml = xml.replace(/android:launchMode="[^"]*"/, "android:launchMode=\"singleTask\"");
+            } else {
+              xml = xml.replace(/<activity\b/, "<activity android:launchMode=\"singleTask\"");
+            }
+
+            // Intent filters on MainActivity: Verified HTTPS App Link + fallback scheme + Health Connect Rationale
+            const activityFilters = [];
+            if (!xml.includes("pappa-pronta-leo.web.app")) {
+              activityFilters.push(
+                "            <intent-filter android:autoVerify=\"true\">",
+                "                <action android:name=\"android.intent.action.VIEW\" />",
+                "                <category android:name=\"android.intent.category.DEFAULT\" />",
+                "                <category android:name=\"android.intent.category.BROWSABLE\" />",
+                "                <data android:scheme=\"https\" android:host=\"pappa-pronta-leo.web.app\" android:pathPrefix=\"/auth-callback\" />",
+                "            </intent-filter>"
+              );
+            }
             if (!xml.includes("android:scheme=\"pappapronta\"")) {
-              const deepLinkFilter = [
+              activityFilters.push(
                 "            <intent-filter>",
                 "                <action android:name=\"android.intent.action.VIEW\" />",
                 "                <category android:name=\"android.intent.category.DEFAULT\" />",
                 "                <category android:name=\"android.intent.category.BROWSABLE\" />",
                 "                <data android:scheme=\"pappapronta\" android:host=\"auth\" />",
                 "            </intent-filter>"
-              ].join("\n");
-              xml = xml.replace("</activity>", deepLinkFilter + "\n        </activity>");
+              );
             }
+            if (!xml.includes("ACTION_SHOW_PERMISSIONS_RATIONALE")) {
+              activityFilters.push(
+                "            <intent-filter>",
+                "                <action android:name=\"androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE\" />",
+                "            </intent-filter>"
+              );
+            }
+            if (activityFilters.length > 0) {
+              xml = xml.replace("</activity>", activityFilters.join("\n") + "\n        </activity>");
+            }
+
+            // Android 14+ Health Connect ViewPermissionUsageActivity alias inside <application>
+            if (!xml.includes("ViewPermissionUsageActivity")) {
+              const aliasBlock = [
+                "        <activity-alias",
+                "            android:name=\"ViewPermissionUsageActivity\"",
+                "            android:exported=\"true\"",
+                "            android:targetActivity=\".MainActivity\"",
+                "            android:permission=\"android.permission.START_VIEW_PERMISSION_USAGE\">",
+                "            <intent-filter>",
+                "                <action android:name=\"android.intent.action.VIEW_PERMISSION_USAGE\" />",
+                "                <category android:name=\"android.intent.category.HEALTH_PERMISSIONS\" />",
+                "            </intent-filter>",
+                "        </activity-alias>"
+              ].join("\n");
+              xml = xml.replace("</application>", aliasBlock + "\n    </application>");
+            }
+
+            // Permissions + Health Connect <queries> inside <manifest>
+            const reqPerms = [
+              "android.permission.CAMERA",
+              "android.permission.health.READ_STEPS",
+              "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
+              "android.permission.health.READ_TOTAL_CALORIES_BURNED",
+              "android.permission.health.READ_WEIGHT",
+              "android.permission.health.READ_EXERCISE",
+              "android.permission.health.WRITE_WEIGHT",
+              "android.permission.health.WRITE_NUTRITION",
+              "android.permission.health.WRITE_HYDRATION"
+            ];
             const additions = [];
-            if (!xml.includes("android.permission.CAMERA")) {
-              additions.push("    <uses-permission android:name=\"android.permission.CAMERA\" />");
+            for (const perm of reqPerms) {
+              if (!xml.includes(perm)) {
+                additions.push("    <uses-permission android:name=\"" + perm + "\" />");
+              }
             }
             if (!xml.includes("android.hardware.camera")) {
               additions.push("    <uses-feature android:name=\"android.hardware.camera\" android:required=\"false\" />");
               additions.push("    <uses-feature android:name=\"android.hardware.camera.autofocus\" android:required=\"false\" />");
+            }
+            if (!xml.includes("com.google.android.apps.healthdata")) {
+              additions.push(
+                "    <queries>",
+                "        <package android:name=\"com.google.android.apps.healthdata\" />",
+                "    </queries>"
+              );
             }
             if (additions.length > 0) {
               xml = xml.replace("</manifest>", additions.join("\n") + "\n</manifest>");
@@ -273,19 +367,20 @@ jobs:
           '
           grep -q "minSdkVersion = 26" android/variables.gradle
           grep -q "rgcfaIncludeGoogle = true" android/variables.gradle
-          grep -q "android:scheme=\"pappapronta\"" android/app/src/main/AndroidManifest.xml
+          grep -q "pappaRelease" android/app/build.gradle
+          grep -q "android.permission.health.READ_STEPS" android/app/src/main/AndroidManifest.xml
+          grep -q "ViewPermissionUsageActivity" android/app/src/main/AndroidManifest.xml
           grep -q "android.permission.CAMERA" android/app/src/main/AndroidManifest.xml
 
-      - name: Build Signed Debug APK with Gradle
+      - name: Build Signed Release APK (debuggable=false) with Gradle
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleRelease --no-daemon
 
-      - name: Verify APK Signing Certificate & Rename Cleanly
+      - name: Verify Signed Release APK & Rename Cleanly
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk pappa-pronta.apk
-          keytool -printcert -jarfile pappa-pronta.apk | grep -E "SHA1:|SHA256:" || true
+          cp android/app/build/outputs/apk/release/app-release.apk pappa-pronta.apk
           ls -lh pappa-pronta.apk
 
       - name: Upload APK Zip Artifact (GitHub Actions)
@@ -302,7 +397,7 @@ jobs:
         run: |
           if gh release view latest >/dev/null 2>&1; then
             gh release upload latest pappa-pronta.apk --clobber
-            gh release edit latest --title "Pappa Pronta APK Android (Build #${{ github.run_number }})" --notes "Scarica direttamente **pappa-pronta.apk** qui sotto (senza estrarre file ZIP). Se avevi installato una versione precedente con firma diversa, disinstalla una sola volta la vecchia app prima di installare questa."
+            gh release edit latest --title "Pappa Pronta APK Android v3.5 (Build #${{ github.run_number }})" --notes "Scarica direttamente **pappa-pronta.apk** qui sotto (senza estrarre file ZIP). Include Health Connect completo, Login Google nativo + App Links e interfaccia semplificata."
           else
-            gh release create latest pappa-pronta.apk --title "Pappa Pronta APK Android (Build #${{ github.run_number }})" --notes "Scarica direttamente **pappa-pronta.apk** qui sotto (senza estrarre file ZIP). Se avevi installato una versione precedente con firma diversa, disinstalla una sola volta la vecchia app prima di installare questa."
+            gh release create latest pappa-pronta.apk --title "Pappa Pronta APK Android v3.5 (Build #${{ github.run_number }})" --notes "Scarica direttamente **pappa-pronta.apk** qui sotto (senza estrarre file ZIP). Include Health Connect completo, Login Google nativo + App Links e interfaccia semplificata."
           fi

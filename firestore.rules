@@ -14,7 +14,7 @@ rules_version = '2';
 // Fields (all top-level keys optional to support partial `{ merge: true }` writes,
 //   strictly allowlisted to the 14 state properties, bounded to <= 20 keys):
 //   - updatedAt: number (optional, >= 0) - epoch ms timestamp of last sync
-//   - profile: map (optional, <= 16 keys) - user clinical/dietary profile & preferences:
+//   - profile: map (optional, <= 17 keys) - user clinical/dietary profile & preferences:
 //       - onboarded: bool (optional)
 //       - name: string (optional, <= 120 chars) - PII, owner-only
 //       - age: number (optional, 0..150)
@@ -28,6 +28,7 @@ rules_version = '2';
 //       - over50Protein: bool (optional)
 //       - periodontal: bool (optional)
 //       - dayMode: string (optional, 'workout' | 'rest')
+//       - customLimits: bool (optional) - whether user customized macro targets manually
 //       - extraConditions: list (optional, <= 30 items)
 //       - allergens: list (optional, <= 30 items)
 //       - avoidFoods: list (optional, <= 100 items)
@@ -42,8 +43,9 @@ rules_version = '2';
 //   - weekMealCount: number (optional, 1..28) - weekly meal count setting (2 or 4)
 //   - extraShopping: list (optional, <= 500 items) - manual shopping list food IDs
 //   - eanCache: map (optional, <= 1000 EAN keys) - local barcode nutrition cache
-//   - fasting: map (optional, <= 6 keys) - intermittent fasting state
-//       (manualLastMealTs: number|null, windowClosedDate: string|null,
+//   - fasting: map (optional, <= 8 keys) - intermittent fasting state
+//       (manualLastMealTs: number|null, manualLastMealTsUpdatedAt: number|null,
+//        windowClosedDate: string|null, windowClosedAt: number|null,
 //        protocol: '16:8'|'14:10'|'12:12'|'off', eatingStartTs: number|null)
 //   - syncHistory: list (optional, <= 100 items) - recent cloud sync history entries
 //
@@ -109,8 +111,9 @@ service cloud.firestore {
       return isValidMap(profile, [
           'onboarded', 'name', 'age', 'weight', 'height', 'sex', 'goal',
           'dietType', 'plantBased', 'hypertension', 'over50Protein',
-          'periodontal', 'dayMode', 'extraConditions', 'allergens', 'avoidFoods'
-        ], 16) &&
+          'periodontal', 'dayMode', 'customLimits',
+          'extraConditions', 'allergens', 'avoidFoods'
+        ], 17) &&
         (!('onboarded' in profile) || profile.onboarded is bool) &&
         (!('name' in profile) || (profile.name is string && profile.name.size() <= 120)) &&
         (!('age' in profile) || isBoundedNumber(profile.age, 0, 150)) &&
@@ -124,6 +127,7 @@ service cloud.firestore {
         (!('over50Protein' in profile) || profile.over50Protein is bool) &&
         (!('periodontal' in profile) || profile.periodontal is bool) &&
         (!('dayMode' in profile) || (profile.dayMode is string && profile.dayMode.size() <= 12 && profile.dayMode in ['workout', 'rest'])) &&
+        (!('customLimits' in profile) || profile.customLimits is bool) &&
         (!('extraConditions' in profile) || isValidList(profile.extraConditions, 30)) &&
         (!('allergens' in profile) || isValidList(profile.allergens, 30)) &&
         (!('avoidFoods' in profile) || isValidList(profile.avoidFoods, 100));
@@ -145,10 +149,14 @@ service cloud.firestore {
 
     function isValidFasting(fasting) {
       return isValidMap(fasting, [
-          'manualLastMealTs', 'windowClosedDate', 'protocol', 'eatingStartTs'
-        ], 6) &&
+          'manualLastMealTs', 'manualLastMealTsUpdatedAt',
+          'windowClosedDate', 'windowClosedAt',
+          'protocol', 'eatingStartTs'
+        ], 8) &&
         (!('manualLastMealTs' in fasting) || fasting.manualLastMealTs == null || isBoundedNumber(fasting.manualLastMealTs, 0, 9999999999999)) &&
+        (!('manualLastMealTsUpdatedAt' in fasting) || fasting.manualLastMealTsUpdatedAt == null || isBoundedNumber(fasting.manualLastMealTsUpdatedAt, 0, 9999999999999)) &&
         (!('windowClosedDate' in fasting) || fasting.windowClosedDate == null || (fasting.windowClosedDate is string && fasting.windowClosedDate.size() <= 20)) &&
+        (!('windowClosedAt' in fasting) || fasting.windowClosedAt == null || isBoundedNumber(fasting.windowClosedAt, 0, 9999999999999)) &&
         (!('protocol' in fasting) || (fasting.protocol is string && fasting.protocol.size() <= 10 && fasting.protocol in ['16:8', '14:10', '12:12', 'off'])) &&
         (!('eatingStartTs' in fasting) || fasting.eatingStartTs == null || isBoundedNumber(fasting.eatingStartTs, 0, 9999999999999));
     }

@@ -38,6 +38,14 @@
           }
         },
         {
+          "client_id": "570683713285-rl4tno0rokoddgokptqch35097gtgrg8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.pappapronta.app",
+            "certificate_hash": "46931bf82ba5de514351fe33246d45e31e45a47b"
+          }
+        },
+        {
           "client_id": "570683713285-697hs4d860immsc3b1c99bsvs9e7r40q.apps.googleusercontent.com",
           "client_type": 3
         }

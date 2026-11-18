@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Pappa Pronta — Nutrizione Clinica & Plant-Based",
+  "name": "Pappa Pronta — Cucina Sana, Dispensa & Spesa",
   "short_name": "Pappa Pronta",
-  "description": "PWA 100% local-first per nutrizione clinica e sportiva plant-based: Daily Dozen, digiuno 16:8, dispensa italiana, generatore ricette, menu settimanale e scanner etichette offline.",
+  "description": "App gratuita e offline-ready per cucinare con quello che hai in casa, leggere le etichette al supermercato, pianificare il menu settimanale e sincronizzare Google Health Connect o Apple Salute.",
   "lang": "it-IT",
   "dir": "ltr",
   "start_url": "./index.html",
@@ -33,7 +33,7 @@
       "purpose": "maskable"
     },
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231B6B46'/%3E%3Ccircle cx='32' cy='35' r='19' fill='%23F6F7F4'/%3E%3Cpath d='M16 34h32c-1.2 9.5-7.2 15.5-16 15.5S17.2 43.5 16 34z' fill='%2314231B'/%3E%3Cpath d='M32 14c0 6-4.5 10.5-10.5 10.5 0-6 4.5-10.5 10.5-10.5zm2 2.2c4.8-2.8 10.8-1.2 13.5 3.5-4.8 2.8-10.8 1.2-13.5-3.5z' fill='%234ADE80'/%3E%3Ccircle cx='27' cy='30.5' r='2.3' fill='%23EAB308'/%3E%3Ccircle cx='33' cy='29.5' r='2.5' fill='%23DC2626'/%3E%3Ccircle cx='38.5' cy='31' r='2' fill='%2322C55E'/%3E%3C/svg%3E",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231B6B46'/%3E%3Ccircle cx='32' cy='35' r='19' fill='%23F6F7F4'/%3E%3Cpath d='M16 34h32c-1.2 9.5-7.2 15.5-16 15.5S17.2 43.5 16 34z' fill='%2314231B'/%3E%3Cpath d='M32 14c0 6-4.5 10.5-10.5 10.5 0-6 4.5-10.5 10.5-10.5zm2 2.2c4.8-2.8 10.8-1.2 13.5 3.5-4.8 2.8-10.8 1.2-13.5-3.5z' fill='%234ADE80'/%3E%3Ccircle cx='27' cy='30.5' r='2.3' fill='%23FACC15'/%3E%3Ccircle cx='33' cy='29.5' r='2.5' fill='%23EF4444'/%3E%3Ccircle cx='38.5' cy='31' r='2' fill='%234ADE80'/%3E%3C/svg%3E",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
@@ -41,30 +41,30 @@
   ],
   "shortcuts": [
     {
-      "name": "Oggi & Digiuno 16:8",
+      "name": "Dispensa & Oggi",
       "short_name": "Oggi",
-      "description": "Apri Daily Dozen, 16:8 e Dispensa",
+      "description": "Apri Dispensa, 12 Cibi Sani e Passi di oggi",
       "url": "./index.html?tab=oggi",
       "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "name": "Inventa Piatto & Ricette",
+      "name": "Crea Piatto & Ricette",
       "short_name": "Cucina",
-      "description": "Genera un piatto 30-35g proteine o apri il ricettario",
+      "description": "Prepara un piatto con quello che hai in casa o apri il ricettario",
       "url": "./index.html?tab=cucina",
       "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "name": "Scanner EAN & OCR",
+      "name": "Controlla Prodotto (Scanner)",
       "short_name": "Scanner",
-      "description": "Scansiona codice a barre o tabella 100g offline",
+      "description": "Inquadra un codice a barre o controlla il Semaforo cibi",
       "url": "./index.html?tab=scanner",
       "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "name": "Menu 7gg & Lista Spesa",
+      "name": "Menu 7gg & Spesa",
       "short_name": "Spesa",
-      "description": "Consulta il menu settimanale e la lista della spesa",
+      "description": "Consulta il menu della settimana e la lista della spesa",
       "url": "./index.html?tab=menu",
       "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }

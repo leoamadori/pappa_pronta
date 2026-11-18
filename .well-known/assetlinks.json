@@ -1,0 +1,15 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "it.pappapronta.app",
+      "sha256_cert_fingerprints": [
+        "6A:9E:B9:71:78:3F:8D:C6:30:5B:4F:32:73:DE:F6:08:38:F7:8C:47:4C:95:84:B6:94:D8:95:F7:2A:F0:52:15",
+        "A5:27:9E:58:E6:67:3C:6A:46:83:B5:2A:64:9C:EB:5E:B5:F7:40:46:DA:56:43:11:C7:C1:7B:97:D4:CF:BA:0E",
+        "23:94:BA:48:1E:3D:69:04:49:09:77:BE:B3:93:D9:18:22:A1:B0:A8:63:F2:96:57:AB:1C:C4:59:B9:87:8E:93",
+        "3D:BA:C2:56:78:3C:D7:5D:5E:62:F2:54:EB:B5:77:9F:58:12:F5:4D:2D:89:0A:FE:6B:33:A3:D3:BC:FF:B9:8A"
+      ]
+    }
+  }
+]

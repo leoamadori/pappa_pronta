@@ -1,6 +1,6 @@
 /* Pappa Pronta — Offline-First Service Worker (App Shell + Tesseract.js v5 + .traineddata) */
-const APP_CACHE = 'pappa-pronta-shell-v13';
-const OCR_CACHE = 'pappa-pronta-ocr-v2';
+const APP_CACHE = 'pappa-pronta-shell-v14';
+const OCR_CACHE = 'pappa-pronta-ocr-v3';
 const API_CACHE = 'pappa-pronta-api-v2';
 
 const CORE_ASSETS = [
@@ -35,21 +35,33 @@ function isOpenFoodFacts(url) {
   return url.includes('openfoodfacts.org');
 }
 
+async function fetchWithTimeout(reqOrUrl, options, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs || 3500);
+  try {
+    return await fetch(reqOrUrl, { ...(options || {}), signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     (async () => {
       const shellCache = await caches.open(APP_CACHE);
       await shellCache.addAll(CORE_ASSETS);
-      // Pre-warm lightweight Tesseract main scripts non-blockingly
-      caches.open(OCR_CACHE).then((ocrCache) => {
-        OCR_PRECACHE_URLS.slice(0, 2).forEach((u) => {
-          fetch(u, { mode: 'cors' })
-            .then((res) => {
-              if (res && res.ok) ocrCache.put(u, res);
-            })
-            .catch(() => {});
-        });
-      });
+      // Pre-warm lightweight Tesseract entry scripts safely inside waitUntil
+      try {
+        const ocrCache = await caches.open(OCR_CACHE);
+        await Promise.allSettled(
+          OCR_PRECACHE_URLS.slice(0, 2).map(async (u) => {
+            const res = await fetchWithTimeout(u, { mode: 'cors' }, 4000);
+            if (res && res.ok && res.type !== 'opaque') {
+              await ocrCache.put(u, res);
+            }
+          })
+        );
+      } catch (_) {}
       await self.skipWaiting();
     })()
   );
@@ -78,27 +90,30 @@ self.addEventListener('message', (event) => {
         for (const url of OCR_PRECACHE_URLS) {
           try {
             const existing = await ocrCache.match(url);
-            if (existing) {
+            if (existing && existing.type !== 'opaque') {
               cachedCount++;
               continue;
             }
-            const res = await fetch(url, { mode: 'cors' });
-            if (res && res.ok) {
+            const res = await fetchWithTimeout(url, { mode: 'cors' }, 15000);
+            if (res && res.ok && res.type !== 'opaque') {
               await ocrCache.put(url, res);
               cachedCount++;
             }
-          } catch (_) {
-            // Ignore offline errors safely
-          }
+          } catch (_) {}
         }
         const allReady = cachedCount === OCR_PRECACHE_URLS.length;
+        const payload = {
+          type: 'OCR_CACHE_STATUS',
+          ready: allReady,
+          manualTrigger: true,
+          cachedCount,
+          total: OCR_PRECACHE_URLS.length
+        };
         if (event.source) {
-          event.source.postMessage({
-            type: 'OCR_CACHE_STATUS',
-            ready: allReady,
-            cachedCount,
-            total: OCR_PRECACHE_URLS.length
-          });
+          event.source.postMessage(payload);
+        } else {
+          const allClients = await self.clients.matchAll();
+          allClients.forEach((c) => c.postMessage(payload));
         }
       })()
     );
@@ -108,7 +123,8 @@ self.addEventListener('message', (event) => {
         const ocrCache = await caches.open(OCR_CACHE);
         let cachedCount = 0;
         for (const url of OCR_PRECACHE_URLS) {
-          if (await ocrCache.match(url)) cachedCount++;
+          const hit = await ocrCache.match(url);
+          if (hit && hit.type !== 'opaque') cachedCount++;
         }
         if (event.source) {
           event.source.postMessage({
@@ -140,16 +156,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 1. Tesseract.js v5, WASM cores & .traineddata(.gz) -> Cache-First for supermarket offline reliability
+  // 1. Tesseract.js v5, WASM cores & .traineddata(.gz) -> Cache-First (CORS-clean, never opaque)
   if (isOcrAsset(url)) {
     event.respondWith(
       (async () => {
         const cache = await caches.open(OCR_CACHE);
         const cached = await cache.match(req, { ignoreVary: true });
-        if (cached) return cached;
+        if (cached && cached.type !== 'opaque') return cached;
         try {
-          const fresh = await fetch(req);
-          if (fresh && (fresh.ok || fresh.type === 'opaque')) {
+          const fresh = await fetchWithTimeout(url, { mode: 'cors' }, 12000);
+          if (fresh && fresh.ok && fresh.type !== 'opaque') {
             cache.put(req, fresh.clone());
           }
           return fresh;
@@ -161,13 +177,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. Open Food Facts EAN lookup -> Network-First with API cache & clean JSON fallback
+  // 2. Open Food Facts EAN lookup -> Network-First with 3.5s Lie-Fi timeout & clean JSON fallback
   if (isOpenFoodFacts(url)) {
     event.respondWith(
       (async () => {
         const cache = await caches.open(API_CACHE);
         try {
-          const fresh = await fetch(req);
+          const fresh = await fetchWithTimeout(req, {}, 3500);
           if (fresh && fresh.ok) {
             cache.put(req, fresh.clone());
           }
@@ -185,14 +201,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. App Shell: Network-First for HTML navigation (instant updates), Stale-While-Revalidate for static icons/manifest
+  // 3. App Shell: Network-First with 3.5s Lie-Fi timeout for HTML navigation, SWR for static assets
   event.respondWith(
     (async () => {
       const cache = await caches.open(APP_CACHE);
       const isHtmlNav = req.mode === 'navigate' || url.endsWith('/index.html');
       if (isHtmlNav) {
         try {
-          const fresh = await fetch(req);
+          const fresh = await fetchWithTimeout(req, {}, 3500);
           if (fresh && fresh.ok) {
             cache.put('./index.html', fresh.clone());
             cache.put(req, fresh.clone());
@@ -205,7 +221,7 @@ self.addEventListener('fetch', (event) => {
       }
 
       const cached = await cache.match(req);
-      const networkFetch = fetch(req)
+      const networkFetch = fetchWithTimeout(req, {}, 5000)
         .then((fresh) => {
           if (fresh && fresh.ok && new URL(url).origin === self.location.origin) {
             cache.put(req, fresh.clone());
