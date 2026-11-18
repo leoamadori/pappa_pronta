@@ -62,11 +62,11 @@ Al primo avvio un wizard guidato in **4 passi** configura automaticamente fabbis
 3. **iPhone / iPad (Safari):** tocca **Condividi (`↑`) → Aggiungi alla schermata Home**.
 4. *(Consigliato sotto Wi-Fi)* Vai in **`📅 Menu & Spesa`** e tocca **`📥 Pre-scarica OCR Offline`** per salvare sul telefono i dizionari OCR italiano/inglese.
 
-### 2. Come APK Nativo Android (con Google Health Connect)
-Ad ogni modifica sul branch `main`, **GitHub Actions** compila automaticamente l'APK Android:
-1. Apri la scheda **[Actions](https://github.com/leoamadori/pappa_pronta/actions)** di questo repository.
-2. Clicca sull'ultima esecuzione completata col segno di spunta verde (`Build Pappa Pronta Android APK`).
-3. Scorri in fondo alla sezione **Artifacts** e scarica **`app-debug.apk`**.
+### 2. Come APK Nativo Android (con Icona Ufficiale, Health Connect & Login Google)
+Ad ogni modifica sul branch `main`, **GitHub Actions** compila l'APK Android e lo pubblica già pronto:
+1. **Download diretto in 1 tocco (senza file `.zip`):** apri **[Releases → Ultima Versione](https://github.com/leoamadori/pappa_pronta/releases)** e tocca direttamente **`pappa-pronta.apk`**.
+2. *(In alternativa da **[Actions](https://github.com/leoamadori/pappa_pronta/actions)**)* scarica **`PappaPronta-APK-Estrai-ZIP`** ed estrai il file `pappa-pronta.apk` contenuto all'interno.
+3. ⚠️ **Nota se avevi già installato una vecchia versione di test:** disinstalla **una sola volta** la precedente app *Pappa Pronta* dal telefono prima di installare la nuova (Android blocca la sovrascrittura se cambia il certificato di firma). Da ora in avanti, grazie al `versionCode` automatico e alla chiave fissa, tutti i futuri aggiornamenti si installeranno direttamente sopra senza perdere dati.
 
 ---
 
