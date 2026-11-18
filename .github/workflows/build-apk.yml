@@ -1,4 +1,4 @@
-name: Build Pappa Pronta Android APK (Camera + Health Connect)
+name: Build Pappa Pronta Android APK (Camera + Health Connect + Native Google Auth)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-android-apk:
-    name: Capacitor Android APK with Health Connect
+    name: Capacitor Android APK (Health Connect + Google Login)
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,19 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Prepare Web Assets (www) & Capacitor 8 + Health Connect Plugin
+      - name: Restore Firebase Registered Debug Keystore (if secret configured)
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
+        run: |
+          mkdir -p ~/.android
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | tr -d ' \n\r\t' | base64 --decode > ~/.android/debug.keystore
+            echo "Restored registered Firebase debug.keystore from GitHub Secrets."
+          else
+            echo "Notice: ANDROID_DEBUG_KEYSTORE_BASE64 secret not set; Gradle will generate a temporary debug key."
+          fi
+
+      - name: Prepare Web Assets (www) & Capacitor 8 + Health Connect + Firebase Auth
         run: |
           mkdir -p www
           cp index.html www/
@@ -37,9 +49,9 @@ jobs:
           cat << 'EOF' > package.json
           {
             "name": "pappa-pronta",
-            "version": "3.1.0",
+            "version": "3.2.0",
             "private": true,
-            "description": "Pappa Pronta — Multi-User Nutrition, Scanner & Google Health Connect"
+            "description": "Pappa Pronta — Multi-User Nutrition, Scanner, Google Health Connect & Native Google Auth"
           }
           EOF
 
@@ -47,7 +59,9 @@ jobs:
             "@capacitor/core@8.6.2" \
             "@capacitor/cli@8.6.2" \
             "@capacitor/android@8.6.2" \
-            "@capgo/capacitor-health@8.13.0"
+            "@capgo/capacitor-health@8.13.0" \
+            "@capacitor-firebase/authentication@8.6.0" \
+            "firebase@^12.6.0"
 
           cat << 'EOF' > capacitor.config.json
           {
@@ -59,28 +73,43 @@ jobs:
             },
             "android": {
               "allowMixedContent": false
+            },
+            "plugins": {
+              "FirebaseAuthentication": {
+                "skipNativeAuth": true,
+                "providers": ["google.com"]
+              }
             }
           }
           EOF
 
           npx cap add android
+          if [ -f google-services.json ]; then
+            cp google-services.json android/app/google-services.json
+            echo "Copied google-services.json to android/app/google-services.json"
+          fi
           npx cap sync android
 
-      - name: Configure minSdkVersion 26 & CAMERA Permission
+      - name: Configure minSdkVersion 26, Google Sign-In Gradle Flags & CAMERA Permission
         run: |
           node -e '
             const fs = require("fs");
 
-            // 1. Align minSdkVersion = 26 in variables.gradle (required by androidx.health.connect)
+            // 1. Align minSdkVersion = 26 and enable rgcfaIncludeGoogle = true in variables.gradle
             const varsPath = "android/variables.gradle";
             if (fs.existsSync(varsPath)) {
               let vars = fs.readFileSync(varsPath, "utf8");
               vars = vars.replace(/minSdkVersion\s*=\s*\d+/, "minSdkVersion = 26");
+              if (!vars.includes("rgcfaIncludeGoogle")) {
+                vars = vars.replace(
+                  /}\s*$/,
+                  "    rgcfaIncludeGoogle = true\n    androidxCredentialsVersion = \x271.3.0\x27\n    androidxCredentialsPlayServicesAuthVersion = \x271.3.0\x27\n}\n"
+                );
+              }
               fs.writeFileSync(varsPath, vars, "utf8");
             }
 
             // 2. Inject CAMERA permission into app AndroidManifest.xml
-            // (Health Connect permissions, queries & rationale activities are merged automatically by @capgo/capacitor-health)
             const manifestPath = "android/app/src/main/AndroidManifest.xml";
             let xml = fs.readFileSync(manifestPath, "utf8");
             const additions = [];
@@ -97,14 +126,19 @@ jobs:
             }
           '
           grep -q "minSdkVersion = 26" android/variables.gradle
+          grep -q "rgcfaIncludeGoogle = true" android/variables.gradle
           grep -q "android.permission.CAMERA" android/app/src/main/AndroidManifest.xml
-          echo "Verified minSdkVersion 26 and android.permission.CAMERA"
+          echo "Verified minSdkVersion 26, rgcfaIncludeGoogle=true, and android.permission.CAMERA"
 
       - name: Build Debug APK with Gradle
         working-directory: android
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
+
+      - name: Verify APK Signing Certificate Fingerprint (Public SHA-1 / SHA-256)
+        run: |
+          keytool -printcert -jarfile android/app/build/outputs/apk/debug/app-debug.apk | grep -E "SHA1:|SHA256:" || true
 
       - name: Upload app-debug.apk Artifact
         uses: actions/upload-artifact@v4
