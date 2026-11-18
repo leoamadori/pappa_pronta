@@ -29,6 +29,12 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Cache Persistent Android Debug Keystore across Builds
+        uses: actions/cache@v6
+        with:
+          path: ~/.android/debug.keystore
+          key: pappa-pronta-signing-keystore-v1
+
       - name: Restore & Validate Firebase Debug Keystore (for Consistent APK Updates & Google Auth)
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
@@ -42,8 +48,10 @@ jobs:
               echo "⚠️ Secret ANDROID_DEBUG_KEYSTORE_BASE64 non valido: rigenero debug.keystore standard."
               rm -f ~/.android/debug.keystore
             fi
+          elif [ -f ~/.android/debug.keystore ]; then
+            echo "✅ Chiave di firma persistente ripristinata dalla cache GitHub Actions."
           else
-            echo "ℹ️ Secret ANDROID_DEBUG_KEYSTORE_BASE64 non impostato: Gradle genererà una chiave temporanea."
+            echo "ℹ️ Nessuna chiave precedente trovata: Gradle ne genererà una e la salverà in cache."
           fi
 
       - name: Prepare Web Assets (www) & Capacitor 8 + Health Connect + Firebase Auth
@@ -57,7 +65,7 @@ jobs:
           cat << 'EOF' > package.json
           {
             "name": "pappa-pronta",
-            "version": "3.2.0",
+            "version": "3.3.0",
             "private": true,
             "description": "Pappa Pronta — Multi-User Nutrition, Scanner, Google Health Connect & Native Google Auth"
           }
@@ -67,6 +75,7 @@ jobs:
             "@capacitor/core@8.6.2" \
             "@capacitor/cli@8.6.2" \
             "@capacitor/android@8.6.2" \
+            "@capacitor/app@8.0.0" \
             "@capgo/capacitor-health@8.13.0" \
             "@capacitor-firebase/authentication@8.6.0" \
             "firebase@^12.6.0" \
@@ -234,9 +243,20 @@ jobs:
               console.log("Set APK versionCode=" + verCode + ", versionName=" + verName);
             }
 
-            // 3. Inject CAMERA permission into app AndroidManifest.xml
+            // 3. Inject pappapronta://auth Deep-Link Intent Filter & CAMERA permission into AndroidManifest.xml
             const manifestPath = "android/app/src/main/AndroidManifest.xml";
             let xml = fs.readFileSync(manifestPath, "utf8");
+            if (!xml.includes("android:scheme=\"pappapronta\"")) {
+              const deepLinkFilter = [
+                "            <intent-filter>",
+                "                <action android:name=\"android.intent.action.VIEW\" />",
+                "                <category android:name=\"android.intent.category.DEFAULT\" />",
+                "                <category android:name=\"android.intent.category.BROWSABLE\" />",
+                "                <data android:scheme=\"pappapronta\" android:host=\"auth\" />",
+                "            </intent-filter>"
+              ].join("\n");
+              xml = xml.replace("</activity>", deepLinkFilter + "\n        </activity>");
+            }
             const additions = [];
             if (!xml.includes("android.permission.CAMERA")) {
               additions.push("    <uses-permission android:name=\"android.permission.CAMERA\" />");
@@ -247,11 +267,12 @@ jobs:
             }
             if (additions.length > 0) {
               xml = xml.replace("</manifest>", additions.join("\n") + "\n</manifest>");
-              fs.writeFileSync(manifestPath, xml, "utf8");
             }
+            fs.writeFileSync(manifestPath, xml, "utf8");
           '
           grep -q "minSdkVersion = 26" android/variables.gradle
           grep -q "rgcfaIncludeGoogle = true" android/variables.gradle
+          grep -q "android:scheme=\"pappapronta\"" android/app/src/main/AndroidManifest.xml
           grep -q "android.permission.CAMERA" android/app/src/main/AndroidManifest.xml
 
       - name: Build Signed Debug APK with Gradle
