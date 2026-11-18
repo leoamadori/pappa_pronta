@@ -2596,22 +2596,36 @@
     </div>
 
     <div class="modal-body-scroll">
-      <!-- 1. Firebase Cloud Login Box (Zero Exposed Keys, Native Android Google Auth + Direct Email/Password) -->
+      <!-- 1. Firebase Cloud Login Box (Zero Exposed Keys, Native + Chrome Bridge Google Auth + Direct Email) -->
       <section style="border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; background:var(--surface-muted);">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
           <strong style="font-size:0.9rem;">☁️ Account &amp; Sincronizzazione Cloud</strong>
           <span id="fbStatusBadge" class="badge">Locale</span>
         </div>
 
+        <!-- Inline Live Feedback Banner (Always visible inside top-layer dialog!) -->
+        <div id="fbAuthLiveStatus" style="display:none; margin-bottom:10px; padding:9px 11px; border-radius:var(--radius-sm); font-size:0.79rem; line-height:1.38; border:1px solid var(--primary-border); background:var(--primary-soft); color:var(--ink);"></div>
+
         <div id="fbLoggedOutView">
           <p style="margin:0 0 10px; font-size:0.8rem; color:var(--ink-secondary);">
-            Accedi per salvare profilo, dispensa, ricette e progressi nel tuo spazio Cloud privato (server UE) e ritrovarli su telefono, APK Android e PC.
+            Accedi per sincronizzare automaticamente <strong>nome, età, peso, altezza, limiti, dispensa e ricette</strong> tra Web, PC e APK Android.
           </p>
           <button type="button" id="fbGoogleLoginBtn" class="btn btn-primary btn-block" style="margin-bottom:8px;">
             🔐 Accedi con Google
           </button>
 
-          <div style="border-top:1px solid var(--border); margin-top:8px; padding-top:8px;">
+          <details id="apkTokenPasteDetails" style="margin-bottom:8px;">
+            <summary style="cursor:pointer; font-size:0.75rem; font-weight:600; color:var(--primary);">📲 Sei sull'APK e Google apre il browser? Collega con 1 tocco</summary>
+            <div style="margin-top:6px; display:grid; gap:6px; background:var(--surface); padding:8px; border-radius:var(--radius-sm); border:1px solid var(--border);">
+              <a href="https://pappa-pronta-leo.web.app/?apk_bridge=1" id="openChromeBridgeLink" class="btn btn-xs btn-soft" style="text-decoration:none; text-align:center;">🌐 1. Apri Accesso Google Sicuro su Chrome</a>
+              <div style="display:flex; gap:6px;">
+                <input type="text" id="fbPasteTokenInput" class="input-field" style="min-height:34px; font-size:0.78rem;" placeholder="2. Se non torna da solo, incolla qui il codice...">
+                <button type="button" id="fbApplyTokenBtn" class="btn btn-xs btn-primary">Collega</button>
+              </div>
+            </div>
+          </details>
+
+          <div style="border-top:1px solid var(--border); margin-top:6px; padding-top:8px;">
             <div style="font-size:0.77rem; font-weight:700; color:var(--ink-secondary); margin-bottom:6px;">
               ✉️ Oppure usa Email e Password (universale su Web, iPhone e APK Android):
             </div>
@@ -2627,11 +2641,13 @@
         </div>
 
         <div id="fbLoggedInView" style="display:none;">
-          <div style="font-size:0.84rem; margin-bottom:8px;">
+          <div style="font-size:0.84rem; margin-bottom:4px;">
             Connesso in privato come: <strong id="fbUserLabel">—</strong>
           </div>
+          <div id="fbSyncedProfileSummary" style="font-size:0.77rem; color:var(--ink-secondary); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:7px 9px; margin-bottom:8px;"></div>
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <button type="button" id="fbSyncNowBtn" class="btn btn-sm btn-primary" style="flex:1;">🔄 Sincronizza ora</button>
+            <button type="button" id="fbSyncNowBtn" class="btn btn-sm btn-primary" style="flex:1 1 140px;">⬇️ Scarica dal Cloud</button>
+            <button type="button" id="fbPushNowBtn" class="btn btn-sm btn-soft" style="flex:1 1 130px;">⬆️ Salva nel Cloud</button>
             <button type="button" id="fbLogoutBtn" class="btn btn-sm">Esci</button>
           </div>
         </div>
@@ -2713,6 +2729,42 @@
           </button>
         </div>
       </section>
+    </div>
+  </dialog>
+
+  <!-- Dedicated Chrome-to-APK Google Auth Bridge Dialog (?apk_bridge=1) -->
+  <dialog id="apkBridgeDialog" class="modal-dialog" aria-labelledby="apkBridgeTitle">
+    <div class="crop-modal-head">
+      <div>
+        <strong id="apkBridgeTitle" style="font-size:0.98rem;">🔐 Collegamento Google → App Pappa Pronta</strong>
+        <div style="font-size:0.75rem; color:var(--ink-secondary);">Autenticazione sicura per sincronizzare l'APK Android</div>
+      </div>
+      <button type="button" id="closeApkBridgeBtn" class="btn btn-sm">Chiudi</button>
+    </div>
+    <div class="modal-body-scroll">
+      <div id="apkBridgeStep1">
+        <p style="margin:0 0 12px; font-size:0.84rem; line-height:1.45;">
+          Premi il pulsante qui sotto per scegliere il tuo account Google su Chrome: al termine tornerai automaticamente nell'app <strong>Pappa Pronta</strong> con <strong>età, peso, dispensa e progressi</strong> già sincronizzati.
+        </p>
+        <button type="button" id="apkBridgeStartGoogleBtn" class="btn btn-primary btn-block">
+          🔐 Continua con il tuo Account Google
+        </button>
+        <div id="apkBridgeErrorMsg" style="display:none; margin-top:8px; font-size:0.78rem; color:var(--danger-ink);"></div>
+      </div>
+      <div id="apkBridgeStep2" style="display:none; gap:10px;">
+        <div class="fast-plain-box">
+          ✅ <strong>Account Google verificato!</strong> Stiamo riaprendo l'app Pappa Pronta sul tuo telefono...
+        </div>
+        <a id="apkBridgeReturnIntentLink" href="pappapronta://auth" class="btn btn-primary btn-block" style="text-decoration:none; text-align:center;">
+          📲 Torna subito all'App Pappa Pronta
+        </a>
+        <div style="font-size:0.76rem; color:var(--ink-secondary); border-top:1px solid var(--border); padding-top:8px;">
+          Se il tuo telefono blocca l'apertura automatica dell'app, premi qui sotto per copiare il codice, torna all'APK e incollalo nella casella <em>«Collega con 1 tocco»</em>:
+        </div>
+        <button type="button" id="apkBridgeCopyTokenBtn" class="btn btn-sm btn-soft btn-block">
+          📋 Copia Codice Rapido per l'APK
+        </button>
+      </div>
     </div>
   </dialog>
 
@@ -6721,6 +6773,11 @@
           document.getElementById('fbLoggedOutView').style.display = 'none';
           document.getElementById('fbLoggedInView').style.display = 'block';
           document.getElementById('fbUserLabel').textContent = label;
+          const profSum = document.getElementById('fbSyncedProfileSummary');
+          if (profSum) {
+            profSum.innerHTML =
+              '👤 <strong>' + (state.profile.name || 'Profilo') + '</strong> · Età: <strong>' + state.profile.age + ' anni</strong> · Peso: <strong>' + state.profile.weight + ' kg</strong> · Altezza: <strong>' + state.profile.height + ' cm</strong> · Dispensa: <strong>' + state.pantry.length + ' cibi</strong>';
+          }
           if (gdprDelWrap) gdprDelWrap.style.display = 'block';
         } else {
           const hasCfg = Boolean(getActiveFirebaseConfig());
@@ -6958,9 +7015,101 @@
         showToast('🎉 Piano configurato' + (state.profile.name ? (' per ' + state.profile.name) : '') + '!');
       }
 
-      // --- Privacy-Safe Firebase Cloud Auth (Web + Native Android Capacitor) & Firestore Sync ---
+      // --- Privacy-Safe Firebase Cloud Auth (Native + Chrome Deep-Link Bridge) & Firestore Sync ---
+      const LAST_CLOUD_UID_KEY = 'pappa_pronta_cloud_uid';
+      let bridgeTokenPayload = '';
+
+      function setModalAuthStatus(htmlMsg, tone) {
+        const box = document.getElementById('fbAuthLiveStatus');
+        if (!box) return;
+        if (!htmlMsg) {
+          box.style.display = 'none';
+          box.innerHTML = '';
+          return;
+        }
+        box.style.display = 'block';
+        if (tone === 'warn') {
+          box.style.background = 'var(--warn-bg)';
+          box.style.borderColor = 'var(--warn-border)';
+          box.style.color = 'var(--warn-ink)';
+        } else if (tone === 'danger') {
+          box.style.background = 'var(--danger-bg)';
+          box.style.borderColor = 'var(--danger-border)';
+          box.style.color = 'var(--danger-ink)';
+        } else {
+          box.style.background = 'var(--primary-soft)';
+          box.style.borderColor = 'var(--primary-border)';
+          box.style.color = 'var(--ink)';
+        }
+        box.innerHTML = htmlMsg;
+      }
+
       function getActiveFirebaseConfig() {
         return (FIREBASE_DEFAULT_CONFIG && FIREBASE_DEFAULT_CONFIG.apiKey) ? FIREBASE_DEFAULT_CONFIG : null;
+      }
+
+      async function completeTokenCredentialSignIn(idToken, accessToken, sourceLabel) {
+        const ok = await ensureFirebaseInitialized();
+        if (!ok) {
+          setModalAuthStatus('⚠️ Connettiti a Internet per completare l\'accesso.', 'warn');
+          return false;
+        }
+        const cred = fbModules.GoogleAuthProvider.credential(idToken || null, accessToken || null);
+        await fbModules.signInWithCredential(fbAuth, cred);
+        setModalAuthStatus('✅ Accesso Google (' + (sourceLabel || 'Android') + ') completato! Scaricamento profilo in corso...', 'ok');
+        await pullCloudState('force_pull');
+        return true;
+      }
+
+      function parseAndApplyAuthBridgeToken(rawInput) {
+        if (!rawInput) return false;
+        const clean = rawInput.trim();
+        let idToken = null;
+        let accessToken = null;
+        try {
+          if (clean.includes('id_token=') || clean.includes('access_token=')) {
+            const qIdx = clean.indexOf('?');
+            const hIdx = clean.indexOf('#');
+            const queryPart = qIdx !== -1 ? clean.slice(qIdx + 1).split('#')[0] : (hIdx !== -1 ? clean.slice(hIdx + 1) : clean);
+            const sp = new URLSearchParams(queryPart);
+            idToken = sp.get('id_token');
+            accessToken = sp.get('access_token');
+          } else if (clean.startsWith('{')) {
+            const j = JSON.parse(clean);
+            idToken = j.idToken || j.id_token || null;
+            accessToken = j.accessToken || j.access_token || null;
+          } else if (clean.split('.').length === 3) {
+            idToken = clean;
+          }
+        } catch (_) {}
+        if (!idToken && !accessToken) return false;
+        completeTokenCredentialSignIn(idToken, accessToken, 'Ponte Sicuro').catch(() => {
+          setModalAuthStatus('⚠️ Il codice è scaduto (dura 60 min): ripeti l\'accesso da Chrome.', 'warn');
+        });
+        return true;
+      }
+
+      function initNativeDeepLinkAuthListener() {
+        const cap = window.Capacitor;
+        if (!cap || !cap.isNativePlatform || !cap.isNativePlatform()) return;
+        const appPlugin = cap.Plugins && cap.Plugins.App;
+        if (!appPlugin) return;
+        try {
+          if (appPlugin.addListener) {
+            appPlugin.addListener('appUrlOpen', (ev) => {
+              if (ev && ev.url && ev.url.includes('pappapronta://auth')) {
+                parseAndApplyAuthBridgeToken(ev.url);
+              }
+            });
+          }
+          if (appPlugin.getLaunchUrl) {
+            appPlugin.getLaunchUrl().then((res) => {
+              if (res && res.url && res.url.includes('pappapronta://auth')) {
+                parseAndApplyAuthBridgeToken(res.url);
+              }
+            }).catch(() => {});
+          }
+        } catch (_) {}
       }
 
       async function ensureFirebaseInitialized() {
@@ -6980,13 +7129,18 @@
           fbAuth = authMod.getAuth(fbApp);
           fbDb = fsMod.getFirestore(fbApp);
 
-          try { await authMod.getRedirectResult(fbAuth); } catch (_) {}
+          try {
+            const redirRes = await authMod.getRedirectResult(fbAuth);
+            if (redirRes && new URLSearchParams(window.location.search).has('apk_bridge')) {
+              handleApkBridgeCredentialResult(redirRes);
+            }
+          } catch (_) {}
 
           authMod.onAuthStateChanged(fbAuth, async (user) => {
             fbCurrentUser = user || null;
             renderHealthAndCloudCard();
-            if (user) {
-              await pullCloudState(false);
+            if (user && !new URLSearchParams(window.location.search).has('apk_bridge')) {
+              await pullCloudState('auto');
             }
           });
           return true;
@@ -6995,31 +7149,78 @@
         }
       }
 
-      async function pullCloudState(manualNotify) {
+      async function pullCloudState(mode) {
         if (!fbCurrentUser || !fbDb || !fbModules) return;
+        const manualNotify = mode === true || mode === 'force_pull';
+        const forcePull = mode === 'force_pull';
+        let lastSyncedUid = null;
+        try { lastSyncedUid = localStorage.getItem(LAST_CLOUD_UID_KEY); } catch (_) {}
+        const isFirstLoginForThisAccount = lastSyncedUid !== fbCurrentUser.uid;
+
         try {
           const ref = fbModules.doc(fbDb, 'users', fbCurrentUser.uid);
           const snap = await fbModules.getDoc(ref);
           if (snap.exists()) {
             const remote = snap.data();
-            if (remote && (!state.profile.onboarded || (remote.updatedAt || 0) >= (state.updatedAt || 0))) {
+            const shouldPullRemote = Boolean(
+              remote && (
+                forcePull ||
+                isFirstLoginForThisAccount ||
+                !state.profile.onboarded ||
+                (remote.updatedAt || 0) >= (state.updatedAt || 0)
+              )
+            );
+            if (shouldPullRemote) {
+              // Preserve today's fresh local Health Connect steps/kcal if already synced on APK
+              const todayKey = getLocalDateKey();
+              const prevTodayHealth = state.logs && state.logs[todayKey] && state.logs[todayKey].health
+                ? { ...state.logs[todayKey].health }
+                : null;
+
               state = normalizeAndMergeState(remote);
               state.profile.onboarded = true;
+
+              if (prevTodayHealth && (prevTodayHealth.steps > 0 || prevTodayHealth.activeKcal > 0)) {
+                const tLog = ensureTodayLog();
+                const remSteps = (tLog.health && tLog.health.steps) || 0;
+                if (prevTodayHealth.steps > remSteps) {
+                  tLog.health = prevTodayHealth;
+                }
+              }
+
+              try { localStorage.setItem(LAST_CLOUD_UID_KEY, fbCurrentUser.uid); } catch (_) {}
+
               const daysCount = Object.keys(state.logs || {}).length;
               recordSyncEvent({
                 channel: 'Cloud Firebase',
                 dir: '⬇️ Ricevuti',
-                summary: 'Profilo, dispensa (' + state.pantry.length + ' cibi) e ' + daysCount + ' gg di diario'
+                summary: (state.profile.name || 'Profilo') + ' (' + state.profile.age + 'a, ' + state.profile.weight + 'kg) · ' + state.pantry.length + ' cibi · ' + daysCount + ' gg'
               }, true);
+
               const obDlg = document.getElementById('onboardingDialog');
               if (obDlg && obDlg.open) obDlg.close();
+
+              const wgInp = document.getElementById('manualWeightSyncInput');
+              if (wgInp) wgInp.value = state.profile.weight || '';
+
               renderAll();
-              if (manualNotify) showToast('☁️ Dati scaricati e sincronizzati dal tuo spazio Cloud!');
+              renderHealthAndCloudCard();
+              setModalAuthStatus(
+                '✅ <strong>Dati personali aggiornati dal Cloud:</strong> ' +
+                (state.profile.name ? (state.profile.name + ', ') : '') +
+                state.profile.age + ' anni · ' + state.profile.weight + ' kg · ' + state.profile.height + ' cm · ' + state.pantry.length + ' alimenti in dispensa.',
+                'ok'
+              );
+              if (manualNotify || isFirstLoginForThisAccount) {
+                showToast('☁️ Profilo sincronizzato (' + state.profile.age + ' anni, ' + state.profile.weight + ' kg)!');
+              }
               return;
             }
           }
+          try { localStorage.setItem(LAST_CLOUD_UID_KEY, fbCurrentUser.uid); } catch (_) {}
           await pushCloudState(manualNotify);
         } catch (_) {
+          setModalAuthStatus('⚠️ Connessione Cloud non riuscita: verifica Internet e riprova.', 'warn');
           if (manualNotify) showToast('⚠️ Connessione Cloud non riuscita: riprova tra qualche istante');
         }
       }
@@ -7032,16 +7233,24 @@
           recordSyncEvent({
             channel: 'Cloud Firebase',
             dir: '⬆️ Inviati',
-            summary: 'Backup privato: ' + state.pantry.length + ' cibi in casa · Oggi ' + mealKcal + ' kcal, Dozen ' + computeDozenTotal(log.dozen) + '/24'
+            summary: (state.profile.name || 'Profilo') + ' (' + state.profile.age + 'a, ' + state.profile.weight + 'kg) · ' + state.pantry.length + ' cibi · Oggi ' + mealKcal + ' kcal'
           }, true);
 
           const ref = fbModules.doc(fbDb, 'users', fbCurrentUser.uid);
           const payload = JSON.parse(JSON.stringify(state));
           payload.updatedAt = Date.now();
           await fbModules.setDoc(ref, payload, { merge: true });
-          if (manualNotify) showToast('☁️ Salvato nel tuo spazio Cloud privato!');
+          try { localStorage.setItem(LAST_CLOUD_UID_KEY, fbCurrentUser.uid); } catch (_) {}
+          renderHealthAndCloudCard();
+          if (manualNotify) {
+            setModalAuthStatus('✅ <strong>Salvato nel Cloud:</strong> profilo (' + state.profile.age + ' anni, ' + state.profile.weight + ' kg) e dispensa inviati!', 'ok');
+            showToast('☁️ Salvato nel tuo spazio Cloud privato!');
+          }
         } catch (_) {
-          if (manualNotify) showToast('⚠️ Errore salvataggio Cloud: verifica la connessione');
+          if (manualNotify) {
+            setModalAuthStatus('⚠️ Errore salvataggio Cloud: controlla la connessione.', 'warn');
+            showToast('⚠️ Errore salvataggio Cloud: verifica la connessione');
+          }
         }
       }
 
@@ -7060,15 +7269,17 @@
           }
           await fbModules.signOut(fbAuth);
           fbCurrentUser = null;
+          try { localStorage.removeItem(LAST_CLOUD_UID_KEY); } catch (_) {}
           recordSyncEvent({
             channel: 'Privacy GDPR',
             dir: '🗑️ Cancellato',
             summary: 'Documento utente rimosso definitivamente dal server Cloud UE'
           }, true);
           renderHealthAndCloudCard();
-          showToast('🗑️ Dati Cloud eliminati definitivamente e account disconnesso');
+          setModalAuthStatus('🗑️ Dati Cloud eliminati definitivamente e account disconnesso.', 'ok');
+          showToast('🗑️ Dati Cloud eliminati definitivamente');
         } catch (_) {
-          showToast('⚠️ Riaccedi di recente prima di eliminare i dati dal Cloud');
+          setModalAuthStatus('⚠️ Per sicurezza riaccedi prima di eliminare definitivamente i dati Cloud.', 'warn');
         }
       }
 
@@ -7079,8 +7290,10 @@
       };
 
       async function signInWithFirebaseGoogle() {
+        setModalAuthStatus('⏳ Connessione all\'account Google in corso...', 'ok');
         const ok = await ensureFirebaseInitialized();
         if (!ok) {
+          setModalAuthStatus('⚠️ Nessuna connessione a Internet rilevata.', 'warn');
           showToast('Connettiti a Internet per accedere all\'account Cloud');
           return;
         }
@@ -7088,81 +7301,163 @@
         const cap = window.Capacitor;
         const isNative = Boolean(cap && cap.isNativePlatform && cap.isNativePlatform());
 
-        // Native Android APK Path: Google blocks WebView OAuth popups (403 disallowed_useragent),
-        // so we use @capacitor-firebase/authentication native Credential Manager / Play Services!
         if (isNative) {
           const nativeAuth = cap.Plugins && cap.Plugins.FirebaseAuthentication;
-          if (!nativeAuth || !nativeAuth.signInWithGoogle) {
-            showToast('📲 Aggiorna l\'APK per il Login Google nativo, oppure accedi subito qui sotto con Email e Password!');
-            const em = document.getElementById('fbEmailInput');
-            if (em) em.focus();
-            return;
-          }
-          try {
-            let res;
+          if (nativeAuth && nativeAuth.signInWithGoogle) {
             try {
-              res = await nativeAuth.signInWithGoogle({ skipNativeAuth: true, useCredentialManager: true });
-            } catch (_) {
-              res = await nativeAuth.signInWithGoogle({ skipNativeAuth: true, useCredentialManager: false });
+              let res;
+              try {
+                // Classic GoogleSignInClient intent first (most reliable across all Android versions)
+                res = await nativeAuth.signInWithGoogle({ skipNativeAuth: true, useCredentialManager: false });
+              } catch (_) {
+                res = await nativeAuth.signInWithGoogle({ skipNativeAuth: true, useCredentialManager: true });
+              }
+              const idToken = res && res.credential && res.credential.idToken;
+              const accessToken = res && res.credential && res.credential.accessToken;
+              if (!idToken && !accessToken) throw new Error('Missing native Google token');
+              await completeTokenCredentialSignIn(idToken, accessToken, 'Android Nativo');
+              return;
+            } catch (nativeErr) {
+              const msg = String((nativeErr && nativeErr.message) || nativeErr || '');
+              if (/cancel|dismiss|12501/i.test(msg)) {
+                setModalAuthStatus('ℹ️ Selezione account Google annullata.', 'warn');
+                return;
+              }
             }
-            const idToken = res && res.credential && res.credential.idToken;
-            const accessToken = res && res.credential && res.credential.accessToken;
-            if (!idToken && !accessToken) throw new Error('Missing native Google token');
-            const cred = fbModules.GoogleAuthProvider.credential(idToken || null, accessToken || null);
-            await fbModules.signInWithCredential(fbAuth, cred);
-            showToast('🔐 Accesso Google nativo Android completato!');
-            return;
-          } catch (nativeErr) {
-            const msg = String((nativeErr && nativeErr.message) || nativeErr || '');
-            if (/cancel|dismiss/i.test(msg)) {
-              showToast('Accesso Google annullato');
-            } else {
-              showToast('⚠️ Firma APK (SHA-1) non allineata: aggiungi il secret su GitHub o accedi subito qui sotto con Email e Password!');
-              const em = document.getElementById('fbEmailInput');
-              if (em) em.focus();
-            }
-            return;
           }
+
+          // Zero-SHA-1 Automatic Fallback: Open Chrome Secure Bridge -> returns via pappapronta://auth deep link!
+          const pasteDet = document.getElementById('apkTokenPasteDetails');
+          if (pasteDet) pasteDet.open = true;
+          setModalAuthStatus(
+            '🌐 <strong>Apertura accesso Google sicuro su Chrome...</strong> Scegli il tuo account Google nel browser: tornerà automaticamente qui nell\'app (oppure incolla il codice rapido sotto).',
+            'ok'
+          );
+          window.location.href = 'https://pappa-pronta-leo.web.app/?apk_bridge=1';
+          return;
         }
 
         // Web / PWA Path
         try {
           const provider = new fbModules.GoogleAuthProvider();
-          await fbModules.signInWithPopup(fbAuth, provider);
+          const res = await fbModules.signInWithPopup(fbAuth, provider);
+          if (res && res.user) {
+            setModalAuthStatus('✅ Accesso con Google completato! Sincronizzazione dati...', 'ok');
+          }
           showToast('🔐 Accesso con Google completato!');
         } catch (err) {
           if (err && err.code === 'auth/popup-blocked') {
             await fbModules.signInWithRedirect(fbAuth, new fbModules.GoogleAuthProvider());
           } else if (err && err.code !== 'auth/popup-closed-by-user') {
-            showToast('Accesso Google non riuscito su questo dominio: usa l\'URL ufficiale o Email e Password');
+            setModalAuthStatus('⚠️ Accesso Google bloccato su questo dominio: usa https://pappa-pronta-leo.web.app o Email e Password.', 'warn');
+          } else {
+            setModalAuthStatus('', 'ok');
           }
         }
       }
 
+      function handleApkBridgeCredentialResult(userCred) {
+        if (!fbModules || !userCred) return;
+        const oauthCred = fbModules.GoogleAuthProvider.credentialFromResult(userCred);
+        const idToken = oauthCred && oauthCred.idToken;
+        const accessToken = oauthCred && oauthCred.accessToken;
+        if (!idToken && !accessToken) return;
+
+        const qs = [];
+        if (idToken) qs.push('id_token=' + encodeURIComponent(idToken));
+        if (accessToken) qs.push('access_token=' + encodeURIComponent(accessToken));
+        const query = qs.join('&');
+        bridgeTokenPayload = JSON.stringify({ idToken: idToken || null, accessToken: accessToken || null });
+
+        const deepUrl = 'pappapronta://auth?' + query;
+        const intentUrl = 'intent://auth?' + query + '#Intent;scheme=pappapronta;package=it.pappapronta.app;end';
+
+        const step1 = document.getElementById('apkBridgeStep1');
+        const step2 = document.getElementById('apkBridgeStep2');
+        const retLink = document.getElementById('apkBridgeReturnIntentLink');
+        if (step1) step1.style.display = 'none';
+        if (step2) step2.style.display = 'grid';
+        if (retLink) retLink.href = intentUrl;
+
+        const dlg = document.getElementById('apkBridgeDialog');
+        if (dlg && !dlg.open) dlg.showModal();
+
+        // Automatically bounce back into the Android APK
+        setTimeout(() => {
+          window.location.href = deepUrl;
+        }, 250);
+      }
+
+      async function initWebApkBridgeMode() {
+        let isBridge = false;
+        try {
+          isBridge = new URLSearchParams(window.location.search).has('apk_bridge');
+        } catch (_) {}
+        if (!isBridge) return;
+
+        const obDlg = document.getElementById('onboardingDialog');
+        if (obDlg && obDlg.open) obDlg.close();
+        const dlg = document.getElementById('apkBridgeDialog');
+        if (dlg && !dlg.open) dlg.showModal();
+
+        document.getElementById('closeApkBridgeBtn').addEventListener('click', () => dlg.close());
+        document.getElementById('apkBridgeCopyTokenBtn').addEventListener('click', () => {
+          if (bridgeTokenPayload) {
+            copyTextToClipboard(bridgeTokenPayload, '📋 Codice copiato! Torna all\'app Pappa Pronta e premi «Collega».');
+          }
+        });
+        document.getElementById('apkBridgeStartGoogleBtn').addEventListener('click', async () => {
+          const errEl = document.getElementById('apkBridgeErrorMsg');
+          if (errEl) errEl.style.display = 'none';
+          const ok = await ensureFirebaseInitialized();
+          if (!ok) return;
+          try {
+            const provider = new fbModules.GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
+            const res = await fbModules.signInWithPopup(fbAuth, provider);
+            handleApkBridgeCredentialResult(res);
+          } catch (err) {
+            if (err && err.code === 'auth/popup-blocked') {
+              await fbModules.signInWithRedirect(fbAuth, new fbModules.GoogleAuthProvider());
+            } else if (errEl) {
+              errEl.textContent = 'Accesso annullato o bloccato: riprova premendo il pulsante verde.';
+              errEl.style.display = 'block';
+            }
+          }
+        });
+      }
+
       async function signInOrUpWithEmail(isSignUp) {
+        setModalAuthStatus('⏳ Verifica credenziali Email...', 'ok');
         const ok = await ensureFirebaseInitialized();
         if (!ok) {
-          showToast('Connettiti a Internet per accedere al Cloud');
+          setModalAuthStatus('⚠️ Connettiti a Internet per accedere al Cloud.', 'warn');
           return;
         }
         const email = document.getElementById('fbEmailInput').value.trim();
         const pass = document.getElementById('fbPassInput').value;
         if (!email || pass.length < 6) {
+          setModalAuthStatus('⚠️ Inserisci un\'email valida e una password di almeno 6 caratteri.', 'warn');
           showToast('Inserisci un\'email valida e una password di almeno 6 caratteri');
           return;
         }
         try {
           if (isSignUp) {
             await fbModules.createUserWithEmailAndPassword(fbAuth, email, pass);
+            setModalAuthStatus('🎉 Account creato e sincronizzato!', 'ok');
             showToast('🎉 Account privato creato e sincronizzato!');
           } else {
             await fbModules.signInWithEmailAndPassword(fbAuth, email, pass);
+            setModalAuthStatus('🔐 Accesso effettuato! Sincronizzazione dati personali...', 'ok');
             showToast('🔐 Accesso effettuato e dati sincronizzati!');
           }
         } catch (err) {
           const code = (err && err.code) || '';
-          if (code === 'auth/email-already-in-use') showToast('Questa email è già registrata: premi «Accedi con Email»');
-          else showToast(isSignUp ? 'Impossibile creare l\'account: controlla il formato email' : 'Email o password non corretti');
+          if (code === 'auth/email-already-in-use') {
+            setModalAuthStatus('ℹ️ Questa email è già registrata: premi «Accedi con Email».', 'warn');
+          } else {
+            setModalAuthStatus('⚠️ Email o password non corretti.', 'danger');
+          }
         }
       }
 
@@ -7175,6 +7470,7 @@
       }
 
       function openAccountHealthModal() {
+        setModalAuthStatus('', 'ok');
         const h = ensureTodayLog().health || { steps: 0, activeKcal: 0 };
         document.getElementById('manualStepsInput').value = h.steps || '';
         document.getElementById('manualActiveKcalInput').value = h.activeKcal || '';
@@ -7901,11 +8197,20 @@
           applyHealthMetrics({ steps: 8500, activeKcal: 410, source: 'Simulazione Salute' });
         });
 
-        // Privacy-Safe Firebase Auth & GDPR Cloud Data Deletion Buttons
+        // Privacy-Safe Firebase Auth, Force Pull/Push, Deep-Link Token Paste & GDPR Deletion
         document.getElementById('fbGoogleLoginBtn').addEventListener('click', signInWithFirebaseGoogle);
         document.getElementById('fbEmailSignInBtn').addEventListener('click', () => signInOrUpWithEmail(false));
         document.getElementById('fbEmailSignUpBtn').addEventListener('click', () => signInOrUpWithEmail(true));
-        document.getElementById('fbSyncNowBtn').addEventListener('click', () => pullCloudState(true));
+        document.getElementById('fbSyncNowBtn').addEventListener('click', () => pullCloudState('force_pull'));
+        document.getElementById('fbPushNowBtn').addEventListener('click', () => pushCloudState(true));
+        document.getElementById('fbApplyTokenBtn').addEventListener('click', () => {
+          const inp = document.getElementById('fbPasteTokenInput');
+          if (!inp || !parseAndApplyAuthBridgeToken(inp.value)) {
+            setModalAuthStatus('⚠️ Incolla il codice copiato dalla pagina di collegamento Chrome.', 'warn');
+          } else {
+            inp.value = '';
+          }
+        });
         document.getElementById('deleteCloudDataBtn').addEventListener('click', deleteCloudUserData);
         document.getElementById('fbLogoutBtn').addEventListener('click', async () => {
           const cap = window.Capacitor;
@@ -7916,8 +8221,10 @@
           if (fbAuth && fbModules && fbModules.signOut) {
             await fbModules.signOut(fbAuth);
             fbCurrentUser = null;
+            try { localStorage.removeItem(LAST_CLOUD_UID_KEY); } catch (_) {}
             renderHealthAndCloudCard();
-            showToast('Disconnesso dal Cloud (i dati locali restano sul dispositivo)');
+            setModalAuthStatus('ℹ️ Disconnesso dal Cloud (i dati locali restano sul dispositivo).', 'ok');
+            showToast('Disconnesso dal Cloud');
           }
         });
       }
@@ -7941,7 +8248,9 @@
       updateNetworkIndicator();
       initStoragePersistence();
       initServiceWorker();
+      initNativeDeepLinkAuthListener();
       ensureFirebaseInitialized();
+      initWebApkBridgeMode();
       renderAll();
 
       // Support manifest shortcuts (?tab=oggi|cucina|scanner|menu)
@@ -7950,7 +8259,7 @@
         const urlTab = params.get('tab');
         if (urlTab && ['oggi', 'cucina', 'scanner', 'menu'].includes(urlTab)) {
           switchTab(urlTab);
-        } else if (!state.profile.onboarded && !params.has('skip_onboard')) {
+        } else if (!state.profile.onboarded && !params.has('skip_onboard') && !params.has('apk_bridge')) {
           // Open friendly 4-step Onboarding Wizard for new friends on first visit!
           setTimeout(() => openOnboardingWizard(1), 120);
         }
