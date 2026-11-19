@@ -9405,6 +9405,8 @@
           JSON.stringify(pairingObj),
           '⌚ Codice Zepp copiato! Incollalo solo in App Zepp → Mini-App Pappa Pronta → Impostazioni.'
         );
+        // Ensure users/{uid}/integrations/watch exists immediately so first watch refresh never hits 404
+        pushWatchSummaryOnly(Date.now()).catch(() => {});
         setModalAuthStatus(
           '⌚ <strong>Codice collegamento Zepp copiato negli appunti:</strong> incollalo nelle impostazioni della Mini-App Pappa Pronta dentro l\'app Zepp (non condividerlo con nessuno; svuota gli appunti dopo l\'uso).',
           'ok'
@@ -9598,9 +9600,35 @@
         }
       }
 
+      function sanitizeForFirestore(val, depth) {
+        if (depth > 12) return null;
+        if (val === undefined) return undefined;
+        if (val === null) return null;
+        if (typeof val === 'number') return Number.isFinite(val) ? val : 0;
+        if (typeof val === 'boolean' || typeof val === 'string') return val;
+        if (Array.isArray(val)) {
+          const arr = [];
+          for (let i = 0; i < val.length; i++) {
+            const clean = sanitizeForFirestore(val[i], depth + 1);
+            if (clean !== undefined) arr.push(clean);
+          }
+          return arr;
+        }
+        if (typeof val === 'object') {
+          const out = {};
+          Object.keys(val).forEach((k) => {
+            if (!k || k === '__proto__' || k === 'constructor') return;
+            const clean = sanitizeForFirestore(val[k], depth + 1);
+            if (clean !== undefined) out[k] = clean;
+          });
+          return out;
+        }
+        return undefined;
+      }
+
       function buildFirestoreSafePayload(rawState) {
         const norm = normalizeAndMergeState(rawState);
-        return {
+        return sanitizeForFirestore({
           updatedAt: norm.updatedAt,
           profile: norm.profile,
           limits: norm.limits,
@@ -9615,7 +9643,7 @@
           eanCache: norm.eanCache,
           fasting: norm.fasting,
           syncHistory: norm.syncHistory
-        };
+        }, 0);
       }
 
       function setModalAuthStatus(htmlMsg, tone) {
@@ -9780,7 +9808,19 @@
             fbModules = { ...appMod, ...authMod, ...fsMod };
             fbApp = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(cfg);
             fbAuth = authMod.getAuth(fbApp);
-            fbDb = fsMod.getFirestore(fbApp);
+            const isNativeCap = Boolean(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+            try {
+              if (typeof fsMod.initializeFirestore === 'function') {
+                fbDb = fsMod.initializeFirestore(fbApp, isNativeCap
+                  ? { experimentalForceLongPolling: true, useFetchStreams: false }
+                  : { experimentalAutoDetectLongPolling: true }
+                );
+              } else {
+                fbDb = fsMod.getFirestore(fbApp);
+              }
+            } catch (_) {
+              fbDb = fsMod.getFirestore(fbApp);
+            }
 
             const isBridge = new URLSearchParams(window.location.search).has('apk_bridge');
             if (isBridge && authMod.setPersistence && authMod.inMemoryPersistence) {
@@ -9876,6 +9916,7 @@
 
               renderAll();
               renderHealthAndCloudCard();
+              pushWatchSummaryOnly(Date.now()).catch(() => {});
               setModalAuthStatus(
                 '✅ <strong>Dati personali aggiornati dal Cloud:</strong> ' +
                 (state.profile.name ? (escHtml(state.profile.name) + ', ') : '') +
@@ -9899,16 +9940,42 @@
             localStorage.setItem(OWNER_UID_KEY, fbCurrentUser.uid);
           } catch (_) {}
           await pushCloudState(manualNotify);
-        } catch (_) {
+        } catch (err) {
           fbLastSyncError = true;
+          const code = (err && err.code) ? String(err.code) : ((err && err.message) ? String(err.message).slice(0, 60) : 'ERR');
+          recordSyncEvent({
+            channel: 'Cloud Firebase',
+            dir: '⚠️ Errore',
+            summary: 'Lettura Cloud non riuscita (' + code + ')'
+          }, true);
           renderHealthAndCloudCard();
-          setModalAuthStatus('⚠️ Connessione Cloud non riuscita: verifica Internet e riprova.', 'warn');
-          if (manualNotify) showToast('⚠️ Connessione Cloud non riuscita: riprova tra qualche istante');
+          setModalAuthStatus('⚠️ Connessione Cloud non riuscita (' + escHtml(code) + '): verifica Internet e riprova.', 'warn');
+          if (manualNotify) showToast('⚠️ Connessione Cloud non riuscita (' + code + ')');
+        }
+      }
+
+      async function pushWatchSummaryOnly(nowTs) {
+        if (!fbCurrentUser || !fbDb || !fbModules) return false;
+        try {
+          const watchRef = fbModules.doc(fbDb, 'users', fbCurrentUser.uid, 'integrations', 'watch');
+          await fbModules.setDoc(watchRef, buildWatchSummaryPayload(nowTs || Date.now()));
+          return true;
+        } catch (watchErr) {
+          const errCode = (watchErr && watchErr.code) ? String(watchErr.code) : 'ERR_WATCH_SYNC';
+          recordSyncEvent({
+            channel: 'Orologio Amazfit',
+            dir: '⚠️ Errore',
+            summary: 'Sottodocumento watch non aggiornato (' + errCode + ')'
+          }, true);
+          return false;
         }
       }
 
       async function pushCloudState(manualNotify) {
         if (!fbCurrentUser || !fbDb || !fbModules) return;
+        const nowTs = Date.now();
+        // Always update watch summary independently so Amazfit stays fresh even if main doc retries
+        const watchPromise = pushWatchSummaryOnly(nowTs);
         try {
           const log = ensureTodayLog();
           const mealKcal = Math.round((log.meals || []).reduce((s, m) => s + (Number(m.kcal) || 0), 0));
@@ -9918,26 +9985,27 @@
             summary: (state.profile.name || 'Profilo') + ' (' + state.profile.age + 'a, ' + state.profile.weight + 'kg) · ' + state.pantry.length + ' cibi · Oggi ' + mealKcal + ' kcal'
           }, true);
 
-          const nowTs = Date.now();
           state.updatedAt = nowTs;
           saveState(state, true);
 
           const ref = fbModules.doc(fbDb, 'users', fbCurrentUser.uid);
           const payload = buildFirestoreSafePayload(state);
           payload.updatedAt = nowTs;
-          await fbModules.setDoc(ref, payload);
-
           try {
-            const watchRef = fbModules.doc(fbDb, 'users', fbCurrentUser.uid, 'integrations', 'watch');
-            await fbModules.setDoc(watchRef, buildWatchSummaryPayload(nowTs));
-          } catch (watchErr) {
-            const errCode = (watchErr && watchErr.code) ? String(watchErr.code) : 'ERR_WATCH_SYNC';
-            recordSyncEvent({
-              channel: 'Orologio Amazfit',
-              dir: '⚠️ Errore',
-              summary: 'Sottodocumento watch non aggiornato (' + errCode + ')'
-            }, true);
+            await fbModules.setDoc(ref, payload);
+          } catch (firstWriteErr) {
+            const c = String((firstWriteErr && firstWriteErr.code) || '');
+            if (c.includes('unauthenticated') || c.includes('permission-denied')) {
+              if (fbCurrentUser && typeof fbCurrentUser.getIdToken === 'function') {
+                await fbCurrentUser.getIdToken(true);
+              }
+              await fbModules.setDoc(ref, payload);
+            } else {
+              throw firstWriteErr;
+            }
           }
+
+          await watchPromise;
 
           fbLastSyncError = false;
           try {
@@ -9949,12 +10017,19 @@
             setModalAuthStatus('✅ <strong>Salvato nel Cloud:</strong> profilo (' + Number(state.profile.age) + ' anni, ' + Number(state.profile.weight) + ' kg) e dispensa inviati!', 'ok');
             showToast('☁️ Salvato nel tuo spazio Cloud privato!');
           }
-        } catch (_) {
+        } catch (err) {
+          await watchPromise;
           fbLastSyncError = true;
+          const code = (err && err.code) ? String(err.code) : ((err && err.message) ? String(err.message).slice(0, 60) : 'ERR');
+          recordSyncEvent({
+            channel: 'Cloud Firebase',
+            dir: '⚠️ Errore',
+            summary: 'Salvataggio Cloud non riuscito (' + code + ')'
+          }, true);
           renderHealthAndCloudCard();
           if (manualNotify) {
-            setModalAuthStatus('⚠️ Errore salvataggio Cloud: controlla la connessione.', 'warn');
-            showToast('⚠️ Errore salvataggio Cloud: verifica la connessione');
+            setModalAuthStatus('⚠️ Errore salvataggio Cloud (' + escHtml(code) + '): controlla la connessione o riaccedi.', 'warn');
+            showToast('⚠️ Errore sync Cloud (' + code + ')');
           }
         }
       }
@@ -10260,10 +10335,23 @@
               return;
             }
 
-            await healthPlugin.requestAuthorization({
-              read: ['steps', 'calories', 'weight', 'workouts'],
-              write: ['calories', 'weight', 'dietaryEnergyConsumed', 'dietaryProtein', 'dietaryWater']
+            // Request ONLY permissions declared in AndroidManifest.xml (no undeclared write: 'calories')
+            const authStatus = await healthPlugin.requestAuthorization({
+              read: ['steps', 'calories', 'weight'],
+              write: ['weight', 'dietaryEnergyConsumed', 'dietaryProtein', 'dietaryWater']
             });
+
+            const readGranted = Array.isArray(authStatus && authStatus.readAuthorized)
+              ? authStatus.readAuthorized
+              : ['steps', 'calories', 'weight'];
+
+            if (readGranted.length === 0) {
+              showToast('⚠️ Concedi almeno il permesso Passi in Google Health Connect');
+              if (healthPlugin.openHealthConnectSettings) {
+                try { await healthPlugin.openHealthConnectSettings(); } catch (_) {}
+              }
+              return;
+            }
 
             const startOfDay = new Date();
             startOfDay.setHours(0, 0, 0, 0);
@@ -10274,33 +10362,65 @@
             let totalActiveKcal = 0;
             let latestWeight = state.profile.weight;
 
-            if (healthPlugin.queryAggregated) {
-              const stepAgg = await healthPlugin.queryAggregated({ dataType: 'steps', startDate: startIso, endDate: nowIso, bucket: 'day' });
-              const stepBuckets = (stepAgg && (stepAgg.samples || stepAgg.buckets)) || [];
-              totalSteps = stepBuckets.reduce((s, b) => s + (Number(b.value) || 0), 0);
-
-              const calAgg = await healthPlugin.queryAggregated({ dataType: 'calories', startDate: startIso, endDate: nowIso, bucket: 'day' });
-              const calBuckets = (calAgg && (calAgg.samples || calAgg.buckets)) || [];
-              totalActiveKcal = calBuckets.reduce((s, b) => s + (Number(b.value) || 0), 0);
-            } else if (healthPlugin.readSamples) {
-              const sRes = await healthPlugin.readSamples({ dataType: 'steps', startDate: startIso, endDate: nowIso, limit: 500 });
-              if (sRes && Array.isArray(sRes.samples)) {
-                totalSteps = sRes.samples.reduce((s, x) => s + (Number(x.value) || 0), 0);
+            if (readGranted.includes('steps')) {
+              try {
+                if (healthPlugin.queryAggregated) {
+                  const stepAgg = await healthPlugin.queryAggregated({ dataType: 'steps', startDate: startIso, endDate: nowIso, bucket: 'day', aggregation: 'sum' });
+                  const stepBuckets = (stepAgg && (stepAgg.samples || stepAgg.buckets)) || [];
+                  totalSteps = stepBuckets.reduce((s, b) => s + (Number(b.value) || 0), 0);
+                } else if (healthPlugin.readSamples) {
+                  const sRes = await healthPlugin.readSamples({ dataType: 'steps', startDate: startIso, endDate: nowIso, limit: 500 });
+                  if (sRes && Array.isArray(sRes.samples)) {
+                    totalSteps = sRes.samples.reduce((s, x) => s + (Number(x.value) || 0), 0);
+                  }
+                }
+              } catch (_) {
+                if (healthPlugin.readSamples) {
+                  try {
+                    const sRes = await healthPlugin.readSamples({ dataType: 'steps', startDate: startIso, endDate: nowIso, limit: 500 });
+                    if (sRes && Array.isArray(sRes.samples)) {
+                      totalSteps = sRes.samples.reduce((s, x) => s + (Number(x.value) || 0), 0);
+                    }
+                  } catch (_) {}
+                }
               }
             }
 
-            if (healthPlugin.readSamples) {
-              const wStart = new Date(Date.now() - 30 * 86400000).toISOString();
-              const wRes = await healthPlugin.readSamples({ dataType: 'weight', startDate: wStart, endDate: nowIso, limit: 5 });
-              if (wRes && Array.isArray(wRes.samples) && wRes.samples.length > 0) {
-                latestWeight = Number(wRes.samples[wRes.samples.length - 1].value) || latestWeight;
-              }
+            if (readGranted.includes('calories')) {
+              try {
+                if (healthPlugin.queryAggregated) {
+                  const calAgg = await healthPlugin.queryAggregated({ dataType: 'calories', startDate: startIso, endDate: nowIso, bucket: 'day', aggregation: 'sum' });
+                  const calBuckets = (calAgg && (calAgg.samples || calAgg.buckets)) || [];
+                  totalActiveKcal = calBuckets.reduce((s, b) => s + (Number(b.value) || 0), 0);
+                } else if (healthPlugin.readSamples) {
+                  const cRes = await healthPlugin.readSamples({ dataType: 'calories', startDate: startIso, endDate: nowIso, limit: 200 });
+                  if (cRes && Array.isArray(cRes.samples)) {
+                    totalActiveKcal = cRes.samples.reduce((s, x) => s + (Number(x.value) || 0), 0);
+                  }
+                }
+              } catch (_) {}
+            }
+
+            if (readGranted.includes('weight') && healthPlugin.readSamples) {
+              try {
+                const wStart = new Date(Date.now() - 30 * 86400000).toISOString();
+                const wRes = await healthPlugin.readSamples({ dataType: 'weight', startDate: wStart, endDate: nowIso, limit: 10 });
+                if (wRes && Array.isArray(wRes.samples) && wRes.samples.length > 0) {
+                  latestWeight = Number(wRes.samples[wRes.samples.length - 1].value) || latestWeight;
+                }
+              } catch (_) {}
             }
 
             applyHealthMetrics({ steps: totalSteps, activeKcal: totalActiveKcal, weight: latestWeight, source: 'Google Health Connect' });
             return;
-          } catch (_) {
-            showToast('Permessi Health Connect non concessi: apri Impostazioni Health Connect');
+          } catch (hcErr) {
+            const detail = (hcErr && hcErr.message) ? (' (' + String(hcErr.message).slice(0, 50) + ')') : '';
+            recordSyncEvent({
+              channel: 'Google Health Connect',
+              dir: '⚠️ Errore',
+              summary: 'Sincronizzazione non riuscita' + detail
+            }, true);
+            showToast('⚠️ Errore Health Connect' + detail + ': verifica i permessi nelle impostazioni');
             return;
           }
         }
@@ -10335,6 +10455,22 @@
         const healthPlugin = cap && cap.Plugins && (cap.Plugins.Health || cap.Plugins.CapacitorHealth);
         if (cap && cap.isNativePlatform && cap.isNativePlatform() && healthPlugin && healthPlugin.saveSample) {
           try {
+            const authStatus = await healthPlugin.requestAuthorization({
+              read: ['steps', 'calories', 'weight'],
+              write: ['weight', 'dietaryEnergyConsumed', 'dietaryProtein', 'dietaryWater']
+            });
+            const writeGranted = Array.isArray(authStatus && authStatus.writeAuthorized)
+              ? authStatus.writeAuthorized
+              : ['weight', 'dietaryEnergyConsumed', 'dietaryProtein', 'dietaryWater'];
+
+            if (writeGranted.length === 0) {
+              showToast('⚠️ Attiva i permessi di scrittura in Google Health Connect');
+              if (healthPlugin.openHealthConnectSettings) {
+                try { await healthPlugin.openHealthConnectSettings(); } catch (_) {}
+              }
+              return;
+            }
+
             const unpushedMeals = allMeals.filter((m) => m && m.id && !log.pushedHealthMealIds.includes(m.id));
             if (unpushedMeals.length === 0 && allMeals.length > 0) {
               showToast('✅ Tutti i pasti di oggi risultano già inviati a Google Health Connect');
@@ -10344,19 +10480,22 @@
             let pushedKcal = 0;
             let pushedProt = 0;
             for (const m of unpushedMeals) {
-              // Health Connect IntervalRecord strictly requires startTime < endTime!
               const startMs = Math.max(0, Number(m.ts) || (Date.now() - 120000));
               const startIso = new Date(startMs).toISOString();
               const endIso = new Date(startMs + 60000).toISOString();
               const mk = Math.round(Number(m.kcal) || 0);
               const mp = Math.round(Number(m.prot) || 0);
-              if (mk > 0) {
-                await healthPlugin.saveSample({ dataType: 'dietaryEnergyConsumed', value: mk, unit: 'kilocalorie', startDate: startIso, endDate: endIso });
-                pushedKcal += mk;
+              if (mk > 0 && writeGranted.includes('dietaryEnergyConsumed')) {
+                try {
+                  await healthPlugin.saveSample({ dataType: 'dietaryEnergyConsumed', value: mk, unit: 'kilocalorie', startDate: startIso, endDate: endIso });
+                  pushedKcal += mk;
+                } catch (_) {}
               }
-              if (mp > 0) {
-                await healthPlugin.saveSample({ dataType: 'dietaryProtein', value: mp, unit: 'gram', startDate: startIso, endDate: endIso });
-                pushedProt += mp;
+              if (mp > 0 && writeGranted.includes('dietaryProtein')) {
+                try {
+                  await healthPlugin.saveSample({ dataType: 'dietaryProtein', value: mp, unit: 'gram', startDate: startIso, endDate: endIso });
+                  pushedProt += mp;
+                } catch (_) {}
               }
               log.pushedHealthMealIds.push(m.id);
             }
@@ -10364,13 +10503,17 @@
             const nowMs = Date.now();
             const wStartIso = new Date(nowMs - 60000).toISOString();
             const wEndIso = new Date(nowMs).toISOString();
-            if (payload.water_ml > 0 && !log.pushedHealthMealIds.includes('water_' + payload.water_ml)) {
-              await healthPlugin.saveSample({ dataType: 'dietaryWater', value: Number((payload.water_ml / 1000).toFixed(2)), unit: 'liter', startDate: wStartIso, endDate: wEndIso });
-              log.pushedHealthMealIds = log.pushedHealthMealIds.filter((x) => !String(x).startsWith('water_'));
-              log.pushedHealthMealIds.push('water_' + payload.water_ml);
+            if (payload.water_ml > 0 && writeGranted.includes('dietaryWater') && !log.pushedHealthMealIds.includes('water_' + payload.water_ml)) {
+              try {
+                await healthPlugin.saveSample({ dataType: 'dietaryWater', value: Number((payload.water_ml / 1000).toFixed(2)), unit: 'liter', startDate: wStartIso, endDate: wEndIso });
+                log.pushedHealthMealIds = log.pushedHealthMealIds.filter((x) => !String(x).startsWith('water_'));
+                log.pushedHealthMealIds.push('water_' + payload.water_ml);
+              } catch (_) {}
             }
-            if (payload.weight_kg) {
-              await healthPlugin.saveSample({ dataType: 'weight', value: payload.weight_kg, unit: 'kilogram', startDate: wStartIso, endDate: wEndIso });
+            if (payload.weight_kg && writeGranted.includes('weight')) {
+              try {
+                await healthPlugin.saveSample({ dataType: 'weight', value: payload.weight_kg, unit: 'kilogram', startDate: wStartIso, endDate: wEndIso });
+              } catch (_) {}
             }
             saveState();
 
@@ -10381,8 +10524,9 @@
             });
             showToast('📤 Pasti, acqua e peso inviati a Google Health Connect!');
             return;
-          } catch (_) {
-            showToast('⚠️ Attiva i permessi di scrittura in Google Health Connect e riprova');
+          } catch (hcErr) {
+            const detail = (hcErr && hcErr.message) ? (' (' + String(hcErr.message).slice(0, 50) + ')') : '';
+            showToast('⚠️ Errore scrittura Health Connect' + detail);
             return;
           }
         }

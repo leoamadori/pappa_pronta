@@ -61,13 +61,13 @@ async function sideHttpRequest(opts) {
   return { status, body: bodyObj };
 }
 
-async function getValidFirebaseIdToken(pairing) {
+async function getValidFirebaseIdToken(pairing, forceRefresh) {
   const nowSec = Math.floor(Date.now() / 1000);
   const cachedToken = settings.settingsStorage.getItem(SETTINGS_KEYS.CACHED_ID_TOKEN);
   const cachedExpSec = Number(settings.settingsStorage.getItem(SETTINGS_KEYS.CACHED_TOKEN_EXP_SEC) || 0);
 
-  if (cachedToken && cachedExpSec - 300 > nowSec) {
-    return { ok: true, idToken: cachedToken };
+  if (!forceRefresh && cachedToken && cachedExpSec - 300 > nowSec) {
+    return { ok: true, idToken: cachedToken, fromCache: true };
   }
 
   const formBody =
@@ -128,13 +128,29 @@ async function handleSyncWatchRequest(ctx) {
       encodeURIComponent(pairing.uid) +
       '/integrations/watch';
 
-    const docRes = await sideHttpRequest({
+    let docRes = await sideHttpRequest({
       url: docUrl,
       method: 'GET',
       headers: {
         Authorization: 'Bearer ' + authResult.idToken
       }
     });
+
+    // If cached token was rejected (clock skew or early expiry), force-refresh once and retry
+    if (docRes.status === 401 && authResult.fromCache) {
+      settings.settingsStorage.removeItem(SETTINGS_KEYS.CACHED_ID_TOKEN);
+      settings.settingsStorage.removeItem(SETTINGS_KEYS.CACHED_TOKEN_EXP_SEC);
+      const retryAuth = await getValidFirebaseIdToken(pairing, true);
+      if (retryAuth.ok) {
+        docRes = await sideHttpRequest({
+          url: docUrl,
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + retryAuth.idToken
+          }
+        });
+      }
+    }
 
     if (docRes.status === 404) {
       writeDiagnostic(SYNC_STATUS.NOT_FOUND, 'Documento watch non ancora presente (404)');
