@@ -8576,16 +8576,33 @@
           setModalAuthStatus('⚠️ Connettiti a Internet per completare l\'accesso.', 'warn');
           return false;
         }
-        const cred = fbModules.GoogleAuthProvider.credential(idToken || null, accessToken || null);
-        await fbModules.signInWithCredential(fbAuth, cred);
+        try {
+          const primaryCred = fbModules.GoogleAuthProvider.credential(idToken || null, idToken ? null : (accessToken || null));
+          await fbModules.signInWithCredential(fbAuth, primaryCred);
+        } catch (firstErr) {
+          if (idToken && accessToken) {
+            const fallbackCred = fbModules.GoogleAuthProvider.credential(null, accessToken);
+            await fbModules.signInWithCredential(fbAuth, fallbackCred);
+          } else {
+            throw firstErr;
+          }
+        }
         setModalAuthStatus('✅ Accesso Google (' + (sourceLabel || 'Android') + ') completato! Scaricamento profilo in corso...', 'ok');
-        await pullCloudState('force_pull');
+        try {
+          await pullCloudState('force_pull');
+        } catch (_) {}
         return true;
       }
 
-      function parseAndApplyAuthBridgeToken(rawInput) {
+      const CONSUMED_BRIDGE_URL_KEY = 'pappa_pronta_last_bridge_url';
+      function parseAndApplyAuthBridgeToken(rawInput, isFromLaunchUrl) {
         if (!rawInput) return false;
         const clean = rawInput.trim();
+        if (isFromLaunchUrl) {
+          try {
+            if (sessionStorage.getItem(CONSUMED_BRIDGE_URL_KEY) === clean) return false;
+          } catch (_) {}
+        }
         let idToken = null;
         let accessToken = null;
         try {
@@ -8607,8 +8624,10 @@
           }
         } catch (_) {}
         if (!idToken && !accessToken) return false;
-        completeTokenCredentialSignIn(idToken, accessToken, 'Ponte Sicuro').catch(() => {
-          setModalAuthStatus('⚠️ Il codice è scaduto (dura 60 min): ripeti l\'accesso da Chrome.', 'warn');
+        try { sessionStorage.setItem(CONSUMED_BRIDGE_URL_KEY, clean); } catch (_) {}
+        completeTokenCredentialSignIn(idToken, accessToken, 'Ponte Sicuro').catch((err) => {
+          const code = (err && err.code) ? (' [' + err.code + ']') : '';
+          setModalAuthStatus('⚠️ Accesso ponte non riuscito' + code + ': ripeti l\'accesso da Chrome oppure accedi con Email e Password.', 'warn');
         });
         return true;
       }
@@ -8660,7 +8679,7 @@
           if (appPlugin.getLaunchUrl) {
             appPlugin.getLaunchUrl().then((res) => {
               if (res && isAuthCallbackUrl(res.url)) {
-                parseAndApplyAuthBridgeToken(res.url);
+                parseAndApplyAuthBridgeToken(res.url, true);
               }
             }).catch(() => {});
           }
