@@ -5349,12 +5349,21 @@
         return DAILY_DOZEN.filter((item) => item.id !== 'water' && item.id !== 'exercise' && (Number(d[item.id]) || 0) < item.target);
       }
 
+      function getRecipeStats(r, scale) {
+        const sc = Number(scale) || 1;
+        return {
+          kcal: Math.round((Number(r && r.kcal) || 480) * sc),
+          prot: Math.round((Number(r && r.prot) || 0) * sc),
+          carbs: Math.round((Number(r && r.carbs) || 0) * sc),
+          na: Math.round((Number(r && r.na) || 0) * sc),
+          k: Math.round((Number(r && r.k) || 0) * sc)
+        };
+      }
+
       function rankRecipesForToday(limit) {
         const todayLog = ensureTodayLog();
         const missing = getMissingDozenCategories(todayLog);
         const missingSet = new Set(missing.map((x) => x.id));
-        const pantrySet = new Set(state.pantry || []);
-        const expSet = new Set(state.expiring || []);
         const lim = state.limits || computeAutoLimits(state.profile);
         const naLim = getDailySodiumLimitMg();
         const usedNa = Number(todayLog.na) || 0;
@@ -5365,31 +5374,25 @@
 
         const candidates = [];
         RECIPES.forEach((r) => {
-          if (typeof isRecipeAllowedForProfile === 'function' && !isRecipeAllowedForProfile(r)) return;
-          const hasBlocked = (r.ingredients || []).some((ing) => {
-            const f = FOOD_MAP[ing.id];
-            return f && isFoodBlockedByProfile(f);
-          });
-          if (hasBlocked) return;
+          const avail = getRecipeAvailability(r);
+          if (avail.hasBlockedAllergen) return;
 
-          const stats = computeRecipeMacros(r, 1);
-          const coveredMissing = (r.dozen || []).filter((dId) => missingSet.has(dId));
-          const uniqueCovered = [...new Set(coveredMissing)];
-          const haveCount = (r.ingredients || []).filter((ing) => pantrySet.has(ing.id)).length;
-          const expCount = (r.ingredients || []).filter((ing) => expSet.has(ing.id)).length;
+          const stats = getRecipeStats(r, 1);
+          const recDozen = getRecipeDozenTags(r);
+          const uniqueCovered = recDozen.filter((dId) => missingSet.has(dId));
 
           let score = uniqueCovered.length * 14;
           if (stats.na <= remNa) score += 8;
           else score -= 12;
           if (protGap > 20 && stats.prot >= 20) score += 7;
           if (stats.k >= 600) score += 4;
-          if (isMorning && (r.timeMin || 20) <= 20) score += 6;
-          score += haveCount * 1.5 + expCount * 3;
+          if (isMorning && (r.time || 20) <= 20) score += 6;
+          score += avail.haveCount * 1.5 + avail.expCount * 3;
 
-          candidates.push({ recipe: r, stats, uniqueCovered, haveCount, totalIng: (r.ingredients || []).length, score });
+          candidates.push({ recipe: r, stats, recDozen, uniqueCovered, haveCount: avail.haveCount, totalIng: avail.total, score });
         });
 
-        candidates.sort((a, b) => b.score - a.score || (a.recipe.timeMin || 25) - (b.recipe.timeMin || 25));
+        candidates.sort((a, b) => b.score - a.score || (a.recipe.time || 25) - (b.recipe.time || 25));
         return candidates.slice(0, limit || 3);
       }
 
@@ -5435,7 +5438,7 @@
             '<div class="oggi-rec-head">' +
               '<div>' +
                 '<h3 class="oggi-rec-title">' + escHtml(r.title) + '</h3>' +
-                '<div class="oggi-rec-meta num">⏱ ' + (r.timeMin || 15) + ' min · ' + Math.round(st.kcal) + ' kcal · Prot ' + Math.round(st.prot) + 'g · Na ' + Math.round(st.na) + 'mg</div>' +
+                '<div class="oggi-rec-meta num">⏱ ' + (r.time || 15) + ' min · ' + st.kcal + ' kcal · Prot ' + st.prot + 'g · Na ' + st.na + 'mg</div>' +
               '</div>' +
               '<span class="badge">' + item.haveCount + '/' + item.totalIng + ' in casa</span>' +
             '</div>' +
@@ -5451,14 +5454,16 @@
           btn.addEventListener('click', () => {
             const rec = RECIPES.find((x) => x.id === btn.dataset.rid);
             if (!rec) return;
-            const st = computeRecipeMacros(rec, 1);
+            const st = getRecipeStats(rec, 1);
             logMealAndSync({
               title: rec.title,
-              kcal: Math.round(st.kcal),
-              prot: Math.round(st.prot),
-              na: Math.round(st.na),
-              k: Math.round(st.k),
-              dozen: rec.dozen || []
+              kcal: st.kcal,
+              prot: st.prot,
+              carbs: st.carbs,
+              na: st.na,
+              k: st.k,
+              dozen: getRecipeDozenTags(rec),
+              usedIds: (rec.ings || []).map((i) => i.id)
             });
           });
         });
@@ -6804,29 +6809,24 @@
       function renderAlmostReadyRecipes() {
         const wrap = document.getElementById('almostReadyRecipesWrap');
         if (!wrap) return;
-        const pantrySet = new Set(state.pantry || []);
         const almost = [];
         RECIPES.forEach((r) => {
-          if (typeof isRecipeAllowedForProfile === 'function' && !isRecipeAllowedForProfile(r)) return;
-          const hasBlocked = (r.ingredients || []).some((ing) => {
-            const f = FOOD_MAP[ing.id];
-            return f && isFoodBlockedByProfile(f);
-          });
-          if (hasBlocked) return;
-          const missing = (r.ingredients || []).filter((ing) => !pantrySet.has(ing.id) && FOOD_MAP[ing.id]);
+          const avail = getRecipeAvailability(r);
+          if (avail.hasBlockedAllergen) return;
+          const missing = avail.missingIds.filter((id) => Boolean(FOOD_MAP[id]));
           if (missing.length >= 1 && missing.length <= 2) {
             almost.push({ recipe: r, missing });
           }
         });
-        almost.sort((a, b) => a.missing.length - b.missing.length || (a.recipe.timeMin || 25) - (b.recipe.timeMin || 25));
+        almost.sort((a, b) => a.missing.length - b.missing.length || (a.recipe.time || 25) - (b.recipe.time || 25));
         const top = almost.slice(0, 3);
         if (top.length === 0) {
           wrap.innerHTML = '<div class="empty-box" style="padding:10px;">Nessuna ricetta a 1–2 ingredienti dal completamento al momento.</div>';
           return;
         }
         wrap.innerHTML = top.map((it) => {
-          const missNames = it.missing.map((m) => FOOD_MAP[m.id] ? FOOD_MAP[m.id].name : m.id);
-          const missIds = it.missing.map((m) => m.id).join(',');
+          const missNames = it.missing.map((id) => FOOD_MAP[id] ? FOOD_MAP[id].name : id);
+          const missIds = it.missing.join(',');
           return '<div class="shop-row">' +
             '<div style="min-width:0;">' +
               '<strong>' + escHtml(it.recipe.title) + '</strong>' +
