@@ -39,6 +39,10 @@
       "www/**",
       "*.cjs",
       "*.apk",
+      "*.zab",
+      "*.zpk",
+      "zepp/**",
+      "docs/**",
       "*.md",
       "*.zip",
       "*.log"

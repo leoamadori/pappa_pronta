@@ -49,6 +49,28 @@ rules_version = '2';
 //        protocol: '16:8'|'14:10'|'12:12'|'off', eatingStartTs: number|null)
 //   - syncHistory: list (optional, <= 100 items) - recent cloud sync history entries
 //
+// Subcollection: users/{userId}/integrations
+// Document ID: watch (strictly restricted to `users/{userId}/integrations/watch`)
+// Access Pattern: Strictly private 1:1 Amazfit / Zepp OS watch summary subdocument
+//   accessed via direct document `get`, `create`, `update`, and `delete` by the
+//   authenticated owner (`request.auth.uid == userId`), including authenticated
+//   Firestore REST API reads/patches from the watch companion integration.
+//   Collection-level listing (`list`) is explicitly denied.
+// Fields (all 12 keys strictly required; numeric fields strictly `int` so Firestore
+//   REST serializes `integerValue`, with signed 32-bit epoch bounds `0..2147483647`):
+//   - v: int (required, == 1) - watch summary schema version
+//   - dateYmd: int (required, 20200101..20991231) - local date encoded as YYYYMMDD
+//   - fastMode: string (required, <= 8 chars, 'fasting' | 'eating' | 'done' | 'off')
+//   - protoFastH: int (required, 0..24) - fasting protocol fasting hours
+//   - protoEatH: int (required, 0..24) - fasting protocol eating hours
+//   - anchorSec: int (required, 0..2147483647) - window anchor epoch seconds
+//   - targetSec: int (required, 0..2147483647) - target transition epoch seconds
+//   - lastMealSec: int (required, 0..2147483647) - last meal epoch seconds
+//   - foodDozen: int (required, 0..23) - Daily Dozen food servings count
+//   - exerciseLogged: int (required, 0..1) - Daily Dozen exercise flag (0 or 1)
+//   - cloudSteps: int (required, 0..200000) - synced daily step count
+//   - updatedAtSec: int (required, 0..2147483647) - last summary update epoch seconds
+//
 // All other collections, subcollections, and documents are denied by default.
 // ===============================================================
 
@@ -186,6 +208,28 @@ service cloud.firestore {
         (!('syncHistory' in data) || isValidList(data.syncHistory, 100));
     }
 
+    function isValidWatchSummary(data) {
+      return data is map &&
+        data.keys().size() == 12 &&
+        data.keys().hasOnly([
+          'v', 'dateYmd', 'fastMode', 'protoFastH', 'protoEatH',
+          'anchorSec', 'targetSec', 'lastMealSec', 'foodDozen',
+          'exerciseLogged', 'cloudSteps', 'updatedAtSec'
+        ]) &&
+        data.v is int && data.v == 1 &&
+        data.dateYmd is int && data.dateYmd >= 20200101 && data.dateYmd <= 20991231 &&
+        data.fastMode is string && data.fastMode.size() <= 8 && data.fastMode in ['fasting', 'eating', 'done', 'off'] &&
+        data.protoFastH is int && data.protoFastH >= 0 && data.protoFastH <= 24 &&
+        data.protoEatH is int && data.protoEatH >= 0 && data.protoEatH <= 24 &&
+        data.anchorSec is int && data.anchorSec >= 0 && data.anchorSec <= 2147483647 &&
+        data.targetSec is int && data.targetSec >= 0 && data.targetSec <= 2147483647 &&
+        data.lastMealSec is int && data.lastMealSec >= 0 && data.lastMealSec <= 2147483647 &&
+        data.foodDozen is int && data.foodDozen >= 0 && data.foodDozen <= 23 &&
+        data.exerciseLogged is int && data.exerciseLogged >= 0 && data.exerciseLogged <= 1 &&
+        data.cloudSteps is int && data.cloudSteps >= 0 && data.cloudSteps <= 200000 &&
+        data.updatedAtSec is int && data.updatedAtSec >= 0 && data.updatedAtSec <= 2147483647;
+    }
+
     // ===============================================================
     // Collection Rules
     // ===============================================================
@@ -203,6 +247,17 @@ service cloud.firestore {
 
       // Allow the authenticated owner to delete their own cloud state document.
       allow delete: if isOwner(userId);
+
+      // Dedicated Amazfit / Zepp OS watch summary subdocument (`users/{userId}/integrations/watch`)
+      match /integrations/watch {
+        allow get: if isOwner(userId);
+        allow list: if false;
+
+        allow create: if isOwner(userId) && isValidWatchSummary(request.resource.data);
+        allow update: if isOwner(userId) && isValidWatchSummary(request.resource.data);
+
+        allow delete: if isOwner(userId);
+      }
     }
 
     // Default deny on all other collections, subcollections, and paths

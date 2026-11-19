@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'zepp/**'
+      - 'docs/**'
+      - 'README.md'
+      - '.github/workflows/build-zepp.yml'
   workflow_dispatch:
 
 permissions:
@@ -87,6 +92,7 @@ jobs:
             "@capacitor/android@8.6.2" \
             "@capacitor/app@8.0.0" \
             "@capacitor/browser@8.0.0" \
+            "@capacitor/local-notifications@^8.0.0" \
             "@capgo/capacitor-health@8.13.0" \
             "@capacitor-firebase/authentication@8.6.0" \
             "firebase@^12.6.0" \
@@ -107,6 +113,10 @@ jobs:
               "FirebaseAuthentication": {
                 "skipNativeAuth": true,
                 "providers": ["google.com"]
+              },
+              "LocalNotifications": {
+                "smallIcon": "ic_stat_pappa",
+                "iconColor": "#1B6B46"
               }
             }
           }
@@ -190,6 +200,16 @@ jobs:
               const p = path.join(resDir, rel);
               if (fs.existsSync(p)) fs.unlinkSync(p);
             });
+
+            // Monochrome white-on-transparent notification smallIcon for @capacitor/local-notifications
+            const statDir = path.join(resDir, 'drawable');
+            fs.mkdirSync(statDir, { recursive: true });
+            const statSvg = Buffer.from(
+              '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">' +
+              '<path fill="#FFFFFF" d="M16 44h64c0 19.9-14.3 34-32 34S16 63.9 16 44zm34-24c10.5 0 19 8.5 19 19h-8c0-6.1-4.9-11-11-11V20zm-14 6c7.7 0 14 6.3 14 14h-8c0-3.3-2.7-6-6-6v-8z"/>' +
+              '</svg>'
+            );
+            await sharp(statSvg).png().toFile(path.join(statDir, 'ic_stat_pappa.png'));
 
             const walkSplash = (dir) => {
               let list = [];
@@ -334,6 +354,8 @@ jobs:
             // Permissions + Health Connect <queries> inside <manifest>
             const reqPerms = [
               "android.permission.CAMERA",
+              "android.permission.POST_NOTIFICATIONS",
+              "android.permission.RECEIVE_BOOT_COMPLETED",
               "android.permission.health.READ_STEPS",
               "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
               "android.permission.health.READ_TOTAL_CALORIES_BURNED",
@@ -371,6 +393,8 @@ jobs:
           grep -q "android.permission.health.READ_STEPS" android/app/src/main/AndroidManifest.xml
           grep -q "ViewPermissionUsageActivity" android/app/src/main/AndroidManifest.xml
           grep -q "android.permission.CAMERA" android/app/src/main/AndroidManifest.xml
+          grep -q "android.permission.POST_NOTIFICATIONS" android/app/src/main/AndroidManifest.xml
+          grep -q "android.permission.RECEIVE_BOOT_COMPLETED" android/app/src/main/AndroidManifest.xml
 
       - name: Build Signed Release APK (debuggable=false) with Gradle
         working-directory: android

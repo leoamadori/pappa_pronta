@@ -1,0 +1,76 @@
+{
+  "configVersion": "v2",
+  "app": {
+    "appId": 1058201,
+    "appName": "Pappa Pronta Sync",
+    "appType": "app",
+    "version": {
+      "code": 1,
+      "name": "1.0.0"
+    },
+    "icon": "icon.png",
+    "vender": "pappa-pronta",
+    "description": "Ponte di sincronizzazione Cloud per la Watch Face Pappa Pronta"
+  },
+  "permissions": [],
+  "runtime": {
+    "apiVersion": {
+      "compatible": "1.0.0",
+      "target": "1.0.1",
+      "minVersion": "1.0.0"
+    }
+  },
+  "targets": {
+    "gts4mini": {
+      "module": {
+        "page": {
+          "pages": ["page/index"]
+        },
+        "app-side": {
+          "path": "app-side/index"
+        },
+        "setting": {
+          "path": "setting/index"
+        }
+      },
+      "platforms": [
+        { "name": "gts4mini", "deviceSource": 246 },
+        { "name": "gts4mini-w", "deviceSource": 247 }
+      ],
+      "designWidth": 336
+    },
+    "active2round": {
+      "module": {
+        "page": {
+          "pages": ["page/index"]
+        },
+        "app-side": {
+          "path": "app-side/index"
+        },
+        "setting": {
+          "path": "setting/index"
+        }
+      },
+      "platforms": [
+        { "name": "active2-round-1", "deviceSource": 8913152 },
+        { "name": "active2-round-2", "deviceSource": 8913153 },
+        { "name": "active2-round-3", "deviceSource": 8913155 },
+        { "name": "active2-round-4", "deviceSource": 8913159 },
+        { "name": "active2-round-5", "deviceSource": 10092800 },
+        { "name": "active2-round-6", "deviceSource": 10092801 },
+        { "name": "active2-round-7", "deviceSource": 10092803 },
+        { "name": "active2-round-8", "deviceSource": 10092807 }
+      ],
+      "designWidth": 466
+    }
+  },
+  "i18n": {
+    "en-US": {
+      "appName": "Pappa Pronta Sync"
+    },
+    "it-IT": {
+      "appName": "Pappa Pronta Sync"
+    }
+  },
+  "defaultLanguage": "en-US"
+}

@@ -54,6 +54,20 @@
 
 ---
 
+## ⌚ Watch Face Amazfit (`Active 2 Round` & `GTS 4 Mini`) + 3 Promemoria Giornalieri
+
+Mostra al polso in sola lettura **Digiuno Intermittente** (fase e ore trascorse/rimanenti con scorrimento autonomo anche di notte), **Movimento** (`passi`, `kcal` sensore e obiettivo `7.500 passi` senza falsi positivi da metabolismo basale) e **12 Cibi Sani** (`X/24` con azzeramento automatico a mezzanotte), con aggiornamento a 1 tocco (`↻`) e Always-On Display a basso consumo:
+
+1. **Attiva la Modalità Sviluppatore nell'App Zepp:** apri *App Zepp → Profilo → Impostazioni → Informazioni su* e tocca 7 volte il logo Zepp finché compare l'avviso di attivazione.
+2. **Installa `Pappa Pronta Sync` e `Pappa Pronta WF`:**
+   - **Da PC sulla stessa rete Wi-Fi (`zeus bridge` / `zeus preview`):** esegui `npm run build` o `npx zeus preview` dentro `zepp/companion` e `zepp/watchface` e scansiona il QR dalla sezione *Modalità Sviluppatore → Mini Programma* dell'App Zepp.
+   - **Tramite pacchetti `.zab` compilati da GitHub Actions:** scarica l'artefatto `PappaPronta-Zepp-Amazfit-Packages` e carica i due file `.zab` come bozze personali non pubblicate su [Zepp Open Platform Console](https://console.zepp.com) per ottenere il QR permanente installabile sull'App Zepp sia per **GTS 4 Mini** (`336x384`) sia per **Active 2 Round** (`466x466`).
+3. **Collega l'Account una sola volta:** nell'app Pappa Pronta apri **Account Cloud**, premi **`⌚ Collega Orologio Zepp (Copia codice accoppiamento)`** e incolla il testo in *App Zepp → Dispositivo → Mini-App Pappa Pronta Sync → Impostazioni* (condiviso automaticamente quando alterni i due orologi).
+4. **Abilita i 3 Promemoria Giornalieri (`07:00`, `13:00`, `20:00`) al polso:** nell'APK Android vai in *`📅 Menu & Spesa` → Profilo → `⌚ Orologio Amazfit & 3 Promemoria Giornalieri`*, attiva l'interruttore e in *App Zepp → Profilo → [Active 2 / GTS 4 Mini] → Notifiche e promemoria → Avvisi app* attiva **Pappa Pronta** (disattivando *«Ricevi solo a schermo spento»* o testando a schermo bloccato col pulsante di prova a 5 secondi).
+5. **Aggiornamento rapido dal quadrante:** dopo aver registrato un pasto sul telefono, tocca il pulsante **`↻`** sulla Watch Face: la Mini-App scarica il riepilogo Cloud (`~700 byte`), vibra e torna al quadrante.
+
+---
+
 ## 📲 Come Installarla
 
 ### 1. Come App Web (PWA — Android, iPhone, PC/Mac)
@@ -81,7 +95,10 @@ Ad ogni push sul branch `main`, **GitHub Actions** compila l'APK Android `Releas
 | `firestore.rules` | Regole Cloud Firestore con isolamento per singolo utente e validazione campi/limiti |
 | `firebase.json` | Configurazione Firebase Hosting (`Cache-Control: no-cache` su HTML/SW/Manifest + security headers) |
 | `google-services.json` | Configurazione client OAuth Android per il Login Google nativo |
-| `.github/workflows/build-apk.yml` | Pipeline CI/CD GitHub Actions (`assembleRelease` firmato, `singleTask`, permessi Health Connect Android 13–15) |
+| `.github/workflows/build-apk.yml` | Pipeline CI/CD GitHub Actions (`assembleRelease` firmato, `singleTask`, permessi Health Connect e notifiche locali Android 13–15) |
+| `.github/workflows/build-zepp.yml` | Pipeline CI per test contratto condiviso e compilazione pacchetti `.zab` Zepp OS (`GTS 4 Mini` + `Active 2 Round`) |
+| `zepp/` | Codice sorgente Watch Face (`zepp/watchface`), Mini-App ponte (`zepp/companion`) e contratto condiviso (`zepp/shared`) |
+| `docs/designs/amazfit-watchface.md` | Documento di progettazione architetturale della Watch Face Amazfit |
 
 ---
 

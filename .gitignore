@@ -11,3 +11,9 @@ PAPPA_PRONTA_ANTIGRAVITY.md
 .github/sw.js
 .github/manifest.json
 .github/icons/
+zepp/**/node_modules/
+zepp/**/dist/
+zepp/companion/shared/
+zepp/watchface/shared/
+*.zab
+*.zpk

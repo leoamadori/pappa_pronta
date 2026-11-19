@@ -1,0 +1,54 @@
+name: Build Pappa Pronta Zepp OS Packages (GTS 4 Mini & Active 2 Round)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'zepp/**'
+      - '.github/workflows/build-zepp.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-zepp-packages:
+    name: Zepp OS Companion + Watch Face (.zab)
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Run Shared Contract Unit Tests
+        run: node --test zepp/shared/contract.test.mjs
+
+      - name: Sync Shared Modules & Build Zepp Companion Mini-App (.zab)
+        working-directory: zepp/companion
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+          ls -lh dist/*.zab
+
+      - name: Sync Shared Modules & Build Zepp Watch Face (.zab)
+        working-directory: zepp/watchface
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+          ls -lh dist/*.zab
+
+      - name: Upload Zepp .zab Packages
+        uses: actions/upload-artifact@v6
+        with:
+          name: PappaPronta-Zepp-Amazfit-Packages
+          path: |
+            zepp/companion/dist/*.zab
+            zepp/watchface/dist/*.zab
+          if-no-files-found: error
+          retention-days: 30

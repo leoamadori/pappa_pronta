@@ -2805,6 +2805,32 @@
           </div>
         </details>
 
+        <!-- Promemoria Giornalieri & Orologio Amazfit (Active 2 Round / GTS 4 Mini) -->
+        <details class="sub-disclosure" id="watchRemindersDetails">
+          <summary>
+            <span>⌚ Orologio Amazfit &amp; 3 Promemoria Giornalieri (07:00 · 13:00 · 20:00)</span>
+            <span id="watchRemStatusBadge" class="badge">OFF</span>
+          </summary>
+          <div class="sub-disclosure-body" style="display:grid; gap:10px;">
+            <p style="margin:0; font-size:0.79rem; color:var(--ink-secondary); line-height:1.4;">
+              Nell'APK Android attiva tre notifiche locali (<strong>07:00</strong>, <strong>13:00</strong>, <strong>20:00</strong>) che l'app Zepp inoltra via Bluetooth al tuo <strong>Amazfit Active 2 Round</strong> o <strong>GTS 4 Mini</strong>, ricordandoti di registrare pasti e 12 Cibi Sani sul telefono.
+            </p>
+            <div id="watchRemPermInfo" style="font-size:0.77rem; color:var(--ink-secondary); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:7px 9px;">
+              Stato permessi Android: verifica in corso...
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <button type="button" id="toggleWatchRemindersBtn" class="btn btn-primary btn-sm" style="flex:1 1 200px;">🔔 Attiva Promemoria (07:00 · 13:00 · 20:00)</button>
+              <button type="button" id="testWatchReminderBtn" class="btn btn-soft btn-sm" style="flex:1 1 180px;">⌚ Invia notifica di prova tra 5 secondi</button>
+            </div>
+            <div style="font-size:0.76rem; color:var(--ink-secondary); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 10px; line-height:1.42;">
+              <strong>Checklist App Zepp (da fare una volta per ciascun orologio):</strong><br>
+              1. Apri <em>Account Cloud</em> qui sopra e premi <strong>«⌚ Collega Orologio Zepp»</strong> per incollare il codice nelle impostazioni della Mini-App Zepp.<br>
+              2. In <em>App Zepp → Profilo → [Active 2 / GTS 4 Mini] → Notifiche e promemoria → Avvisi app</em> abilita <strong>Pappa Pronta</strong>.<br>
+              3. Disattiva <em>«Ricevi solo a schermo spento»</em> in Zepp (oppure blocca lo schermo del telefono subito dopo aver premuto la notifica di prova; su Android 12–15 a schermo spento la consegna può raggrupparsi entro 60 secondi).
+            </div>
+          </div>
+        </details>
+
         <!-- Backup JSON, Offline OCR & Installazione a scomparsa -->
         <details class="sub-disclosure" id="profileBackupDetails">
           <summary><span>💾 Backup su file, lettore etichette offline e installazione</span></summary>
@@ -2960,6 +2986,12 @@
             <button type="button" id="fbSyncNowBtn" class="btn btn-sm btn-primary" style="flex:1 1 140px;">⬇️ Scarica dal Cloud</button>
             <button type="button" id="fbPushNowBtn" class="btn btn-sm btn-soft" style="flex:1 1 130px;">⬆️ Salva nel Cloud</button>
             <button type="button" id="fbLogoutBtn" class="btn btn-sm">Esci</button>
+          </div>
+          <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); display:grid; gap:6px;">
+            <button type="button" id="fbCopyZeppPairingBtn" class="btn btn-xs btn-soft btn-block">⌚ Collega Orologio Zepp (Copia codice accoppiamento)</button>
+            <div style="font-size:0.73rem; color:var(--ink-secondary); line-height:1.36;">
+              Copia una chiave di accesso privata per la Mini-App Zepp sul tuo telefono: incollala solo in <em>App Zepp → Mini-App Pappa Pronta → Impostazioni</em> (non condividerla con terzi; se cambi password o scolleghi l'account rimuovila anche dalle impostazioni Zepp).
+            </div>
           </div>
         </div>
 
@@ -3831,7 +3863,7 @@
           let foundLegacy = false;
           for (let i = 0; i < localStorage.length; i++) {
             const k = localStorage.key(i);
-            if (!k || k === STORAGE_KEY || k === 'pappa_pronta_cloud_uid' || k === 'pappa_pronta_owner_uid' || k === 'pappa_pronta_compass_seen' || k === 'pappa_pronta_adv_open') continue;
+            if (!k || k === STORAGE_KEY || k === 'pappa_pronta_cloud_uid' || k === 'pappa_pronta_owner_uid' || k === 'pappa_pronta_compass_seen' || k === 'pappa_pronta_adv_open' || k === 'pappa_pronta_watch_reminders_v1') continue;
             if (/^(pappa|pronta)/i.test(k)) {
               try {
                 const parsed = JSON.parse(localStorage.getItem(k));
@@ -4224,7 +4256,7 @@
       function computeFastingState() {
         const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol]) ? state.fasting.protocol : 'off';
         if (protoKey === 'off') {
-          return { mode: 'off', protoKey: 'off' };
+          return { mode: 'off', protoKey: 'off', proto: { fastH: 0, eatH: 0 }, anchorTs: 0, targetTs: 0, lastMealTs: 0 };
         }
         const proto = FASTING_PROTOCOLS[protoKey];
         const fastMs = proto.fastH * 3600 * 1000;
@@ -4286,6 +4318,9 @@
             mode: 'eating',
             protoKey,
             proto,
+            anchorTs: sessionStartTs,
+            targetTs: windowEndTs,
+            lastMealTs: sessionLastTs || sessionStartTs,
             badgeText: '🍽 Finestra ' + proto.eatH + 'h Aperta',
             badgeClass: 'badge warn',
             headlineHtml:
@@ -4341,6 +4376,9 @@
           mode: reached ? 'done' : 'fasting',
           protoKey,
           proto,
+          anchorTs,
+          targetTs,
+          lastMealTs: anchorTs,
           badgeText: reached ? ('✅ ' + proto.fastH + 'h Completate') : '⏳ Digiuno attivo',
           badgeClass: reached ? 'badge ok' : 'badge rest',
           headlineHtml: reached
@@ -8209,6 +8247,280 @@
       const OWNER_UID_KEY = 'pappa_pronta_owner_uid';
       let bridgeTokenPayload = '';
 
+      const WATCH_REMINDERS_KEY = 'pappa_pronta_watch_reminders_v1';
+      const WATCH_REMINDER_CHANNEL_ID = 'pappa_pronta_watch_reminders';
+      const WATCH_REMINDER_SLOTS = [
+        {
+          id: 700,
+          hour: 7,
+          minute: 0,
+          title: '☀️ Pappa Pronta · Inizio giornata',
+          body: 'Controlla il digiuno al polso, bevi un bicchiere d\'acqua e pianifica i 12 Cibi Sani di oggi.'
+        },
+        {
+          id: 1300,
+          hour: 13,
+          minute: 0,
+          title: '🥗 Pappa Pronta · Pausa pranzo',
+          body: 'Registra il pranzo e le porzioni dei 12 Cibi Sani sul telefono, poi aggiorna il quadrante (↻).'
+        },
+        {
+          id: 2000,
+          hour: 20,
+          minute: 0,
+          title: '🌙 Pappa Pronta · Riepilogo serale',
+          body: 'Registra la cena, verifica la chiusura della finestra pasti e allinea il quadrante per la notte.'
+        }
+      ];
+
+      function clampEpochSec32(msVal) {
+        const sec = Math.floor((Number(msVal) || 0) / 1000);
+        if (!Number.isFinite(sec) || sec <= 0) return 0;
+        return Math.min(2147483647, sec);
+      }
+
+      function buildWatchSummaryPayload(nowMs) {
+        const tsNow = Number(nowMs) || Date.now();
+        const todayKey = getLocalDateKey(new Date(tsNow));
+        const dateYmd = Math.min(20991231, Math.max(20200101, Math.trunc(Number(todayKey.replace(/-/g, '')) || 20260101)));
+        const todayLog = (state.logs && state.logs[todayKey]) ? state.logs[todayKey] : createDefaultDayLog();
+        const fState = computeFastingState();
+        const validMode = ['fasting', 'eating', 'done', 'off'].includes(fState.mode) ? fState.mode : 'off';
+        const protoFastH = Math.min(24, Math.max(0, Math.trunc(Number(fState.proto && fState.proto.fastH) || 0)));
+        const protoEatH = Math.min(24, Math.max(0, Math.trunc(Number(fState.proto && fState.proto.eatH) || 0)));
+        const totalDozen = computeDozenTotal(todayLog.dozen || {});
+        const rawExercisePortion = Math.min(1, Math.max(0, Math.trunc(Number(todayLog.dozen && todayLog.dozen.exercise) || 0)));
+        const foodDozen = Math.min(23, Math.max(0, Math.trunc(totalDozen - rawExercisePortion)));
+        const cloudSteps = Math.min(200000, Math.max(0, Math.round(Number(todayLog.health && todayLog.health.steps) || 0)));
+        const activeKcal = Math.max(0, Number(todayLog.health && todayLog.health.activeKcal) || 0);
+        const exerciseLogged = (rawExercisePortion >= 1 || cloudSteps >= 7500 || activeKcal >= 300) ? 1 : 0;
+
+        return {
+          v: 1,
+          dateYmd,
+          fastMode: validMode,
+          protoFastH,
+          protoEatH,
+          anchorSec: clampEpochSec32(fState.anchorTs),
+          targetSec: clampEpochSec32(fState.targetTs),
+          lastMealSec: clampEpochSec32(fState.lastMealTs),
+          foodDozen,
+          exerciseLogged,
+          cloudSteps,
+          updatedAtSec: clampEpochSec32(tsNow)
+        };
+      }
+
+      function copyZeppWatchPairingJson() {
+        const cfg = getActiveFirebaseConfig();
+        if (!fbCurrentUser || !cfg || !fbCurrentUser.refreshToken) {
+          setModalAuthStatus('⚠️ Accedi prima al tuo account Cloud per generare il codice di collegamento Zepp.', 'warn');
+          showToast('Accedi prima al Cloud per collegare l\'orologio');
+          return;
+        }
+        const pairingObj = {
+          projectId: String(cfg.projectId || 'pappa-pronta-leo'),
+          apiKey: String(cfg.apiKey || ''),
+          uid: String(fbCurrentUser.uid || ''),
+          refreshToken: String(fbCurrentUser.refreshToken || '')
+        };
+        copyTextToClipboard(
+          JSON.stringify(pairingObj),
+          '⌚ Codice Zepp copiato! Incollalo solo in App Zepp → Mini-App Pappa Pronta → Impostazioni.'
+        );
+        setModalAuthStatus(
+          '⌚ <strong>Codice collegamento Zepp copiato negli appunti:</strong> incollalo nelle impostazioni della Mini-App Pappa Pronta dentro l\'app Zepp (non condividerlo con nessuno; svuota gli appunti dopo l\'uso).',
+          'ok'
+        );
+      }
+
+      function isWatchRemindersEnabled() {
+        try {
+          return localStorage.getItem(WATCH_REMINDERS_KEY) === '1';
+        } catch (_) {
+          return false;
+        }
+      }
+
+      function getCapacitorLocalNotifications() {
+        const cap = window.Capacitor;
+        if (!cap || !cap.isNativePlatform || !cap.isNativePlatform()) return null;
+        return (cap.Plugins && cap.Plugins.LocalNotifications) ? cap.Plugins.LocalNotifications : null;
+      }
+
+      async function ensureWatchNotificationChannel(lnPlugin) {
+        if (!lnPlugin || !lnPlugin.createChannel) return;
+        try {
+          await lnPlugin.createChannel({
+            id: WATCH_REMINDER_CHANNEL_ID,
+            name: 'Promemoria Giornalieri Pappa Pronta & Orologio',
+            description: 'Avvisi alle 07:00, 13:00 e 20:00 inoltrabili via Bluetooth agli smartwatch Amazfit',
+            importance: 5,
+            visibility: 1,
+            vibration: true
+          });
+        } catch (_) {}
+      }
+
+      async function cancelAllWatchNotifications() {
+        const ln = getCapacitorLocalNotifications();
+        if (!ln || !ln.cancel) return;
+        try {
+          await ln.cancel({
+            notifications: [{ id: 700 }, { id: 1300 }, { id: 2000 }, { id: 7999 }]
+          });
+        } catch (_) {}
+      }
+
+      async function reconcileWatchDailyNotifications(requestPermIfNeeded) {
+        const ln = getCapacitorLocalNotifications();
+        if (!ln) {
+          await renderWatchRemindersUI();
+          return false;
+        }
+        try {
+          let perm = await ln.checkPermissions();
+          if (perm.display !== 'granted' && requestPermIfNeeded && ln.requestPermissions) {
+            perm = await ln.requestPermissions();
+          }
+          if (perm.display !== 'granted') {
+            try { localStorage.setItem(WATCH_REMINDERS_KEY, '0'); } catch (_) {}
+            await renderWatchRemindersUI();
+            showToast('⚠️ Abilita il permesso notifiche Android per ricevere gli avvisi al polso');
+            return false;
+          }
+          await ensureWatchNotificationChannel(ln);
+          await ln.cancel({ notifications: [{ id: 700 }, { id: 1300 }, { id: 2000 }] });
+          await ln.schedule({
+            notifications: WATCH_REMINDER_SLOTS.map((slot) => ({
+              id: slot.id,
+              title: slot.title,
+              body: slot.body,
+              channelId: WATCH_REMINDER_CHANNEL_ID,
+              smallIcon: 'ic_stat_pappa',
+              iconColor: '#1B6B46',
+              schedule: {
+                on: { hour: slot.hour, minute: slot.minute },
+                allowWhileIdle: true
+              }
+            }))
+          });
+          await renderWatchRemindersUI();
+          return true;
+        } catch (_) {
+          await renderWatchRemindersUI();
+          return false;
+        }
+      }
+
+      async function toggleWatchReminders() {
+        const ln = getCapacitorLocalNotifications();
+        if (!ln) {
+          showToast('📲 I 3 promemoria automatici per lo smartwatch richiedono l\'APK Android di Pappa Pronta');
+          await renderWatchRemindersUI();
+          return;
+        }
+        if (isWatchRemindersEnabled()) {
+          try { localStorage.setItem(WATCH_REMINDERS_KEY, '0'); } catch (_) {}
+          await cancelAllWatchNotifications();
+          await renderWatchRemindersUI();
+          showToast('🔕 Promemoria giornalieri (07:00 · 13:00 · 20:00) disattivati');
+        } else {
+          try { localStorage.setItem(WATCH_REMINDERS_KEY, '1'); } catch (_) {}
+          const ok = await reconcileWatchDailyNotifications(true);
+          if (ok) {
+            showToast('🔔 Attivati i 3 promemoria giornalieri (07:00 · 13:00 · 20:00)');
+          }
+        }
+      }
+
+      async function sendTestWatchNotification() {
+        const ln = getCapacitorLocalNotifications();
+        if (!ln) {
+          showToast('📲 Installa l\'APK Android per inviare la notifica di prova via Bluetooth a Zepp');
+          return;
+        }
+        try {
+          let perm = await ln.checkPermissions();
+          if (perm.display !== 'granted' && ln.requestPermissions) {
+            perm = await ln.requestPermissions();
+          }
+          if (perm.display !== 'granted') {
+            showToast('⚠️ Permesso notifiche negato nelle impostazioni Android');
+            await renderWatchRemindersUI();
+            return;
+          }
+          await ensureWatchNotificationChannel(ln);
+          await ln.cancel({ notifications: [{ id: 7999 }] });
+          await ln.schedule({
+            notifications: [
+              {
+                id: 7999,
+                title: '⌚ Test Pappa Pronta → Amazfit',
+                body: 'Collegamento notifiche attivo! I promemoria delle 07:00, 13:00 e 20:00 arriveranno al polso.',
+                channelId: WATCH_REMINDER_CHANNEL_ID,
+                smallIcon: 'ic_stat_pappa',
+                iconColor: '#1B6B46',
+                schedule: {
+                  at: new Date(Date.now() + 5000),
+                  allowWhileIdle: true
+                }
+              }
+            ]
+          });
+          showToast('⏱️ Notifica programmata tra 5s: blocca subito lo schermo per testare l\'inoltro su Zepp!');
+          await renderWatchRemindersUI();
+        } catch (_) {
+          showToast('⚠️ Impossibile programmare la notifica di prova');
+        }
+      }
+
+      async function renderWatchRemindersUI() {
+        const badge = document.getElementById('watchRemStatusBadge');
+        const info = document.getElementById('watchRemPermInfo');
+        const toggleBtn = document.getElementById('toggleWatchRemindersBtn');
+        if (!badge || !info || !toggleBtn) return;
+
+        const ln = getCapacitorLocalNotifications();
+        const enabled = isWatchRemindersEnabled();
+        if (!ln) {
+          badge.textContent = 'Solo APK';
+          badge.className = 'badge';
+          info.textContent = '🌐 Stai usando la versione Web: installa l\'APK Android per attivare i 3 promemoria locali inoltrati via Bluetooth all\'orologio.';
+          toggleBtn.textContent = '🔔 Attiva Promemoria (richiede APK Android)';
+          return;
+        }
+
+        let permState = 'prompt';
+        let pendingCount = 0;
+        try {
+          const p = await ln.checkPermissions();
+          permState = p.display || 'prompt';
+          if (ln.getPending) {
+            const pend = await ln.getPending();
+            pendingCount = Array.isArray(pend && pend.notifications)
+              ? pend.notifications.filter((n) => [700, 1300, 2000].includes(Number(n.id))).length
+              : 0;
+          }
+        } catch (_) {}
+
+        if (enabled && permState === 'granted') {
+          badge.textContent = 'ON · ' + pendingCount + '/3';
+          badge.className = 'badge ok';
+          info.textContent = '✅ Permesso notifiche attivo · Slot programmati: ' + pendingCount + '/3 (07:00, 13:00, 20:00 — tolleranza risparmio energetico Android ±15–30 min).';
+          toggleBtn.textContent = '🔕 Disattiva Promemoria (07:00 · 13:00 · 20:00)';
+          toggleBtn.className = 'btn btn-soft btn-sm';
+        } else {
+          badge.textContent = 'OFF';
+          badge.className = 'badge';
+          info.textContent = permState === 'denied'
+            ? '⚠️ Permesso notifiche disattivato su Android: riabilitalo nelle Impostazioni App di Pappa Pronta.'
+            : 'ℹ️ Promemoria disattivati. Attivali per ricevere gli avvisi alle 07:00, 13:00 e 20:00 sul telefono e sull\'orologio.';
+          toggleBtn.textContent = '🔔 Attiva Promemoria (07:00 · 13:00 · 20:00)';
+          toggleBtn.className = 'btn btn-primary btn-sm';
+        }
+      }
+
       function buildFirestoreSafePayload(rawState) {
         const norm = normalizeAndMergeState(rawState);
         return {
@@ -8519,6 +8831,18 @@
           payload.updatedAt = nowTs;
           await fbModules.setDoc(ref, payload);
 
+          try {
+            const watchRef = fbModules.doc(fbDb, 'users', fbCurrentUser.uid, 'integrations', 'watch');
+            await fbModules.setDoc(watchRef, buildWatchSummaryPayload(nowTs));
+          } catch (watchErr) {
+            const errCode = (watchErr && watchErr.code) ? String(watchErr.code) : 'ERR_WATCH_SYNC';
+            recordSyncEvent({
+              channel: 'Orologio Amazfit',
+              dir: '⚠️ Errore',
+              summary: 'Sottodocumento watch non aggiornato (' + errCode + ')'
+            }, true);
+          }
+
           fbLastSyncError = false;
           try {
             localStorage.setItem(LAST_CLOUD_UID_KEY, fbCurrentUser.uid);
@@ -8546,6 +8870,11 @@
         }
         try {
           clearTimeout(fbPushTimer);
+          fbPushTimer = null;
+          try {
+            const watchRef = fbModules.doc(fbDb, 'users', fbCurrentUser.uid, 'integrations', 'watch');
+            await fbModules.deleteDoc(watchRef);
+          } catch (_) {}
           const ref = fbModules.doc(fbDb, 'users', fbCurrentUser.uid);
           await fbModules.deleteDoc(ref);
           const cap = window.Capacitor;
@@ -8576,7 +8905,10 @@
       cloudSyncHook = function () {
         if (!fbCurrentUser || !fbDb) return;
         clearTimeout(fbPushTimer);
-        fbPushTimer = setTimeout(() => pushCloudState(false), 1800);
+        fbPushTimer = setTimeout(() => {
+          fbPushTimer = null;
+          pushCloudState(false);
+        }, 1800);
       };
 
       async function signInWithFirebaseGoogle() {
@@ -9019,6 +9351,7 @@
         renderCucina();
         renderScanner();
         renderMenuTab();
+        renderWatchRemindersUI();
       }
 
       function bindEvents() {
@@ -9502,6 +9835,8 @@
         document.getElementById('resetAllDataBtn').addEventListener('click', async () => {
           if (window.confirm('Vuoi cancellare tutti i dati salvati su questo dispositivo? (Se sei connesso al Cloud verrai prima scollegato così da non cancellare il tuo backup online)')) {
             clearTimeout(fbPushTimer);
+            fbPushTimer = null;
+            await cancelAllWatchNotifications();
             if (fbCurrentUser && fbAuth && fbModules && fbModules.signOut) {
               try {
                 const cap = window.Capacitor;
@@ -9517,6 +9852,7 @@
               localStorage.removeItem(STORAGE_KEY);
               localStorage.removeItem(LAST_CLOUD_UID_KEY);
               localStorage.removeItem(OWNER_UID_KEY);
+              localStorage.removeItem(WATCH_REMINDERS_KEY);
             } catch (_) {}
             state = createDefaultState();
             saveState(state, true);
@@ -9723,8 +10059,12 @@
           }
         });
         document.getElementById('deleteCloudDataBtn').addEventListener('click', deleteCloudUserData);
+        document.getElementById('fbCopyZeppPairingBtn').addEventListener('click', copyZeppWatchPairingJson);
+        document.getElementById('toggleWatchRemindersBtn').addEventListener('click', toggleWatchReminders);
+        document.getElementById('testWatchReminderBtn').addEventListener('click', sendTestWatchNotification);
         document.getElementById('fbLogoutBtn').addEventListener('click', async () => {
           clearTimeout(fbPushTimer);
+          fbPushTimer = null;
           const cap = window.Capacitor;
           const nativeAuth = cap && cap.Plugins && cap.Plugins.FirebaseAuthentication;
           if (cap && cap.isNativePlatform && cap.isNativePlatform() && nativeAuth && nativeAuth.signOut) {
@@ -9789,6 +10129,9 @@
       initNativeDeepLinkAuthListener();
       ensureFirebaseInitialized();
       initWebApkBridgeMode();
+      if (isWatchRemindersEnabled()) {
+        reconcileWatchDailyNotifications(false);
+      }
       renderAll();
 
       // Support manifest shortcuts (?tab=oggi|cucina|scanner|menu)
@@ -9813,13 +10156,25 @@
         if (ui.activeTab === 'oggi') renderFastingCard();
       };
 
+      const flushPendingCloudPushImmediate = () => {
+        if (fbPushTimer) {
+          clearTimeout(fbPushTimer);
+          fbPushTimer = null;
+          pushCloudState(false);
+        }
+      };
+
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
           stopBarcodeCamera();
+          flushPendingCloudPushImmediate();
         } else {
           checkDayRolloverAndRefresh();
+          renderWatchRemindersUI();
         }
       });
+
+      window.addEventListener('pagehide', flushPendingCloudPushImmediate);
 
       setInterval(checkDayRolloverAndRefresh, 30000);
     })();

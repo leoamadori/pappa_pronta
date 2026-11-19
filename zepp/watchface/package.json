@@ -1,0 +1,12 @@
+{
+  "name": "pappa-pronta-zepp-watchface",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prebuild": "node ../scripts/sync-shared.mjs",
+    "build": "zeus build -t gts4mini,active2round"
+  },
+  "devDependencies": {
+    "@zeppos/zeus-cli": "^1.5.14"
+  }
+}

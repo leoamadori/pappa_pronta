@@ -1,0 +1,75 @@
+{
+  "configVersion": "v2",
+  "app": {
+    "appId": 1058202,
+    "appName": "Pappa Pronta WF",
+    "appType": "watchface",
+    "version": {
+      "code": 1,
+      "name": "1.0.0"
+    },
+    "vender": "pappa-pronta",
+    "description": "Quadrante Pappa Pronta: Digiuno Intermittente, Movimento e 12 Cibi Sani",
+    "icon": "images/preview.png"
+  },
+  "permissions": [],
+  "runtime": {
+    "apiVersion": {
+      "compatible": "1.0.0",
+      "target": "1.0.0",
+      "minVersion": "1.0.0"
+    }
+  },
+  "targets": {
+    "gts4mini": {
+      "module": {
+        "watchface": {
+          "path": "watchface/index",
+          "main": 1,
+          "editable": 0,
+          "lockscreen": 1,
+          "hightCost": 0
+        }
+      },
+      "platforms": [
+        { "name": "gts4mini", "deviceSource": 246 },
+        { "name": "gts4mini-w", "deviceSource": 247 }
+      ],
+      "designWidth": 336
+    },
+    "active2round": {
+      "module": {
+        "watchface": {
+          "path": "watchface/index",
+          "main": 1,
+          "editable": 0,
+          "lockscreen": 1,
+          "hightCost": 0
+        }
+      },
+      "platforms": [
+        { "name": "active2-round-1", "deviceSource": 8913152 },
+        { "name": "active2-round-2", "deviceSource": 8913153 },
+        { "name": "active2-round-3", "deviceSource": 8913155 },
+        { "name": "active2-round-4", "deviceSource": 8913159 },
+        { "name": "active2-round-5", "deviceSource": 10092800 },
+        { "name": "active2-round-6", "deviceSource": 10092801 },
+        { "name": "active2-round-7", "deviceSource": 10092803 },
+        { "name": "active2-round-8", "deviceSource": 10092807 }
+      ],
+      "designWidth": 466
+    }
+  },
+  "i18n": {
+    "en-US": {
+      "name": "Pappa Pronta WF",
+      "appName": "Pappa Pronta WF"
+    },
+    "it-IT": {
+      "name": "Pappa Pronta WF",
+      "appName": "Pappa Pronta WF"
+    }
+  },
+  "defaultLanguage": "en-US",
+  "debug": false
+}
