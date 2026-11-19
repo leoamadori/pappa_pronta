@@ -19,30 +19,26 @@
 - **Configurazione Completa (4 passi) & Preset Sportivo:** chi vuole può impostare età, peso, altezza, obiettivo, allergie UE, esigenze di salute (pressione/sale, più proteine sport/over-50, salute gengive/zuccheri, celiachia, glicemia, colesterolo) oppure attivare con un tocco il **Preset Plant-Based Sport**.
 - **3 Regimi alimentari:** `🐟 Mediterraneo / Di tutto`, `🥚 Vegetariano` o `🌱 100% Vegetale`.
 
-### 🏠 Scheda «Oggi» — Dispensa, Pasti di Oggi, 12 Cibi Sani & Strumenti Avanzati
-- **Dispensa Semplificata (100+ alimenti):** ricerca istantanea, contatore live delle ricette pronte subito, **1 tocco** per segnare un cibo in casa (`✅`) e pulsante dedicato **`⏳`** accanto agli ingredienti presenti per segnarli in scadenza (senza doppi tocchi a tempo). I cibi personalizzati aggiunti fuori elenco vengono collegati automaticamente agli ingredienti base del ricettario.
-- **Pasti & Energia di Oggi:** riepilogo immediato di calorie e proteine assunte rispetto all'obiettivo giornaliero con elenco dei pasti segnati.
-- **I 12 Cibi Sani di Oggi:** griglia interattiva (`0–24` porzioni) con pulsante rapido `−` per correggere una spunta, guida rapida alle quantità di 1 porzione e dettagli Sodio/Potassio a scomparsa.
-- **Passi, Consigli & Cloud:** riepilogo di passi, calorie attive, consigli pratici personalizzati e storico degli ultimi 7 giorni.
-- **Strumenti Avanzati a scomparsa:** timer **Digiuno Intermittente Guidato** (`Libero`, `12:12`, `14:10`, `16:8`) basato su timestamp continui anche oltre la mezzanotte con guida alle 5 fasi metaboliche, **Grafico SVG 7 Giorni** e promemoria giornalieri (`Vit. B12`, `Omega-3`, `Vit. D3`, acqua pre-pasto).
+### 🏠 Scheda «Oggi» — Pasti Guidati dai 12 Cibi Sani & Digiuno Contestuale
+- **Switch contestuale 1-tocco (`🍳 Pasti di oggi` | `⏳ Digiuno & Sera`):** si adatta automaticamente alla fascia oraria (mattina/pre-lavoro: preparazioni veloci; pomeriggio/sera: stato digiuno se attivo) ma può essere invertito con un tocco in qualsiasi momento.
+- **Motore `12 Cibi Sani → Ricette`:** mostra i cibi sani ancora mancanti oggi e propone 2–3 ricette veloci che li coprono rispettando proteine, sodio, potassio e allergeni; con **1 tocco (`✓ Fatto / Mangiato`)** aggiorna insieme `12 Cibi Sani`, diario pasti, Health Connect e il riepilogo per Amazfit.
+- **Digiuno Intermittente a 7 Giorni Editabile:** quando attivato (`12:12`, `14:10`, `16:8`), tiene lo storico reale degli ultimi 7 giorni con modifica di data e ora di inizio/fine per ogni giornata; se spento (`Libero`), non occupa spazio nell'interfaccia.
+- **Pasti & Testo Libero:** riepilogo unificato della giornata con analisi a parole tue e checklist integratori a scomparsa.
 
-### 🍳 Scheda «Cucina» — Crea un Piatto, Ricettario Italiano & Pasto Libero
-- **Crea un Piatto con Quello che Hai:** genera colazioni, spuntini, pranzi e cene dando priorità agli alimenti in scadenza (`⏳`), adattando l'energia tra **`⚡ Giorno Attivo`** e **`🧘 Giorno Leggero`** e rispettando sempre dieta e allergeni (incluse celiachia e allergia a frutta a guscio/lupini).
-- **Scala Porzioni (`80% – 150%`):** regola al volo le grammature mantenendo aperta la scheda della ricetta e salva le tue combinazioni preferite.
-- **Ricettario Italiano (34 piatti):** 22 piatti principali della tradizione + 8 colazioni/spuntini (incluse opzioni naturalmente senza glutine e senza allergeni comuni) + 4 ricette vegetariane/mediterranee.
-- **Analisi Pasto a Parole Tue:** riconosce tutti gli alimenti del database con sinonimi italiani e grammature opzionali, proponendo come completare il piatto.
+### 🛒 Scheda «Spesa» — Modalità Supermercato Unificata, Confronto A vs B & Coda Offline
+- **Scanner Codici + Confronto Clinico A vs B:** lettura barcode su Android/iOS/Desktop (timeout `2,5s` anti-rete lenta) con barra di fissaggio **Prodotto A** e tabella comparativa immediata delle differenze cliniche decisive (`Verdetto`, `Sale/Sodio`, `Zuccheri`, `Saturi/Oli`, `Allergeni`).
+- **Fallback Offline con Coda Foto Etichette (`IndexedDB`):** se tra le corsie manca campo, premendo **`📷 Salva foto per dopo`** l'etichetta resta solo sul telefono; a casa completi l'analisi OCR/confronto e salvi il prodotto in `eanCache` così alla visita successiva la scansione risponde offline in `<150 ms`.
+- **Lista Spesa Reversibile & Ricette Quasi Pronte:** toccando **`✓ Preso`** l'articolo passa nel carrello (con **`↩ Annulla`** a 1 tocco) e aggiorna in tempo reale le **2–3 ricette quasi pronte** con gli ingredienti mancanti da aggiungere prima della cassa.
+- **«Posso mangiarlo? (Cibi Sfusi)»:** prontuario ricercabile coerente con dieta e allergie del profilo.
 
-### 📷 Scheda «Scanner» — Codice a Barre Universale, Foto Etichetta Offline & Semaforo
-- **Lettore Codici su Android, iPhone/iPad e Desktop:** usa `BarcodeDetector` nativo dove presente e carica automaticamente il lettore compatibile Safari iOS / Firefox quando necessario, con ricerca rapida su cache locale e Open Food Facts (timeout `4s` anti-rete debole).
-- **Semaforo Nutrizionale (`🟢 VERDE` / `🟡 GIALLO` / `🔴 ROSSO`):** controlla sale/sodio, zuccheri aggiunti e sciroppi (distinguendo gli zuccheri naturali della frutta intera), grassi saturi, oli raffinati, celiachia e i 12 allergeni UE senza falsi allarmi su diciture *«senza glutine»*, *«senza lattosio»*, *burro di cacao* o bevande vegetali.
-- **Azioni rapide sul prodotto controllato:** `＋ Aggiungi a Dispensa`, `🍽 Mangia ora (100g)` e `💾 Salva nei recenti`.
-- **Ritaglio Etichetta a 4 Maniglie + Lettore Offline:** ritaglia la colonna per `100 g` o la lista ingredienti distinguendo automaticamente `kcal` da `kJ`.
-- **«Posso mangiarlo? (Cibi Sfusi)»:** prontuario ricercabile coerente con il regime alimentare e le allergie scelte nel profilo.
+### 🍳 Scheda «Cucina» — Crea un Piatto, Ricettario Italiano, Menu 7gg & Dispensa Occasionale
+- **Crea un Piatto Bilanciato & Ricettario Italiano (34 piatti):** genera ciotole e scala porzioni (`80% – 150%`) rispettando dieta, celiachia e allergeni UE.
+- **Menu della Settimana (7 Giorni):** pianifica `4 pasti` o `Pranzo + Cena` con alternanza giornaliera `⚡ Giorno Attivo` / `🧘 Giorno Leggero`.
+- **Dispensa Occasionale (`📦` richiudibile):** spostata da cima `Oggi` a strumento su richiesta con 1 tocco per segnare un cibo in casa e pulsante `⏳` per i cibi in scadenza.
 
-### 📅 Scheda «Menu & Spesa» — Menu 7 Giorni, Lista Spesa con Grammi & Profilo
-- **Menu della Settimana (7 Giorni):** pianifica `4 pasti` o `Pranzo + Cena` con badge cliccabili per alternare ogni singolo giorno tra `⚡ Giorno Attivo` e `🧘 Giorno Leggero`.
-- **Lista della Spesa Automatica:** somma i grammi totali necessari nella settimana; toccando **`✓ Preso`** l'ingrediente passa subito in Dispensa.
-- **Profilo, Obiettivi & Backup:** obiettivi giornalieri automatici o personalizzati, condivisione nativa del file di backup `.json` su smartphone/APK (`Web Share API`) e cancellazione locale sicura che scollega prima eventuale Cloud attivo.
+### 📈 Scheda «Progressi» — Grafici 7/14/30g, Health Connect, Amazfit & Profilo
+- **Grafico `12 Cibi Sani` (`7g | 14g | 30g`)** con media del periodo e soglia obiettivo `18/24`, **Regolarità Digiuno (7g editabile)** e **Obiettivi Clinici (sodio/proteine)**.
+- **Profilo, Dispositivi & Backup:** configurazione limiti clinici, **Orologio Amazfit & 3 Promemoria Giornalieri (`07:00 · 13:00 · 20:00`)**, condivisione backup `.json` e cancellazione locale sicura (inclusa la coda foto offline).
 
 ---
 

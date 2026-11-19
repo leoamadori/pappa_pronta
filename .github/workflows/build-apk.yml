@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build-android-apk:
-    name: Capacitor Android APK (Pappa Pronta v3.5 Release)
+    name: Capacitor Android APK (Pappa Pronta v3.6 Release)
     runs-on: ubuntu-24.04
 
     steps:
@@ -80,7 +80,7 @@ jobs:
           cat << 'EOF' > package.json
           {
             "name": "pappa-pronta",
-            "version": "3.5.0",
+            "version": "3.6.0",
             "private": true,
             "description": "Pappa Pronta — Cucina Sana, Scanner, Google Health Connect & Native Google Auth"
           }
@@ -250,7 +250,7 @@ jobs:
             const path = require("path");
             const runNum = parseInt(process.env.RUN_NUM || "1", 10) || 1;
             const verCode = 300 + runNum;
-            const verName = "3.5." + runNum;
+            const verName = "3.6." + runNum;
             const ksPath = path.join(os.homedir(), ".android", "debug.keystore").replace(/\\/g, "/");
 
             // 1. Align minSdkVersion = 26 and enable rgcfaIncludeGoogle = true in variables.gradle
@@ -421,7 +421,7 @@ jobs:
         run: |
           if gh release view latest >/dev/null 2>&1; then
             gh release upload latest pappa-pronta.apk --clobber
-            gh release edit latest --title "Pappa Pronta APK Android v3.5 (Build #${{ github.run_number }})" --notes "Scarica direttamente **pappa-pronta.apk** qui sotto (senza estrarre file ZIP). Include Health Connect completo, Login Google nativo + App Links e interfaccia semplificata."
+            gh release edit latest --title "Pappa Pronta APK Android v3.6 (Build #${{ github.run_number }})" --notes "Scarica direttamente **pappa-pronta.apk** qui sotto (senza estrarre file ZIP). Include usabilità v3.6 (Oggi contestuale, Supermercato A vs B + coda foto offline, digiuno 7g modificabile), Health Connect completo, Amazfit/Zepp e Login Google nativo."
           else
-            gh release create latest pappa-pronta.apk --title "Pappa Pronta APK Android v3.5 (Build #${{ github.run_number }})" --notes "Scarica direttamente **pappa-pronta.apk** qui sotto (senza estrarre file ZIP). Include Health Connect completo, Login Google nativo + App Links e interfaccia semplificata."
+            gh release create latest pappa-pronta.apk --title "Pappa Pronta APK Android v3.6 (Build #${{ github.run_number }})" --notes "Scarica direttamente **pappa-pronta.apk** qui sotto (senza estrarre file ZIP). Include usabilità v3.6 (Oggi contestuale, Supermercato A vs B + coda foto offline, digiuno 7g modificabile), Health Connect completo, Amazfit/Zepp e Login Google nativo."
           fi

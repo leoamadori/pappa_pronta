@@ -1,5 +1,5 @@
 /* Pappa Pronta — Offline-First Service Worker (App Shell + Tesseract.js v5 + .traineddata) */
-const APP_CACHE = 'pappa-pronta-shell-v14';
+const APP_CACHE = 'pappa-pronta-shell-v15';
 const OCR_CACHE = 'pappa-pronta-ocr-v3';
 const API_CACHE = 'pappa-pronta-api-v2';
 

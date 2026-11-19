@@ -1990,6 +1990,218 @@
       border: 0;
     }
 
+    /* v3.6 Low-Friction Usability Components */
+    .oggi-switch-bar {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 12px;
+      background: var(--surface);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .oggi-switch-btn {
+      min-height: 44px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--ink-secondary);
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 8px 10px;
+      transition: background-color 140ms ease, color 140ms ease;
+    }
+
+    .oggi-switch-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .oggi-rec-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .oggi-rec-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      background: var(--surface-muted);
+      display: grid;
+      gap: 8px;
+    }
+
+    .oggi-rec-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .oggi-rec-title {
+      font-size: 0.94rem;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .oggi-rec-meta {
+      font-size: 0.78rem;
+      color: var(--ink-secondary);
+    }
+
+    .fast7-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .fast7-cell {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-muted);
+      padding: 8px 3px;
+      min-height: 68px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 0.75rem;
+      color: var(--ink);
+    }
+
+    .fast7-cell.hit {
+      background: var(--ok-bg);
+      border-color: var(--ok-border);
+      color: var(--ok-ink);
+    }
+
+    .fast7-cell.mid {
+      background: var(--warn-bg);
+      border-color: var(--warn-border);
+      color: var(--warn-ink);
+    }
+
+    .fast7-cell strong {
+      font-size: 0.78rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .compare-pin-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 11px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-soft);
+      border: 1px solid var(--primary-border);
+      margin-top: 10px;
+      font-size: 0.8rem;
+    }
+
+    .compare-panel {
+      margin-top: 12px;
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .compare-col {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px;
+      background: var(--surface-muted);
+      font-size: 0.78rem;
+      display: grid;
+      gap: 4px;
+    }
+
+    .compare-col.winner {
+      border-color: var(--ok-border);
+      background: var(--ok-bg);
+    }
+
+    .pending-label-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-muted);
+    }
+
+    .pending-label-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid var(--border-strong);
+      flex-shrink: 0;
+    }
+
+    .dozen-trend-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 112px;
+      padding: 10px 4px 4px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .dozen-trend-col {
+      flex: 1 1 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .dozen-trend-bar {
+      width: 100%;
+      max-width: 24px;
+      border-radius: 4px 4px 0 0;
+      background: var(--border-strong);
+      min-height: 4px;
+      transition: height 160ms ease;
+    }
+
+    .dozen-trend-bar.hit { background: var(--primary); }
+    .dozen-trend-bar.mid { background: #D97706; }
+
+    .dozen-trend-lbl {
+      font-size: 0.75rem;
+      color: var(--ink-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #panel-spesa .btn-primary,
+    #panel-spesa .shop-bought-btn,
+    #panel-spesa .spesa-primary-action {
+      min-height: 44px;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         transition-duration: 0.01ms !important;
@@ -2042,99 +2254,120 @@
       </div>
     </div>
     <!-- ================================================================
-         TAB 1: OGGI (Vista Essenziale per tutti + Area Avanzata a scomparsa)
+         TAB 1: OGGI (Contestuale: 12 Cibi Sani -> Ricette Veloci | Digiuno & Sera)
          ================================================================ -->
     <section id="panel-oggi" class="tab-panel active" role="tabpanel" aria-labelledby="tab-oggi">
-      <!-- Dismissible 3-Step Beginner Quick Compass -->
-      <aside id="quickCompassBar" class="quick-compass" aria-label="Guida rapida per iniziare">
-        <div class="quick-compass-head">
-          <strong style="font-size:0.88rem;">👋 Nuovo qui? Parti in 3 mosse semplici:</strong>
-          <button type="button" id="dismissCompassBtn" class="btn btn-xs" aria-label="Nascondi guida rapida">✕ Capito</button>
-        </div>
-        <div class="quick-compass-steps">
-          <button type="button" id="compassStep1Btn" class="compass-step-btn">
-            <span>1. Scegli cosa hai in casa</span>
-            <span aria-hidden="true">↓</span>
-          </button>
-          <button type="button" id="compassStep2Btn" class="compass-step-btn">
-            <span>2. Prepara un piatto pronto</span>
-            <span aria-hidden="true">🍳</span>
-          </button>
-          <button type="button" id="compassStep3Btn" class="compass-step-btn">
-            <span>3. Controlla un cibo al super</span>
-            <span aria-hidden="true">📷</span>
-          </button>
-        </div>
-      </aside>
+      <!-- Switch Rapido 1-Tocco (adatta subito la Home per turni, weekend o cene alle 18:30) -->
+      <div id="oggiContextSwitch" class="oggi-switch-bar" role="tablist" aria-label="Vista rapida di oggi">
+        <button type="button" id="oggiModePastiBtn" class="oggi-switch-btn active" role="tab" aria-selected="true" data-oggimode="pasti">🍳 Pasti di oggi</button>
+        <button type="button" id="oggiModeSeraBtn" class="oggi-switch-btn" role="tab" aria-selected="false" data-oggimode="sera">⏳ Digiuno &amp; Sera</button>
+      </div>
 
-      <!-- Card 1 (TOP): Dispensa ("Cosa hai in casa?") -->
-      <article class="card" id="pantryCard">
-        <div class="card-head">
-          <div>
-            <h2 class="card-title">Cosa hai in casa? (La tua Dispensa)</h2>
-            <p class="card-desc">1 tocco = ✅ in casa · tocca ⏳ a destra per segnarlo in scadenza</p>
+      <!-- BLOCCO A: Proposte Veloci guidate dai 12 Cibi Sani mancanti -->
+      <div id="oggiPastiBlock">
+        <article class="card" id="oggiRecommendedRecipesCard">
+          <div class="card-head">
+            <div>
+              <h2 class="card-title">Cosa mangiare adesso</h2>
+              <p class="card-desc" id="oggiRecSubtitle">Piatti veloci scelti per coprire i 12 Cibi Sani mancanti oggi e i tuoi obiettivi clinici</p>
+            </div>
+            <button type="button" id="oggiJumpCucinaBtn" class="btn btn-sm btn-soft">🍳 Tutto il ricettario</button>
           </div>
-          <span id="pantryCountBadge" class="badge ok num">0 in casa</span>
-        </div>
+          <div id="oggiMissingDozenChips" class="chip-row" style="margin-bottom:8px;"></div>
+          <div id="oggiRecommendedRecipesList" class="oggi-rec-list"></div>
+        </article>
+      </div>
 
-        <div class="pantry-ready-bar">
-          <span id="pantryReadyRecipesText"><strong>0 ricette</strong> pronte subito con quello che hai in casa</span>
-          <button type="button" id="jumpReadyRecipesBtn" class="btn btn-sm btn-primary">🍳 Vedi cosa preparare</button>
-        </div>
+      <!-- BLOCCO B: Digiuno Intermittente (nascosto se protocol === 'off') -->
+      <div id="oggiFastingBlock">
+        <article class="card" id="fastingMainCard">
+          <div class="card-head">
+            <div>
+              <h2 class="card-title" id="fastCardTitle">Digiuno Intermittente</h2>
+              <p class="card-desc">Si aggiorna da solo quando registri un pasto · tocca un giorno sotto per correggerlo</p>
+            </div>
+            <span id="fastStateBadge" class="badge ok">⏳ Digiuno attivo</span>
+          </div>
 
-        <input type="search" id="pantrySearchInput" class="input-field" placeholder="Cerca ingrediente (es. pasta, ceci, zucchine, uova)..." aria-label="Filtra alimenti in dispensa">
+          <div class="chip-row" id="fastProtocolBar" role="group" aria-label="Protocollo digiuno intermittente" style="margin-bottom:10px;">
+            <button type="button" class="chip chip-sm" data-fproto="16:8">16:8 Classico</button>
+            <button type="button" class="chip chip-sm" data-fproto="14:10">14:10 Morbido</button>
+            <button type="button" class="chip chip-sm" data-fproto="12:12">12:12 Notturno</button>
+            <button type="button" class="chip chip-sm" data-fproto="off">Libero (Off)</button>
+          </div>
 
-        <div id="pantryCatFilters" class="chip-row" style="margin-top:10px;"></div>
-
-        <div class="pantry-meta">
-          <span id="pantrySummaryText">Tocca gli ingredienti presenti in cucina</span>
-          <button type="button" id="expiringHintBtn" class="btn btn-xs" style="font-size:0.75rem;">⏳ Da finire presto: <span id="expiringCountSpan" class="num">0</span></button>
-        </div>
-
-        <div id="pantryGrid" class="pantry-grid"></div>
-        <div id="pantryExpandWrap" style="margin-top:8px;"></div>
-
-        <div id="customFoodsChipsWrap" class="chip-row" style="margin-top:8px;"></div>
-
-        <details class="sub-disclosure" id="pantryExtraDetails">
-          <summary><span>➕ Aggiungi un cibo fuori elenco o svuota dispensa</span></summary>
-          <div class="sub-disclosure-body">
-            <div style="display:flex; flex-wrap:wrap; gap:6px;">
-              <input type="text" id="customFoodNameInput" class="input-field" style="flex:1 1 170px;" placeholder="Es. broccoli surgelati, seitan..." aria-label="Nome alimento personalizzato">
-              <select id="customFoodCatSelect" class="input-field" style="flex:1 1 145px;" aria-label="Categoria alimento">
-                <option value="verdure">È una verdura</option>
-                <option value="legumi">È un legume / proteina</option>
-                <option value="cereali">È un cereale o pane</option>
-                <option value="frutta">È frutta</option>
-                <option value="noci_semi">È frutta a guscio / semi</option>
-                <option value="spezie">Altro / condimento</option>
-              </select>
-              <button type="button" id="addCustomFoodBtn" class="btn btn-soft btn-sm">＋ Aggiungi</button>
-              <button type="button" id="scanCustomFoodBtn" class="btn btn-sm">📷 Scansiona</button>
-              <button type="button" id="clearPantryBtn" class="btn btn-sm">Svuota dispensa</button>
+          <div id="fastOffBody" style="display:none;">
+            <div class="empty-box" style="padding:12px;">
+              Modalità <strong>Pasti Liberi</strong> attiva: nessun timer di digiuno. Puoi attivare <strong>12:12</strong>, <strong>14:10</strong> o <strong>16:8</strong> qui sopra quando vuoi.
             </div>
           </div>
-        </details>
-      </article>
 
-      <!-- Card 1B: Pasti & Obiettivi di Oggi (Riepilogo rapido visibile subito in Oggi) -->
-      <article class="card" id="oggiMealsSummaryCard">
-        <div class="card-head">
-          <div>
-            <h2 class="card-title">Pasti &amp; Energia di Oggi</h2>
-            <p class="card-desc">Cosa hai mangiato oggi rispetto al tuo fabbisogno giornaliero</p>
+          <div id="fastActiveBody">
+            <div id="fastPlainHeadline" class="fast-plain-box">
+              Sei a digiuno da <strong>14h 00m</strong>.
+            </div>
+
+            <div class="kpi-grid">
+              <div class="kpi-box">
+                <span class="kpi-label" id="fastKpi1Label">Digiuno</span>
+                <strong class="kpi-value num" id="fastDurationVal">14h 00m</strong>
+                <span class="kpi-sub" id="fastKpi1Sub">su 16h obiettivo</span>
+              </div>
+              <div class="kpi-box">
+                <span class="kpi-label" id="fastKpi2Label">Ultimo pasto</span>
+                <strong class="kpi-value num" id="fastRefTimeVal">20:00</strong>
+                <span class="kpi-sub" id="fastKpi2Sub">ieri sera</span>
+              </div>
+              <div class="kpi-box">
+                <span class="kpi-label" id="fastKpi3Label">Fine digiuno</span>
+                <strong class="kpi-value num" id="fastTargetTimeVal">12:00</strong>
+                <span class="kpi-sub" id="fastKpi3Sub">finestra 8h</span>
+              </div>
+            </div>
+
+            <div class="fast-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="85" id="fastProgressBarWrap">
+              <div id="fastProgressFill" class="fast-progress-fill" style="width: 85%;"></div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-top:8px;">
+              <span style="font-size:0.76rem; font-weight:700; color:var(--ink-secondary);">Fasi metaboliche (tocca una fase per leggerla):</span>
+              <span class="num" id="fastPctText" style="font-size:0.78rem; font-weight:700; color:var(--primary);">88%</span>
+            </div>
+            <div id="fastPhaseStepper" class="fast-phase-stepper" role="group" aria-label="Fasi metaboliche del digiuno"></div>
+            <div id="fastPhaseDetailBox" class="fast-phase-detail"></div>
+
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+              <button type="button" id="closeDinnerBtn" class="btn btn-primary btn-sm" style="flex:1 1 210px;">
+                🍽 Ho iniziato a mangiare (Apri finestra)
+              </button>
+              <details id="fastManualDetails" style="flex:1 1 160px;">
+                <summary class="btn btn-sm" style="width:100%; list-style:none; cursor:pointer;">✏️ Correggi orario di oggi</summary>
+                <div class="time-edit-group" style="margin-top:6px; width:100%;">
+                  <label for="fastTimeInput" id="fastTimeEditLabel">Ultimo pasto:</label>
+                  <input type="time" id="fastTimeInput" value="20:00">
+                  <button type="button" id="applyFastTimeBtn" class="btn btn-sm btn-soft">Salva</button>
+                </div>
+              </details>
+            </div>
+
+            <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border);">
+              <div style="font-size:0.76rem; font-weight:700; color:var(--ink-secondary);">Ultimi 7 giorni (tocca un giorno per correggere data e ora di inizio/fine):</div>
+              <div id="oggiFast7Grid" class="fast7-grid"></div>
+            </div>
+
+            <div style="margin-top:8px; font-size:0.75rem; color:var(--ink-secondary);">
+              💧 <strong>Cosa puoi bere a digiuno:</strong> acqua naturale o frizzante, tè verde, tisane e caffè amaro (senza zucchero, miele o latte).
+            </div>
           </div>
-          <button type="button" id="oggiJumpCucinaBtn" class="btn btn-sm btn-primary">🍳 Cucina / Segna pasto</button>
-        </div>
-        <div id="oggiMealsSummaryBody"></div>
-      </article>
+        </article>
+      </div>
 
-      <!-- Card 2: I 12 Cibi Sani di Oggi (Daily Dozen + Sodio/Potassio a scomparsa) -->
+      <!-- Card 2: I 12 Cibi Sani di Oggi (cuore della qualità giornaliera) -->
       <article class="card">
         <div class="card-head">
           <div>
             <h2 class="card-title">I 12 Cibi Sani di Oggi</h2>
-            <p class="card-desc">Tocca le caselle di ciò che mangi durante la giornata (obiettivo da 18 su 24)</p>
+            <p class="card-desc">Spunta ciò che hai mangiato (si aggiornano da soli quando segni una ricetta · obiettivo ≥ 18/24)</p>
           </div>
           <span id="dozenTopScoreBadge" class="badge ok num">0/24</span>
         </div>
@@ -2188,246 +2421,17 @@
         </details>
       </article>
 
-      <!-- Card 3: Passi, Consigli & Sincronizzazione -->
-      <article class="card" id="syncAndGoalsCard">
+      <!-- Card 3: Pasti & Energia di Oggi (unificato, con testo libero a scomparsa) -->
+      <article class="card" id="oggiMealsSummaryCard">
         <div class="card-head">
           <div>
-            <h2 class="card-title">Passi, Consigli &amp; Cloud</h2>
-            <p class="card-desc">Collega Google Health Connect / Apple Salute e leggi i suggerimenti di oggi</p>
-          </div>
-          <button type="button" id="openHealthCloudModalBtn" class="btn btn-sm btn-soft">☁️ Connetti</button>
-        </div>
-
-        <div class="kpi-grid" style="margin-bottom:10px;">
-          <div class="kpi-box">
-            <span class="kpi-label">Passi oggi</span>
-            <strong class="kpi-value num" id="hcStepsVal">0</strong>
-            <span class="kpi-sub" id="hcStepsSub">obiettivo 7.500</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Kcal attive</span>
-            <strong class="kpi-value num" id="hcActiveKcalVal">0</strong>
-            <span class="kpi-sub">attivo ≥300</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Account Cloud</span>
-            <strong class="kpi-value" id="cloudShortStatus" style="font-size:0.9rem;">Locale</strong>
-            <span class="kpi-sub" id="cloudShortSub">non connesso</span>
-          </div>
-        </div>
-
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button type="button" id="quickSyncHealthBtn" class="btn btn-sm btn-primary" style="flex:1 1 170px;">❤️ Sincronizza Salute</button>
-          <button type="button" id="quickShareFriendsBtn" class="btn btn-sm" style="flex:1 1 150px;">🔗 Invita un amico</button>
-        </div>
-
-        <!-- Consigli Personalizzati subito visibili in linguaggio semplice -->
-        <div id="coachAdviceWrap" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);"></div>
-
-        <!-- Storico 7 giorni e log scambi dati a scomparsa -->
-        <details class="sub-disclosure" id="syncHistoryDetails">
-          <summary><span>📊 Storico 7 giorni e dati sincronizzati</span></summary>
-          <div class="sub-disclosure-body">
-            <div id="goalHistorySummaryWrap"></div>
-            <div id="syncExchangeSummaryWrap" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);"></div>
-          </div>
-        </details>
-      </article>
-
-      <!-- Area Approfondita a Scomparsa (Digiuno Guidato, Grafico 7gg, Integratori) -->
-      <details id="oggiAdvancedPanel" class="adv-panel">
-        <summary class="adv-panel-summary">
-          <div>
-            <strong style="font-size:0.92rem; display:block;">🔬 Strumenti Avanzati: Digiuno, Grafico 7gg &amp; Integratori</strong>
-            <span style="font-size:0.76rem; color:var(--ink-secondary);">Tocca per aprire timer del digiuno intermittente, grafico Sodio/Potassio e promemoria B12/Omega-3</span>
-          </div>
-          <span id="advSummaryPill" class="badge ok num">16:8 · 0/5</span>
-        </summary>
-
-        <div class="adv-panel-body">
-          <!-- Adv Card A: Digiuno Intermittente Guidato -->
-          <article class="card">
-            <div class="card-head">
-              <div>
-                <h2 class="card-title" id="fastCardTitle">Digiuno Intermittente Guidato</h2>
-                <p class="card-desc">Scegli il tuo ritmo: si aggiorna da solo quando registri un pasto</p>
-              </div>
-              <span id="fastStateBadge" class="badge ok">⏳ Digiuno attivo</span>
-            </div>
-
-            <div class="chip-row" id="fastProtocolBar" role="group" aria-label="Protocollo digiuno intermittente" style="margin-bottom:10px;">
-              <button type="button" class="chip chip-sm active" data-fproto="16:8">16:8 Classico</button>
-              <button type="button" class="chip chip-sm" data-fproto="14:10">14:10 Morbido</button>
-              <button type="button" class="chip chip-sm" data-fproto="12:12">12:12 Notturno</button>
-              <button type="button" class="chip chip-sm" data-fproto="off">Libero (Off)</button>
-            </div>
-
-            <div id="fastOffBody" style="display:none;">
-              <div class="empty-box" style="padding:12px;">
-                Modalità <strong>Pasti Liberi</strong> attiva: nessun timer di digiuno. Puoi riattivare <strong>12:12</strong>, <strong>14:10</strong> o <strong>16:8</strong> in qualsiasi momento qui sopra.
-              </div>
-            </div>
-
-            <div id="fastActiveBody">
-              <div id="fastPlainHeadline" class="fast-plain-box">
-                Sei a digiuno da <strong>14h 00m</strong>.
-              </div>
-
-              <div class="kpi-grid">
-                <div class="kpi-box">
-                  <span class="kpi-label" id="fastKpi1Label">Digiuno</span>
-                  <strong class="kpi-value num" id="fastDurationVal">14h 00m</strong>
-                  <span class="kpi-sub" id="fastKpi1Sub">su 16h obiettivo</span>
-                </div>
-                <div class="kpi-box">
-                  <span class="kpi-label" id="fastKpi2Label">Ultimo pasto</span>
-                  <strong class="kpi-value num" id="fastRefTimeVal">20:00</strong>
-                  <span class="kpi-sub" id="fastKpi2Sub">ieri sera</span>
-                </div>
-                <div class="kpi-box">
-                  <span class="kpi-label" id="fastKpi3Label">Fine digiuno</span>
-                  <strong class="kpi-value num" id="fastTargetTimeVal">12:00</strong>
-                  <span class="kpi-sub" id="fastKpi3Sub">finestra 8h</span>
-                </div>
-              </div>
-
-              <div class="fast-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="85" id="fastProgressBarWrap">
-                <div id="fastProgressFill" class="fast-progress-fill" style="width: 85%;"></div>
-              </div>
-
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-top:8px;">
-                <span style="font-size:0.76rem; font-weight:700; color:var(--ink-secondary);">Cosa succede ora nel tuo corpo (tocca una fase per leggerla):</span>
-                <span class="num" id="fastPctText" style="font-size:0.78rem; font-weight:700; color:var(--primary);">88%</span>
-              </div>
-              <div id="fastPhaseStepper" class="fast-phase-stepper" role="group" aria-label="Fasi metaboliche del digiuno"></div>
-              <div id="fastPhaseDetailBox" class="fast-phase-detail"></div>
-
-              <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-                <button type="button" id="closeDinnerBtn" class="btn btn-primary btn-sm" style="flex:1 1 210px;">
-                  🍽 Ho iniziato a mangiare (Apri finestra)
-                </button>
-                <details id="fastManualDetails" style="flex:1 1 160px;">
-                  <summary class="btn btn-sm" style="width:100%; list-style:none; cursor:pointer;">✏️ Correggi orario</summary>
-                  <div class="time-edit-group" style="margin-top:6px; width:100%;">
-                    <label for="fastTimeInput" id="fastTimeEditLabel">Ultimo pasto:</label>
-                    <input type="time" id="fastTimeInput" value="20:00">
-                    <button type="button" id="applyFastTimeBtn" class="btn btn-sm btn-soft">Salva</button>
-                  </div>
-                </details>
-              </div>
-
-              <div style="margin-top:8px; font-size:0.75rem; color:var(--ink-secondary);">
-                💧 <strong>Cosa puoi bere a digiuno:</strong> acqua naturale o frizzante, tè verde, tisane e caffè amaro (senza zucchero, miele o latte).
-              </div>
-            </div>
-          </article>
-
-          <!-- Adv Card B: Grafico SVG Nativo Trend 7 Giorni -->
-          <article class="card">
-            <div class="card-head">
-              <div>
-                <h2 class="card-title">Grafico 7 Giorni &amp; Rapporto K:Na</h2>
-                <p class="card-desc">Andamento dei 12 Cibi Sani (obiettivo 18–24) e bilancio Sodio/Potassio</p>
-              </div>
-              <button type="button" id="sim7dBtn" class="btn btn-sm" aria-pressed="false">👁️ Esempio 7gg</button>
-            </div>
-
-            <div class="chart-wrap">
-              <svg id="trendSvg" class="chart-svg" viewBox="0 0 640 332" role="img" aria-label="Grafico ultimi 7 giorni Daily Dozen, Sodio, Potassio e rapporto K:Na"></svg>
-            </div>
-
-            <div class="chart-legend">
-              <span class="legend-item"><span class="legend-swatch" style="background:#1B6B46;"></span>Cibi Sani (0–24) &amp; Potassio (% su 4700mg)</span>
-              <span class="legend-item"><span class="legend-swatch" style="background:#D97706;"></span><span id="chartLegendNaOk">Sodio entro soglia</span></span>
-              <span class="legend-item"><span class="legend-swatch" style="background:#DC2626;"></span><span id="chartLegendNaOver">Sodio sforato</span></span>
-            </div>
-          </article>
-
-          <!-- Adv Card C: Protocollo Integratori & Abitudini -->
-          <article class="card">
-            <div class="card-head">
-              <div>
-                <h2 class="card-title">Integratori &amp; Piccole Abitudini</h2>
-                <p class="card-desc" id="protocolCardDesc">Promemoria giornalieri facoltativi per energia, vitamina B12 e digestione</p>
-              </div>
-              <span id="protocolCountBadge" class="badge num">0/5</span>
-            </div>
-
-            <div id="protocolChips" class="chip-row" role="group" aria-label="Checklist integratori e abitudini giornaliere"></div>
-          </article>
-        </div>
-      </details>
-    </section>
-
-    <!-- ================================================================
-         TAB 2: CUCINA
-         ================================================================ -->
-    <section id="panel-cucina" class="tab-panel" role="tabpanel" aria-labelledby="tab-cucina">
-      <!-- Card 1: Generatore Piatto ("Crea un Piatto con quello che hai") -->
-      <article class="card">
-        <div class="card-head">
-          <div>
-            <h2 class="card-title">Crea un Piatto con Quello che Hai</h2>
-            <p class="card-desc">Usa gli ingredienti della tua dispensa (prima quelli in scadenza) con proteine e verdure già bilanciate</p>
-          </div>
-          <span id="genModeBadge" class="badge workout">⚡ Giorno Attivo</span>
-        </div>
-
-        <div class="chip-row" id="genMealTypeBar" style="margin-bottom:10px;">
-          <button type="button" class="chip chip-sm" data-mtype="colazione">☕ Colazione</button>
-          <button type="button" class="chip chip-sm" data-mtype="spuntino">🍎 Spuntino</button>
-          <button type="button" class="chip chip-sm active" data-mtype="pranzo">☀️ Pranzo</button>
-          <button type="button" class="chip chip-sm" data-mtype="cena">🌙 Cena</button>
-        </div>
-
-        <button type="button" id="generateBowlBtn" class="btn btn-primary btn-block">
-          🎲 Prepara un piatto diverso adesso
-        </button>
-
-        <details class="sub-disclosure" style="margin-top:10px;">
-          <summary><span>🎯 Voglio usare un ingrediente preciso</span></summary>
-          <div class="sub-disclosure-body" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-            <label for="genMustUseSelect" style="font-size:0.8rem; font-weight:600; color:var(--ink-secondary);">Ingrediente:</label>
-            <select id="genMustUseSelect" class="input-field" style="flex:1 1 200px;">
-              <option value="">— Qualsiasi alimento in dispensa —</option>
-            </select>
-          </div>
-        </details>
-
-        <div id="generatedBowlContainer"></div>
-
-        <!-- Saved Invented Recipes ("Ricette salvate") -->
-        <div id="savedRecipesWrap" style="margin-top:12px;"></div>
-      </article>
-
-      <!-- Card 2: Ricettario Italiano (20 Piatti Regionali + Colazioni/Spuntini) -->
-      <article class="card">
-        <div class="card-head">
-          <div>
-            <h2 class="card-title">Ricettario Italiano</h2>
-            <p class="card-desc">Piatti della tradizione ordinati automaticamente in base a quello che hai già in casa</p>
-          </div>
-          <span id="recipeMatchCountBadge" class="badge num">20 piatti</span>
-        </div>
-
-        <input type="search" id="recipeSearchInput" class="input-field" placeholder="Cerca ricetta, regione o ingrediente (es. pasta, ceci, Puglia)..." aria-label="Cerca nel ricettario">
-
-        <div id="recipeFilterBar" class="chip-row" style="margin-top:10px;"></div>
-
-        <div id="recipeListContainer" class="recipe-list"></div>
-      </article>
-
-      <!-- Card 3: Diario Pasti di Oggi & Pasto Libero -->
-      <article class="card">
-        <div class="card-head">
-          <div>
-            <h2 class="card-title">Diario Pasti di Oggi</h2>
-            <p class="card-desc">I piatti che hai segnato oggi, oppure scrivi a parole tue cosa hai mangiato</p>
+            <h2 class="card-title">Pasti &amp; Energia di Oggi</h2>
+            <p class="card-desc">Cosa hai registrato oggi e suggerimenti rapidi</p>
           </div>
           <span id="mealsCountBadge" class="badge num">0 pasti</span>
         </div>
-
-        <div id="mealsDiaryContainer" class="meal-list"></div>
+        <div id="oggiMealsSummaryBody"></div>
+        <div id="coachAdviceWrap" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);"></div>
 
         <details class="sub-disclosure">
           <summary><span>✍️ Ho mangiato altro: scrivilo a parole tue</span></summary>
@@ -2451,32 +2455,42 @@
             <div id="freeMealResultWrap"></div>
           </div>
         </details>
+
+        <details class="sub-disclosure">
+          <summary><span>💊 Integratori &amp; Piccole Abitudini</span><span id="protocolCountBadge" class="badge num">0/5</span></summary>
+          <div class="sub-disclosure-body">
+            <p class="card-desc" id="protocolCardDesc" style="margin-bottom:8px;">Promemoria giornalieri facoltativi per energia, vitamina B12 e digestione</p>
+            <div id="protocolChips" class="chip-row" role="group" aria-label="Checklist integratori e abitudini giornaliere"></div>
+          </div>
+        </details>
       </article>
     </section>
 
     <!-- ================================================================
-         TAB 3: SCANNER & SEMAFORO ALIMENTI
+         TAB 2: SPESA (Modalità Supermercato Unificata: Lista + Ricette + Scanner A/B + Coda Offline)
          ================================================================ -->
-    <section id="panel-scanner" class="tab-panel" role="tabpanel" aria-labelledby="tab-scanner">
-      <!-- Card 1: Controlla un Prodotto Confezionato (Semaforo Immediato + OCR/Numeri a scomparsa) -->
+    <section id="panel-spesa" class="tab-panel" role="tabpanel" aria-labelledby="tab-spesa">
+      <!-- Card 1: Controlla e Confronta un Prodotto (Semaforo + Confronto A vs B + Coda Offline) -->
       <article class="card">
         <div class="card-head">
           <div>
-            <h2 class="card-title">Controlla un Prodotto (Semaforo)</h2>
-            <p class="card-desc">Inquadra il codice a barre per sapere subito se è Verde, Giallo o Rosso per te</p>
+            <h2 class="card-title">Controlla &amp; Confronta al Supermercato</h2>
+            <p class="card-desc">Inquadra il codice a barre (risposta immediata se già salvato) oppure salva la foto etichetta se non c'è campo</p>
           </div>
           <span id="ocrOfflineBadge" class="badge">Pronto</span>
         </div>
 
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button type="button" id="startBarcodeBtn" class="btn btn-primary" style="flex:1 1 190px;">
-            📦 Inquadra Codice a Barre
+          <button type="button" id="startBarcodeBtn" class="btn btn-primary spesa-primary-action" style="flex:1 1 180px;">
+            📦 Inquadra Codice
           </button>
-          <button type="button" id="photoBarcodeBtn" class="btn" style="flex:0 1 auto;">📷 Foto codice</button>
-          <div style="display:flex; gap:6px; flex:1 1 210px;">
-            <input type="text" id="eanInput" class="input-field num" inputmode="numeric" placeholder="Codice a barre (es. 800123...)" aria-label="Codice a barre EAN">
-            <button type="button" id="lookupEanBtn" class="btn btn-soft">Cerca</button>
-          </div>
+          <button type="button" id="photoBarcodeBtn" class="btn spesa-primary-action" style="flex:0 1 auto;">📷 Foto codice</button>
+          <button type="button" id="saveOfflineLabelBtn" class="btn btn-soft spesa-primary-action" style="flex:1 1 170px;">📷 Salva foto per dopo</button>
+        </div>
+
+        <div style="display:flex; gap:6px; margin-top:8px;">
+          <input type="text" id="eanInput" class="input-field num" inputmode="numeric" placeholder="Codice a barre (es. 800123...)" aria-label="Codice a barre EAN">
+          <button type="button" id="lookupEanBtn" class="btn btn-soft">Cerca</button>
         </div>
 
         <!-- Live Barcode Camera View -->
@@ -2489,8 +2503,11 @@
           </div>
         </div>
 
+        <!-- Pinned Product A for A vs B Comparison -->
+        <div id="comparePinBar" class="compare-pin-bar" style="display:none;"></div>
+
         <!-- Quick Demo Presets -->
-        <div style="margin-top:12px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:0.78rem; color:var(--ink-secondary);">
+        <div style="margin-top:10px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:0.78rem; color:var(--ink-secondary);">
           <span>Prova un esempio:</span>
           <button type="button" class="btn btn-sm" data-preset="verde">🟢 Tofu Bio</button>
           <button type="button" class="btn btn-sm" data-preset="giallo">🟡 Hummus</button>
@@ -2506,22 +2523,41 @@
             <span class="verdict-score num" id="verdictScore">—/100</span>
           </div>
           <ul class="verdict-reasons" id="verdictReasons">
-            <li>Premi «📦 Inquadra Codice a Barre» oppure tocca uno dei 3 esempi sopra per vedere subito il verdetto.</li>
+            <li>Premi «📦 Inquadra Codice» oppure tocca uno dei 3 esempi sopra per vedere subito il semaforo clinico.</li>
           </ul>
           <div id="verdictThresholdsText" style="margin-top:8px; font-size:0.75rem; opacity:0.88;"></div>
         </div>
 
+        <!-- A vs B Comparison Panel -->
+        <div id="productComparePanel" class="compare-panel" style="display:none;"></div>
+
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
-          <button type="button" id="addScannedToPantryBtn" class="btn btn-primary" style="flex:1 1 160px;" disabled>＋ Aggiungi a Dispensa</button>
-          <button type="button" id="eatScannedProductBtn" class="btn btn-soft" style="flex:1 1 150px;" disabled>🍽 Mangia ora (100g)</button>
-          <button type="button" id="saveCacheBtn" class="btn" style="flex:1 1 135px;" disabled>💾 Salva nei recenti</button>
+          <button type="button" id="compareProductBtn" class="btn btn-soft spesa-primary-action" style="flex:1 1 155px;" disabled>⚖️ Confronta A vs B</button>
+          <button type="button" id="addScannedToPantryBtn" class="btn btn-primary spesa-primary-action" style="flex:1 1 155px;" disabled>＋ Aggiungi a Dispensa</button>
+          <button type="button" id="eatScannedProductBtn" class="btn btn-soft" style="flex:1 1 140px;" disabled>🍽 Mangia ora (100g)</button>
+          <button type="button" id="saveCacheBtn" class="btn" style="flex:1 1 130px;" disabled>💾 Salva nei recenti</button>
         </div>
+
+        <!-- Offline Pending Label Photos Queue (IndexedDB local-only) -->
+        <details class="sub-disclosure" id="pendingLabelsDetails" style="display:none;">
+          <summary>
+            <span>📷 Etichette fotografate da analizzare</span>
+            <span id="pendingLabelsBadge" class="badge warn num">0</span>
+          </summary>
+          <div class="sub-disclosure-body" style="display:grid; gap:8px;">
+            <p style="margin:0; font-size:0.78rem; color:var(--ink-secondary);">
+              Salvate solo su questo telefono. Completa l'analisi OCR o il confronto qui sotto: appena salvi il prodotto nei recenti, la foto viene rimossa e il verdetto resta disponibile offline alla prossima spesa.
+            </p>
+            <div id="pendingLabelsList" style="display:grid; gap:8px;"></div>
+          </div>
+        </details>
 
         <!-- Hidden file inputs -->
         <input type="file" id="cameraBarcodeInput" class="sr-only" accept="image/*" capture="environment">
         <input type="file" id="cameraTableInput" class="sr-only" accept="image/*" capture="environment">
         <input type="file" id="cameraIngInput" class="sr-only" accept="image/*" capture="environment">
         <input type="file" id="galleryInput" class="sr-only" accept="image/*">
+        <input type="file" id="offlineLabelPhotoInput" class="sr-only" accept="image/*" capture="environment">
 
         <!-- Progressive Disclosure: OCR Photo Cropper & Manual 100g Nutrition Fields -->
         <details class="sub-disclosure" id="scannerOcrManualDetails">
@@ -2618,7 +2654,40 @@
         <div id="eanCacheListWrap" style="margin-top:14px;"></div>
       </article>
 
-      <!-- Card 2: "Posso mangiarlo?" & Semaforo Rapido Alimenti Sfusi -->
+      <!-- Card 2: Lista della Spesa & Carrello Reversibile + Ricette Quasi Pronte -->
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Lista Spesa &amp; Carrello</h2>
+            <p class="card-desc">Tocca «✓ Preso» mentre riempi il carrello · vedi subito cosa manca per completare le ricette</p>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span id="shopCountBadge" class="badge num">0 da comprare</span>
+            <button type="button" id="copyShopListBtn" class="btn btn-sm">📋 Copia</button>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+          <select id="manualShopSelect" class="input-field" style="flex:1 1 180px;" aria-label="Scegli un alimento da aggiungere alla spesa">
+            <option value="">+ Aggiungi un cibo alla spesa...</option>
+          </select>
+          <button type="button" id="addManualShopBtn" class="btn btn-soft btn-sm">Aggiungi</button>
+        </div>
+
+        <div id="shoppingListContainer" class="shop-list"></div>
+
+        <!-- Presi oggi (annulla in 1 tocco) -->
+        <div id="boughtTodayWrap" style="margin-top:10px;"></div>
+
+        <!-- Ricette quasi pronte prima della cassa -->
+        <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border);">
+          <div style="font-size:0.84rem; font-weight:700; margin-bottom:4px;">🍳 Prima di andare in cassa: ricette quasi pronte</div>
+          <p style="margin:0 0 8px; font-size:0.76rem; color:var(--ink-secondary);">A questi piatti mancano solo 1–2 ingredienti rispetto a ciò che hai in casa o nel carrello:</p>
+          <div id="almostReadyRecipesWrap" style="display:grid; gap:8px;"></div>
+        </div>
+      </article>
+
+      <!-- Card 3: "Posso mangiarlo?" & Semaforo Rapido Alimenti Sfusi -->
       <article class="card">
         <div class="card-head">
           <div>
@@ -2641,7 +2710,7 @@
 
         <div class="chip-row" id="semaforoFilterBar" style="margin-top:10px;">
           <button type="button" class="chip chip-sm active" data-sflt="all">Tutti</button>
-          <button type="button" class="chip chip-sm" data-sflt="VERDE">🟢 Sì, ottimo</button>
+          <button type="button" class="chip chip-sm" data-sflt="VERDE">🟢 Sì, consigliato</button>
           <button type="button" class="chip chip-sm" data-sflt="GIALLO">🟡 Moderazione</button>
           <button type="button" class="chip chip-sm" data-sflt="ROSSO">🔴 Da evitare</button>
         </div>
@@ -2652,15 +2721,65 @@
     </section>
 
     <!-- ================================================================
-         TAB 4: MENU & SPESA (+ PROFILO, ALLERGENI, LIMITI & BACKUP)
+         TAB 3: CUCINA (Ricettario, Genera Piatto, Menu 7gg e Dispensa Occasionale)
          ================================================================ -->
-    <section id="panel-menu" class="tab-panel" role="tabpanel" aria-labelledby="tab-menu">
-      <!-- Card 1: Menu Settimanale 7 Giorni -->
+    <section id="panel-cucina" class="tab-panel" role="tabpanel" aria-labelledby="tab-cucina">
+      <!-- Card 1: Generatore Piatto -->
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Crea un Piatto Bilanciato</h2>
+            <p class="card-desc">Compone una ciotola o un piatto rapido rispettando i tuoi 12 Cibi Sani, proteine e limiti clinici</p>
+          </div>
+          <span id="genModeBadge" class="badge workout">⚡ Giorno Attivo</span>
+        </div>
+
+        <div class="chip-row" id="genMealTypeBar" style="margin-bottom:10px;">
+          <button type="button" class="chip chip-sm" data-mtype="colazione">☕ Colazione</button>
+          <button type="button" class="chip chip-sm" data-mtype="spuntino">🍎 Spuntino</button>
+          <button type="button" class="chip chip-sm active" data-mtype="pranzo">☀️ Pranzo</button>
+          <button type="button" class="chip chip-sm" data-mtype="cena">🌙 Cena</button>
+        </div>
+
+        <button type="button" id="generateBowlBtn" class="btn btn-primary btn-block">
+          🎲 Prepara un piatto diverso adesso
+        </button>
+
+        <details class="sub-disclosure" style="margin-top:10px;">
+          <summary><span>🎯 Voglio usare un ingrediente preciso</span></summary>
+          <div class="sub-disclosure-body" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <label for="genMustUseSelect" style="font-size:0.8rem; font-weight:600; color:var(--ink-secondary);">Ingrediente:</label>
+            <select id="genMustUseSelect" class="input-field" style="flex:1 1 200px;">
+              <option value="">— Qualsiasi alimento in dispensa —</option>
+            </select>
+          </div>
+        </details>
+
+        <div id="generatedBowlContainer"></div>
+        <div id="savedRecipesWrap" style="margin-top:12px;"></div>
+      </article>
+
+      <!-- Card 2: Ricettario Italiano -->
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Ricettario Italiano</h2>
+            <p class="card-desc">Piatti della tradizione ordinati in base ai 12 Cibi Sani mancanti e agli ingredienti che hai</p>
+          </div>
+          <span id="recipeMatchCountBadge" class="badge num">20 piatti</span>
+        </div>
+
+        <input type="search" id="recipeSearchInput" class="input-field" placeholder="Cerca ricetta, regione o ingrediente (es. pasta, ceci, Puglia)..." aria-label="Cerca nel ricettario">
+        <div id="recipeFilterBar" class="chip-row" style="margin-top:10px;"></div>
+        <div id="recipeListContainer" class="recipe-list"></div>
+      </article>
+
+      <!-- Card 3: Menu Settimanale 7 Giorni -->
       <article class="card">
         <div class="card-head">
           <div>
             <h2 class="card-title">Menu della Settimana (7 Giorni)</h2>
-            <p class="card-desc">Pianifica la settimana dando priorità agli ingredienti che hai già in casa</p>
+            <p class="card-desc">Pianifica la settimana e riempi automaticamente la lista della spesa</p>
           </div>
           <div style="display:flex; gap:6px;">
             <button type="button" id="copyWeeklyMenuBtn" class="btn btn-sm" title="Copia menu negli appunti">📋 Copia</button>
@@ -2676,46 +2795,151 @@
         <div id="weeklyMenuContainer" class="week-grid"></div>
       </article>
 
-      <!-- Card 2: Lista della Spesa Automatica -->
+      <!-- Card 4: Dispensa Occasionale (spostata da cima Oggi a strumento su richiesta) -->
+      <article class="card" id="pantryCard">
+        <details id="cucinaPantryDetails">
+          <summary style="list-style:none; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <div>
+              <h2 class="card-title" style="margin:0;">📦 La tua Dispensa (Strumento occasionale)</h2>
+              <p class="card-desc" style="margin:2px 0 0;">Tocca per aggiornare cosa hai in casa o segnare un cibo in scadenza (⏳)</p>
+            </div>
+            <span id="pantryCountBadge" class="badge ok num">0 in casa</span>
+          </summary>
+
+          <div style="margin-top:12px;">
+            <div class="pantry-ready-bar">
+              <span id="pantryReadyRecipesText"><strong>0 ricette</strong> pronte subito con quello che hai in casa</span>
+              <button type="button" id="jumpReadyRecipesBtn" class="btn btn-sm btn-primary">🍳 Filtra pronte</button>
+            </div>
+
+            <input type="search" id="pantrySearchInput" class="input-field" placeholder="Cerca ingrediente (es. pasta, ceci, zucchine, uova)..." aria-label="Filtra alimenti in dispensa">
+            <div id="pantryCatFilters" class="chip-row" style="margin-top:10px;"></div>
+
+            <div class="pantry-meta">
+              <span id="pantrySummaryText">1 tocco = in casa · ⏳ = in scadenza</span>
+              <button type="button" id="expiringHintBtn" class="btn btn-xs" style="font-size:0.75rem;">⏳ Da finire presto: <span id="expiringCountSpan" class="num">0</span></button>
+            </div>
+
+            <div id="pantryGrid" class="pantry-grid"></div>
+            <div id="pantryExpandWrap" style="margin-top:8px;"></div>
+            <div id="customFoodsChipsWrap" class="chip-row" style="margin-top:8px;"></div>
+
+            <details class="sub-disclosure" id="pantryExtraDetails">
+              <summary><span>➕ Aggiungi un cibo fuori elenco o svuota dispensa</span></summary>
+              <div class="sub-disclosure-body">
+                <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                  <input type="text" id="customFoodNameInput" class="input-field" style="flex:1 1 170px;" placeholder="Es. broccoli surgelati, seitan..." aria-label="Nome alimento personalizzato">
+                  <select id="customFoodCatSelect" class="input-field" style="flex:1 1 145px;" aria-label="Categoria alimento">
+                    <option value="verdure">È una verdura</option>
+                    <option value="legumi">È un legume / proteina</option>
+                    <option value="cereali">È un cereale o pane</option>
+                    <option value="frutta">È frutta</option>
+                    <option value="noci_semi">È frutta a guscio / semi</option>
+                    <option value="spezie">Altro / condimento</option>
+                  </select>
+                  <button type="button" id="addCustomFoodBtn" class="btn btn-soft btn-sm">＋ Aggiungi</button>
+                  <button type="button" id="scanCustomFoodBtn" class="btn btn-sm">📷 Scansiona</button>
+                  <button type="button" id="clearPantryBtn" class="btn btn-sm">Svuota dispensa</button>
+                </div>
+              </div>
+            </details>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- ================================================================
+         TAB 4: PROGRESSI (Grafici 7/14/30g, Digiuno 7g, Health Connect, Amazfit & Profilo)
+         ================================================================ -->
+    <section id="panel-progressi" class="tab-panel" role="tabpanel" aria-labelledby="tab-progressi">
+      <!-- Card 1: Grafico Qualità Alimentare (12 Cibi Sani: 7g | 14g | 30g) -->
       <article class="card">
         <div class="card-head">
           <div>
-            <h2 class="card-title">Lista della Spesa Automatica</h2>
-            <p class="card-desc">Quando compri un ingrediente tocca «✓ Preso» per spostarlo subito in Dispensa</p>
+            <h2 class="card-title">Andamento 12 Cibi Sani</h2>
+            <p class="card-desc" id="dozenTrendSubtitle">Media del periodo e giorni con obiettivo ≥ 18/24</p>
           </div>
-          <div style="display:flex; gap:6px; align-items:center;">
-            <span id="shopCountBadge" class="badge num">0 da comprare</span>
-            <button type="button" id="copyShopListBtn" class="btn btn-sm">📋 Copia lista</button>
+          <div class="chip-row" id="dozenRangeBar" role="group" aria-label="Intervallo giorni grafico">
+            <button type="button" class="chip chip-sm active" data-days="7">7g</button>
+            <button type="button" class="chip chip-sm" data-days="14">14g</button>
+            <button type="button" class="chip chip-sm" data-days="30">30g</button>
           </div>
         </div>
-
-        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
-          <select id="manualShopSelect" class="input-field" style="flex:1 1 180px;" aria-label="Scegli un alimento da aggiungere alla spesa">
-            <option value="">+ Aggiungi un altro cibo alla spesa...</option>
-          </select>
-          <button type="button" id="addManualShopBtn" class="btn btn-soft btn-sm">Aggiungi</button>
-        </div>
-
-        <div id="shoppingListContainer" class="shop-list"></div>
+        <div id="dozenTrendChartWrap"></div>
       </article>
 
-      <!-- Card 3: Profilo, Preferenze, Allergeni & Backup -->
+      <!-- Card 2: Regolarità Digiuno (Ultimi 7 Giorni Editabili — nascosto se protocol === 'off') -->
+      <article class="card" id="progressFastingCard">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Regolarità Digiuno (Ultimi 7 Giorni)</h2>
+            <p class="card-desc">Tocca una giornata per correggere data e ora di inizio/fine</p>
+          </div>
+          <span id="progressFastSummaryBadge" class="badge ok num">0/7</span>
+        </div>
+        <div id="progressFast7Grid" class="fast7-grid"></div>
+      </article>
+
+      <!-- Card 3: Obiettivi Clinici, Passi & Health Connect -->
+      <article class="card" id="syncAndGoalsCard">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Obiettivi Clinici, Passi &amp; Cloud</h2>
+            <p class="card-desc">Sincronizza Health Connect / Apple Salute e verifica aderenza sodio/proteine</p>
+          </div>
+          <button type="button" id="openHealthCloudModalBtn" class="btn btn-sm btn-soft">☁️ Connetti</button>
+        </div>
+
+        <div class="kpi-grid" style="margin-bottom:10px;">
+          <div class="kpi-box">
+            <span class="kpi-label">Passi oggi</span>
+            <strong class="kpi-value num" id="hcStepsVal">0</strong>
+            <span class="kpi-sub" id="hcStepsSub">obiettivo 7.500</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-label">Kcal attive</span>
+            <strong class="kpi-value num" id="hcActiveKcalVal">0</strong>
+            <span class="kpi-sub">attivo ≥300</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-label">Account Cloud</span>
+            <strong class="kpi-value" id="cloudShortStatus" style="font-size:0.9rem;">Locale</strong>
+            <span class="kpi-sub" id="cloudShortSub">non connesso</span>
+          </div>
+        </div>
+
+        <div id="clinicalGoalsSummaryWrap" style="margin-bottom:10px;"></div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" id="quickSyncHealthBtn" class="btn btn-sm btn-primary" style="flex:1 1 170px;">❤️ Sincronizza Salute</button>
+          <button type="button" id="quickShareFriendsBtn" class="btn btn-sm" style="flex:1 1 150px;">🔗 Invita un amico</button>
+        </div>
+
+        <details class="sub-disclosure" id="syncHistoryDetails">
+          <summary><span>📊 Dettaglio 7 giorni e log scambi dati</span></summary>
+          <div class="sub-disclosure-body">
+            <div id="goalHistorySummaryWrap"></div>
+            <div id="syncExchangeSummaryWrap" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border);"></div>
+          </div>
+        </details>
+      </article>
+
+      <!-- Card 4: Profilo, Preferenze, Amazfit/Zepp & Backup -->
       <article class="card" id="profileSectionCard">
         <div class="card-head">
           <div>
-            <h2 class="card-title">Il Tuo Profilo &amp; Preferenze</h2>
-            <p class="card-desc">Privato sul tuo telefono · Sincronizzazione Cloud facoltativa</p>
+            <h2 class="card-title">Profilo, Limiti Clinici &amp; Dispositivi</h2>
+            <p class="card-desc">Privato sul tuo telefono · Cloud, Health Connect e Amazfit facoltativi</p>
           </div>
           <span id="persistBadge" class="badge">Salvato qui</span>
         </div>
 
-        <!-- Anthropometric Summary Banner -->
         <div id="profileSummaryBanner" class="pantry-ready-bar" style="background:var(--surface-muted); border-color:var(--border);"></div>
 
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
           <button type="button" id="reopenOnboardingBtn" class="btn btn-sm btn-soft" style="flex:1 1 155px;">🚀 Avvio Rapido</button>
           <button type="button" id="openCloudFromProfileBtn" class="btn btn-sm btn-primary" style="flex:1 1 165px;">☁️ Account Cloud &amp; Salute</button>
-          <button type="button" id="reopenCompassBtn" class="btn btn-sm" style="flex:1 1 140px;">❓ Rivedi guida rapida</button>
+          <button type="button" id="toggleFastFromProfileBtn" class="btn btn-sm" style="flex:1 1 155px;">⏳ Attiva/Modifica Digiuno</button>
         </div>
 
         <!-- Diet Selector in Profile -->
@@ -3111,6 +3335,34 @@
     </div>
   </dialog>
 
+  <!-- Fasting 7-Day Edit Modal -->
+  <dialog id="fastingDayEditDialog" class="app-modal" aria-labelledby="fastEditTitle">
+    <div class="app-modal-inner">
+      <div class="app-modal-head">
+        <div>
+          <strong id="fastEditTitle" style="font-size:1rem;">✏️ Correggi Digiuno</strong>
+          <div id="fastEditDateLabel" style="font-size:0.78rem; color:var(--ink-secondary);">Giornata</div>
+        </div>
+        <button type="button" id="closeFastEditBtn" class="btn btn-sm">Chiudi</button>
+      </div>
+      <div class="app-modal-body" style="display:grid; gap:10px;">
+        <div class="field-wrap">
+          <label for="fastEditStartInput">Inizio digiuno (fine ultimo pasto)</label>
+          <input type="datetime-local" id="fastEditStartInput" class="input-field num">
+        </div>
+        <div class="field-wrap">
+          <label for="fastEditEndInput">Fine digiuno (primo pasto successivo)</label>
+          <input type="datetime-local" id="fastEditEndInput" class="input-field num">
+        </div>
+        <div id="fastEditPreviewText" style="font-size:0.82rem; color:var(--ink-secondary);"></div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" id="saveFastEditBtn" class="btn btn-primary" style="flex:2 1 180px;">💾 Salva orari</button>
+          <button type="button" id="deleteFastEditBtn" class="btn btn-danger btn-sm" style="flex:1 1 110px;">Elimina giorno</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
   <!-- Fixed 4-Tab Bottom Navigation -->
   <nav class="bottom-nav" aria-label="Navigazione principale">
     <div class="bottom-nav-inner" role="tablist">
@@ -3118,17 +3370,17 @@
         <span class="nav-tab-icon" aria-hidden="true">🏠</span>
         <span>Oggi</span>
       </button>
+      <button type="button" id="tab-spesa" class="nav-tab" role="tab" aria-selected="false" aria-controls="panel-spesa" data-tab="spesa">
+        <span class="nav-tab-icon" aria-hidden="true">🛒</span>
+        <span>Spesa</span>
+      </button>
       <button type="button" id="tab-cucina" class="nav-tab" role="tab" aria-selected="false" aria-controls="panel-cucina" data-tab="cucina">
         <span class="nav-tab-icon" aria-hidden="true">🍳</span>
         <span>Cucina</span>
       </button>
-      <button type="button" id="tab-scanner" class="nav-tab" role="tab" aria-selected="false" aria-controls="panel-scanner" data-tab="scanner">
-        <span class="nav-tab-icon" aria-hidden="true">📷</span>
-        <span>Scanner</span>
-      </button>
-      <button type="button" id="tab-menu" class="nav-tab" role="tab" aria-selected="false" aria-controls="panel-menu" data-tab="menu">
-        <span class="nav-tab-icon" aria-hidden="true">📅</span>
-        <span>Menu &amp; Spesa</span>
+      <button type="button" id="tab-progressi" class="nav-tab" role="tab" aria-selected="false" aria-controls="panel-progressi" data-tab="progressi">
+        <span class="nav-tab-icon" aria-hidden="true">📈</span>
+        <span>Progressi</span>
       </button>
     </div>
   </nav>
@@ -3813,8 +4065,24 @@
                   : { steps: 0, activeKcal: 0, syncedAt: null },
                 meals: Array.isArray(logVal.meals) ? logVal.meals.slice(0, 50) : []
               };
+              if (logVal.fasting && typeof logVal.fasting === 'object') {
+                const ef = logVal.fasting;
+                const proto = ['16:8', '14:10', '12:12'].includes(ef.proto) ? ef.proto : '16:8';
+                const fh = clampNum(ef.fastHours, 0, 48, 0);
+                if (ef.startIso && ef.endIso && fh > 0) {
+                  base.logs[dateKey].fasting = {
+                    proto,
+                    startIso: String(ef.startIso).slice(0, 32),
+                    endIso: String(ef.endIso).slice(0, 32),
+                    fastHours: Number(fh.toFixed(2)),
+                    completed: Boolean(ef.completed),
+                    edited: Boolean(ef.edited)
+                  };
+                }
+              }
             }
           }
+          pruneFastingHistory7d(base.logs);
         }
 
         if (Array.isArray(raw.weeklyMenu)) base.weeklyMenu = raw.weeklyMenu.slice(0, 14);
@@ -3891,6 +4159,145 @@
         return initial;
       }
 
+      function getRollingDateKeys(daysCount) {
+        const keys = [];
+        const now = new Date();
+        for (let i = daysCount - 1; i >= 0; i--) {
+          const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+          keys.push(getLocalDateKey(d));
+        }
+        return keys;
+      }
+
+      function pruneFastingHistory7d(logsObj) {
+        if (!logsObj || typeof logsObj !== 'object') return;
+        const keep = new Set(getRollingDateKeys(7));
+        Object.keys(logsObj).forEach((dk) => {
+          if (!keep.has(dk) && logsObj[dk] && logsObj[dk].fasting) {
+            delete logsObj[dk].fasting;
+          }
+        });
+      }
+
+      const OfflineLabelQueue = (function () {
+        const DB_NAME = 'pappa_pronta_offline_labels';
+        const STORE = 'pending_labels';
+        let dbPromise = null;
+
+        function openDb() {
+          if (typeof indexedDB === 'undefined') return Promise.resolve(null);
+          if (dbPromise) return dbPromise;
+          dbPromise = new Promise((resolve) => {
+            try {
+              const req = indexedDB.open(DB_NAME, 1);
+              req.onupgradeneeded = () => {
+                const db = req.result;
+                if (!db.objectStoreNames.contains(STORE)) {
+                  db.createObjectStore(STORE, { keyPath: 'id' });
+                }
+              };
+              req.onsuccess = () => resolve(req.result);
+              req.onerror = () => resolve(null);
+            } catch (_) {
+              resolve(null);
+            }
+          });
+          return dbPromise;
+        }
+
+        async function list() {
+          const db = await openDb();
+          if (!db) return [];
+          return new Promise((resolve) => {
+            try {
+              const tx = db.transaction(STORE, 'readonly');
+              const req = tx.objectStore(STORE).getAll();
+              req.onsuccess = () => {
+                const rows = Array.isArray(req.result) ? req.result : [];
+                rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                resolve(rows);
+              };
+              req.onerror = () => resolve([]);
+            } catch (_) {
+              resolve([]);
+            }
+          });
+        }
+
+        async function add(record) {
+          const db = await openDb();
+          if (!db) return false;
+          return new Promise((resolve) => {
+            try {
+              const tx = db.transaction(STORE, 'readwrite');
+              tx.objectStore(STORE).put(record);
+              tx.oncomplete = () => resolve(true);
+              tx.onerror = () => resolve(false);
+            } catch (_) {
+              resolve(false);
+            }
+          });
+        }
+
+        async function remove(id) {
+          const db = await openDb();
+          if (!db) return false;
+          return new Promise((resolve) => {
+            try {
+              const tx = db.transaction(STORE, 'readwrite');
+              tx.objectStore(STORE).delete(id);
+              tx.oncomplete = () => resolve(true);
+              tx.onerror = () => resolve(false);
+            } catch (_) {
+              resolve(false);
+            }
+          });
+        }
+
+        async function clear() {
+          const db = await openDb();
+          if (!db) return false;
+          return new Promise((resolve) => {
+            try {
+              const tx = db.transaction(STORE, 'readwrite');
+              tx.objectStore(STORE).clear();
+              tx.oncomplete = () => resolve(true);
+              tx.onerror = () => resolve(false);
+            } catch (_) {
+              resolve(false);
+            }
+          });
+        }
+
+        function resizeImageToDataUrl(file, maxSide, quality) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const img = new Image();
+              img.onload = () => {
+                const w = img.naturalWidth || img.width || 800;
+                const h = img.naturalHeight || img.height || 800;
+                const scale = Math.min(1, (maxSide || 1200) / Math.max(w, h));
+                const cw = Math.max(1, Math.round(w * scale));
+                const ch = Math.max(1, Math.round(h * scale));
+                const canvas = document.createElement('canvas');
+                canvas.width = cw;
+                canvas.height = ch;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, cw, ch);
+                resolve(canvas.toDataURL('image/jpeg', quality || 0.78));
+              };
+              img.onerror = reject;
+              img.src = reader.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        }
+
+        return { list, add, remove, clear, resizeImageToDataUrl };
+      })();
+
       let cloudSyncHook = null;
       function saveState(st, skipCloud) {
         const target = st || state;
@@ -3942,7 +4349,13 @@
         semaforoSearch: '',
         semaforoFilter: 'all',
         semaforoExpanded: false,
-        selectedFastPhase: null
+        selectedFastPhase: null,
+        oggiMode: null, // 'pasti' | 'sera'
+        dozenRangeDays: 7,
+        boughtToday: [], // [{ id, name }]
+        compareProductA: null,
+        activePendingLabelId: null,
+        editingFastDateKey: null
       };
 
       let toastTimer = null;
@@ -4100,14 +4513,16 @@
        * 7. NAVIGATION & HEADER
        * ===================================================================== */
       function switchTab(tabId) {
-        ui.activeTab = tabId;
+        const resolved = tabId === 'scanner' ? 'spesa' : (tabId === 'menu' ? 'progressi' : tabId);
+        const safeTab = ['oggi', 'spesa', 'cucina', 'progressi'].includes(resolved) ? resolved : 'oggi';
+        ui.activeTab = safeTab;
         document.querySelectorAll('.nav-tab').forEach((btn) => {
-          btn.setAttribute('aria-selected', btn.dataset.tab === tabId ? 'true' : 'false');
+          btn.setAttribute('aria-selected', btn.dataset.tab === safeTab ? 'true' : 'false');
         });
         document.querySelectorAll('.tab-panel').forEach((panel) => {
-          panel.classList.toggle('active', panel.id === 'panel-' + tabId);
+          panel.classList.toggle('active', panel.id === 'panel-' + safeTab);
         });
-        if (tabId !== 'scanner') stopBarcodeCamera();
+        if (safeTab !== 'spesa') stopBarcodeCamera();
         renderActiveTab();
       }
 
@@ -4566,9 +4981,184 @@
           ui.selectedFastPhase = null;
           showToast('🍽 Finestra pasti di ' + f.proto.eatH + ' ore aperta!');
         }
+        const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol]) ? state.fasting.protocol : 'off';
+        if (protoKey !== 'off') {
+          if (f.mode !== 'eating') {
+            const startMs = f.anchorTs || (now - 12 * 3600000);
+            recordDailyFastingSnapshot(todayKey, startMs, now, protoKey, false);
+          }
+        }
         saveState();
         renderFastingCard();
+        renderFasting7dGrids();
         if (typeof renderSyncAndGoalSummary === 'function') renderSyncAndGoalSummary();
+      }
+
+      function toDatetimeLocalValue(msVal) {
+        const d = new Date(msVal);
+        if (Number.isNaN(d.getTime())) return '';
+        const pad = (n) => String(n).padStart(2, '0');
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+      }
+
+      function recordDailyFastingSnapshot(dateKey, startMs, endMs, protoKey, edited) {
+        if (!dateKey || !FASTING_PROTOCOLS[protoKey] || protoKey === 'off') return false;
+        const sMs = Number(startMs);
+        const eMs = Number(endMs);
+        if (!Number.isFinite(sMs) || !Number.isFinite(eMs) || eMs <= sMs) return false;
+        const hours = (eMs - sMs) / 3600000;
+        if (hours < 0.5 || hours > 48) return false;
+        if (!state.logs[dateKey]) state.logs[dateKey] = createDefaultDayLog();
+        const targetH = FASTING_PROTOCOLS[protoKey].fastH || 16;
+        state.logs[dateKey].fasting = {
+          proto: protoKey,
+          startIso: toDatetimeLocalValue(sMs),
+          endIso: toDatetimeLocalValue(eMs),
+          fastHours: Number(hours.toFixed(2)),
+          completed: hours >= targetH - 0.15,
+          edited: Boolean(edited)
+        };
+        pruneFastingHistory7d(state.logs);
+        return true;
+      }
+
+      function openFastingDayEditor(dateKey) {
+        ui.editingFastDateKey = dateKey;
+        const dlg = document.getElementById('fastingDayEditDialog');
+        if (!dlg) return;
+        const log = state.logs[dateKey] || null;
+        const existing = log && log.fasting ? log.fasting : null;
+        const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol]) ? state.fasting.protocol : '16:8';
+        const targetH = (FASTING_PROTOCOLS[protoKey] && FASTING_PROTOCOLS[protoKey].fastH) || 16;
+
+        const parts = dateKey.split('-').map(Number);
+        const dayEndDefault = new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0, 0);
+        const dayStartDefault = new Date(dayEndDefault.getTime() - targetH * 3600000);
+
+        document.getElementById('fastEditDateLabel').textContent = 'Giornata: ' + dateKey + ' (obiettivo ' + targetH + 'h)';
+        document.getElementById('fastEditStartInput').value = existing && existing.startIso ? existing.startIso : toDatetimeLocalValue(dayStartDefault.getTime());
+        document.getElementById('fastEditEndInput').value = existing && existing.endIso ? existing.endIso : toDatetimeLocalValue(dayEndDefault.getTime());
+        document.getElementById('deleteFastEditBtn').style.display = existing ? '' : 'none';
+        updateFastingEditPreview();
+        if (typeof dlg.showModal === 'function') dlg.showModal();
+        else dlg.setAttribute('open', '');
+      }
+
+      function updateFastingEditPreview() {
+        const sVal = document.getElementById('fastEditStartInput').value;
+        const eVal = document.getElementById('fastEditEndInput').value;
+        const prev = document.getElementById('fastEditPreviewText');
+        if (!prev) return;
+        const sMs = Date.parse(sVal);
+        const eMs = Date.parse(eVal);
+        if (!Number.isFinite(sMs) || !Number.isFinite(eMs) || eMs <= sMs) {
+          prev.textContent = "⚠️ L'orario di fine deve essere successivo all'inizio.";
+          return;
+        }
+        const h = (eMs - sMs) / 3600000;
+        if (h < 0.5 || h > 48) {
+          prev.textContent = '⚠️ Inserisci una durata compresa tra 30 minuti e 48 ore.';
+          return;
+        }
+        const hh = Math.floor(h);
+        const mm = Math.round((h - hh) * 60);
+        prev.textContent = 'Durata calcolata: ' + hh + 'h ' + String(mm).padStart(2, '0') + 'm';
+      }
+
+      function saveFastingDayEdit(dateKey, startIso, endIso) {
+        const sMs = Date.parse(startIso);
+        const eMs = Date.parse(endIso);
+        if (!Number.isFinite(sMs) || !Number.isFinite(eMs) || eMs <= sMs) {
+          showToast("⚠️ L'orario di fine deve essere successivo all'inizio");
+          return false;
+        }
+        const hours = (eMs - sMs) / 3600000;
+        if (hours < 0.5 || hours > 48) {
+          showToast('⚠️ La durata del digiuno deve essere tra 0,5h e 48h');
+          return false;
+        }
+        const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol] && state.fasting.protocol !== 'off')
+          ? state.fasting.protocol : '16:8';
+        recordDailyFastingSnapshot(dateKey, sMs, eMs, protoKey, true);
+
+        // If editing today, realign live fasting state so Amazfit watch & timer stay in sync
+        const todayKey = getLocalDateKey();
+        if (dateKey === todayKey) {
+          state.fasting.manualLastMealTs = sMs;
+          state.fasting.manualLastMealTsUpdatedAt = Date.now();
+          if (eMs <= Date.now()) {
+            state.fasting.windowClosedDate = null;
+            state.fasting.windowClosedAt = null;
+            state.fasting.eatingStartTs = eMs;
+          } else {
+            state.fasting.windowClosedDate = todayKey;
+            state.fasting.windowClosedAt = sMs;
+            state.fasting.eatingStartTs = null;
+          }
+        }
+        saveState();
+        renderFastingCard();
+        renderFasting7dGrids();
+        renderSyncAndGoalSummary();
+        showToast('✅ Digiuno del ' + dateKey + ' aggiornato (' + hours.toFixed(1) + 'h)');
+        return true;
+      }
+
+      function deleteFastingDayEdit(dateKey) {
+        if (state.logs[dateKey] && state.logs[dateKey].fasting) {
+          delete state.logs[dateKey].fasting;
+          saveState();
+          renderFasting7dGrids();
+          renderSyncAndGoalSummary();
+          showToast('🗑️ Registrazione digiuno rimossa per ' + dateKey);
+        }
+      }
+
+      function renderFasting7dGrids() {
+        const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol]) ? state.fasting.protocol : 'off';
+        const isOff = protoKey === 'off';
+        const progCard = document.getElementById('progressFastingCard');
+        if (progCard) progCard.style.display = isOff ? 'none' : '';
+        if (isOff) return;
+
+        const keys = getRollingDateKeys(7);
+        const dayNames = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
+        let hits = 0;
+
+        const cellsHtml = keys.map((dk) => {
+          const p = dk.split('-').map(Number);
+          const dt = new Date(p[0], p[1] - 1, p[2]);
+          const lbl = dayNames[dt.getDay()];
+          const rec = state.logs[dk] && state.logs[dk].fasting ? state.logs[dk].fasting : null;
+          let cls = 'fast7-cell';
+          let val = '—';
+          if (rec && rec.fastHours > 0) {
+            val = rec.fastHours.toFixed(1).replace('.0', '') + 'h';
+            if (rec.completed) {
+              cls += ' hit';
+              hits++;
+            } else {
+              cls += ' mid';
+            }
+          }
+          return '<button type="button" class="' + cls + ' fast7-edit-btn" data-fdate="' + escHtml(dk) + '" title="Tocca per correggere data/ora digiuno del ' + escHtml(dk) + '">' +
+            '<span>' + escHtml(lbl) + '</span>' +
+            '<strong>' + escHtml(val) + '</strong>' +
+            '<span style="font-size:0.75rem; opacity:0.8;">' + (rec && rec.edited ? '✏️' : (rec ? (rec.completed ? '✓' : '·') : '+')) + '</span>' +
+          '</button>';
+        }).join('');
+
+        const badge = document.getElementById('progressFastSummaryBadge');
+        if (badge) badge.textContent = hits + '/7 centrati (' + protoKey + ')';
+
+        ['oggiFast7Grid', 'progressFast7Grid'].forEach((id) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.innerHTML = cellsHtml;
+          el.querySelectorAll('.fast7-edit-btn').forEach((btn) => {
+            btn.addEventListener('click', () => openFastingDayEditor(btn.dataset.fdate));
+          });
+        });
       }
 
       function computeDozenTotal(dozenObj) {
@@ -4686,6 +5276,7 @@
             curLog.dozen[cat.id] = cur >= cat.target ? 0 : cur + 1;
             saveState();
             renderDailyDozenAndElectrolytes();
+            renderOggiRecommendedRecipes();
             render7DayChart();
             if (typeof renderSyncAndGoalSummary === 'function') renderSyncAndGoalSummary();
           });
@@ -4705,6 +5296,7 @@
               curLog.dozen[cat.id] = Math.max(0, cur - 1);
               saveState();
               renderDailyDozenAndElectrolytes();
+              renderOggiRecommendedRecipes();
               render7DayChart();
               if (typeof renderSyncAndGoalSummary === 'function') renderSyncAndGoalSummary();
             });
@@ -4715,7 +5307,259 @@
         });
       }
 
+      function resolveOggiMode() {
+        const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol]) ? state.fasting.protocol : 'off';
+        if (ui.oggiMode === 'pasti' || ui.oggiMode === 'sera') return ui.oggiMode;
+        const h = new Date().getHours();
+        const m = new Date().getMinutes();
+        const isAfternoon = (h > 13) || (h === 13 && m >= 30);
+        return (isAfternoon && protoKey !== 'off') ? 'sera' : 'pasti';
+      }
+
+      function renderOggiContextLayout() {
+        const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol]) ? state.fasting.protocol : 'off';
+        const mode = resolveOggiMode();
+        const pastiBlock = document.getElementById('oggiPastiBlock');
+        const fastBlock = document.getElementById('oggiFastingBlock');
+        const pBtn = document.getElementById('oggiModePastiBtn');
+        const sBtn = document.getElementById('oggiModeSeraBtn');
+        const switchBar = document.getElementById('oggiContextSwitch');
+
+        if (protoKey === 'off') {
+          if (switchBar) switchBar.style.display = 'none';
+          if (pastiBlock) pastiBlock.style.display = '';
+          if (fastBlock) fastBlock.style.display = 'none';
+          return;
+        }
+        if (switchBar) switchBar.style.display = '';
+        if (pBtn) {
+          pBtn.classList.toggle('active', mode === 'pasti');
+          pBtn.setAttribute('aria-selected', mode === 'pasti' ? 'true' : 'false');
+        }
+        if (sBtn) {
+          sBtn.classList.toggle('active', mode === 'sera');
+          sBtn.setAttribute('aria-selected', mode === 'sera' ? 'true' : 'false');
+        }
+        if (pastiBlock) pastiBlock.style.display = mode === 'pasti' ? '' : 'none';
+        if (fastBlock) fastBlock.style.display = mode === 'sera' ? '' : 'none';
+      }
+
+      function getMissingDozenCategories(todayLog) {
+        const d = (todayLog && todayLog.dozen) ? todayLog.dozen : {};
+        return DAILY_DOZEN.filter((item) => item.id !== 'water' && item.id !== 'exercise' && (Number(d[item.id]) || 0) < item.target);
+      }
+
+      function rankRecipesForToday(limit) {
+        const todayLog = ensureTodayLog();
+        const missing = getMissingDozenCategories(todayLog);
+        const missingSet = new Set(missing.map((x) => x.id));
+        const pantrySet = new Set(state.pantry || []);
+        const expSet = new Set(state.expiring || []);
+        const lim = state.limits || computeAutoLimits(state.profile);
+        const naLim = getDailySodiumLimitMg();
+        const usedNa = Number(todayLog.na) || 0;
+        const usedProt = (todayLog.meals || []).reduce((s, m) => s + (Number(m.prot) || 0), 0);
+        const remNa = Math.max(200, naLim - usedNa);
+        const protGap = Math.max(0, (Number(lim.prot) || 100) - usedProt);
+        const isMorning = new Date().getHours() < 13;
+
+        const candidates = [];
+        RECIPES.forEach((r) => {
+          if (typeof isRecipeAllowedForProfile === 'function' && !isRecipeAllowedForProfile(r)) return;
+          const hasBlocked = (r.ingredients || []).some((ing) => {
+            const f = FOOD_MAP[ing.id];
+            return f && isFoodBlockedByProfile(f);
+          });
+          if (hasBlocked) return;
+
+          const stats = computeRecipeMacros(r, 1);
+          const coveredMissing = (r.dozen || []).filter((dId) => missingSet.has(dId));
+          const uniqueCovered = [...new Set(coveredMissing)];
+          const haveCount = (r.ingredients || []).filter((ing) => pantrySet.has(ing.id)).length;
+          const expCount = (r.ingredients || []).filter((ing) => expSet.has(ing.id)).length;
+
+          let score = uniqueCovered.length * 14;
+          if (stats.na <= remNa) score += 8;
+          else score -= 12;
+          if (protGap > 20 && stats.prot >= 20) score += 7;
+          if (stats.k >= 600) score += 4;
+          if (isMorning && (r.timeMin || 20) <= 20) score += 6;
+          score += haveCount * 1.5 + expCount * 3;
+
+          candidates.push({ recipe: r, stats, uniqueCovered, haveCount, totalIng: (r.ingredients || []).length, score });
+        });
+
+        candidates.sort((a, b) => b.score - a.score || (a.recipe.timeMin || 25) - (b.recipe.timeMin || 25));
+        return candidates.slice(0, limit || 3);
+      }
+
+      function renderOggiRecommendedRecipes() {
+        const chipsWrap = document.getElementById('oggiMissingDozenChips');
+        const listWrap = document.getElementById('oggiRecommendedRecipesList');
+        const subEl = document.getElementById('oggiRecSubtitle');
+        if (!chipsWrap || !listWrap) return;
+
+        const todayLog = ensureTodayLog();
+        const missing = getMissingDozenCategories(todayLog);
+        if (missing.length === 0) {
+          chipsWrap.innerHTML = '<span class="badge ok">🎉 Hai già coperto tutti i 12 Cibi Sani di oggi!</span>';
+        } else {
+          chipsWrap.innerHTML = '<span style="font-size:0.76rem; color:var(--ink-secondary); align-self:center;">Ti mancano oggi:</span>' +
+            missing.slice(0, 6).map((m) => '<span class="badge">' + escHtml(m.icon + ' ' + (m.label || m.name || m.id)) + '</span>').join('') +
+            (missing.length > 6 ? '<span class="badge">+' + (missing.length - 6) + '</span>' : '');
+        }
+
+        const isMorning = new Date().getHours() < 13;
+        if (subEl) {
+          subEl.textContent = isMorning
+            ? 'Preparazioni veloci per oggi: 1 tocco aggiorna insieme i 12 Cibi Sani, proteine, sodio e potassio'
+            : 'Piatti scelti per completare i 12 Cibi Sani rimasti oggi rispettando i tuoi limiti clinici';
+        }
+
+        const ranked = rankRecipesForToday(3);
+        if (ranked.length === 0) {
+          listWrap.innerHTML = '<div class="empty-box">Nessuna ricetta compatibile con i filtri attuali del profilo. Controlla le allergie o usa «Crea un Piatto Bilanciato» in Cucina.</div>';
+          return;
+        }
+
+        const dozenNameMap = {};
+        DAILY_DOZEN.forEach((d) => { dozenNameMap[d.id] = d.icon + ' ' + (d.label || d.name || d.id); });
+
+        listWrap.innerHTML = ranked.map((item) => {
+          const r = item.recipe;
+          const st = item.stats;
+          const covBadges = item.uniqueCovered.slice(0, 4).map((dId) =>
+            '<span class="badge ok">' + escHtml(dozenNameMap[dId] || dId) + '</span>'
+          ).join('');
+          return '<div class="oggi-rec-card">' +
+            '<div class="oggi-rec-head">' +
+              '<div>' +
+                '<h3 class="oggi-rec-title">' + escHtml(r.title) + '</h3>' +
+                '<div class="oggi-rec-meta num">⏱ ' + (r.timeMin || 15) + ' min · ' + Math.round(st.kcal) + ' kcal · Prot ' + Math.round(st.prot) + 'g · Na ' + Math.round(st.na) + 'mg</div>' +
+              '</div>' +
+              '<span class="badge">' + item.haveCount + '/' + item.totalIng + ' in casa</span>' +
+            '</div>' +
+            (covBadges ? '<div class="chip-row">' + covBadges + '</div>' : '') +
+            '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+              '<button type="button" class="btn btn-primary btn-sm oggi-log-rec-btn" data-rid="' + escHtml(r.id) + '" style="flex:2 1 170px; min-height:42px;">✓ Fatto / Mangiato (1 tocco)</button>' +
+              '<button type="button" class="btn btn-sm oggi-open-rec-btn" data-rid="' + escHtml(r.id) + '" style="flex:1 1 110px; min-height:42px;">📖 Apri ricetta</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+
+        listWrap.querySelectorAll('.oggi-log-rec-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const rec = RECIPES.find((x) => x.id === btn.dataset.rid);
+            if (!rec) return;
+            const st = computeRecipeMacros(rec, 1);
+            logMealAndSync({
+              title: rec.title,
+              kcal: Math.round(st.kcal),
+              prot: Math.round(st.prot),
+              na: Math.round(st.na),
+              k: Math.round(st.k),
+              dozen: rec.dozen || []
+            });
+          });
+        });
+
+        listWrap.querySelectorAll('.oggi-open-rec-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const rec = RECIPES.find((x) => x.id === btn.dataset.rid);
+            if (!rec) return;
+            ui.recipeSearch = rec.title;
+            const inp = document.getElementById('recipeSearchInput');
+            if (inp) inp.value = rec.title;
+            switchTab('cucina');
+          });
+        });
+      }
+
+      function renderDozenTrendChart(daysCount) {
+        const days = daysCount || ui.dozenRangeDays || 7;
+        ui.dozenRangeDays = days;
+        const wrap = document.getElementById('dozenTrendChartWrap');
+        const sub = document.getElementById('dozenTrendSubtitle');
+        if (!wrap) return;
+
+        document.querySelectorAll('#dozenRangeBar button').forEach((b) => {
+          b.classList.toggle('active', Number(b.dataset.days) === days);
+        });
+
+        const keys = getRollingDateKeys(days);
+        const dayNames = ['D', 'L', 'M', 'M', 'G', 'V', 'S'];
+        let sum = 0;
+        let trackedDays = 0;
+        let hitDays = 0;
+
+        const cols = keys.map((dk, idx) => {
+          const log = state.logs[dk];
+          const val = log ? computeDozenTotal(log.dozen) : 0;
+          if (val > 0) {
+            sum += val;
+            trackedDays++;
+            if (val >= 18) hitDays++;
+          }
+          const pct = Math.max(4, Math.min(100, Math.round((val / 24) * 100)));
+          const cls = val >= 18 ? 'hit' : (val >= 10 ? 'mid' : '');
+          const p = dk.split('-').map(Number);
+          const dt = new Date(p[0], p[1] - 1, p[2]);
+          const showLbl = days === 7 ? dayNames[dt.getDay()] : (idx === 0 || idx === keys.length - 1 || idx % (days === 14 ? 3 : 7) === 0 ? String(p[2]) : '');
+          return '<div class="dozen-trend-col" title="' + escHtml(dk + ': ' + val + '/24') + '">' +
+            '<div class="dozen-trend-bar ' + cls + '" style="height:' + pct + '%;"></div>' +
+            '<span class="dozen-trend-lbl num">' + escHtml(showLbl) + '</span>' +
+          '</div>';
+        }).join('');
+
+        const avg = trackedDays > 0 ? (sum / trackedDays).toFixed(1) : '0.0';
+        if (sub) {
+          sub.textContent = 'Media: ' + avg + '/24 · Obiettivo ≥18 centrato ' + hitDays + ' volte su ' + days + ' giorni';
+        }
+
+        wrap.innerHTML =
+          '<div class="dozen-trend-bars" role="img" aria-label="Grafico andamento 12 Cibi Sani ultimi ' + days + ' giorni">' + cols + '</div>' +
+          '<div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--ink-secondary); margin-top:6px;">' +
+            '<span>🟢 ≥ 18/24 obiettivo · 🟡 10–17 · ⚪ &lt; 10</span>' +
+            '<strong class="num">' + avg + '/24 media</strong>' +
+          '</div>';
+      }
+
+      function renderClinicalGoalsSummary() {
+        const wrap = document.getElementById('clinicalGoalsSummaryWrap');
+        if (!wrap) return;
+        const keys = getRollingDateKeys(14);
+        const naLim = getDailySodiumLimitMg();
+        const protTarget = Math.max(55, Number(state.limits && state.limits.prot) || 100);
+        let naDays = 0, naOk = 0, protDays = 0, protOk = 0;
+
+        keys.forEach((dk) => {
+          const l = state.logs[dk];
+          if (!l) return;
+          const na = Number(l.na) || 0;
+          const k = Number(l.k) || 0;
+          if (na > 0 || k > 0) {
+            naDays++;
+            if (na <= naLim) naOk++;
+          }
+          if (Array.isArray(l.meals) && l.meals.length > 0) {
+            protDays++;
+            const totP = l.meals.reduce((s, m) => s + (Number(m.prot) || 0), 0);
+            if (totP >= protTarget * 0.85) protOk++;
+          }
+        });
+
+        const naPct = naDays > 0 ? Math.round((naOk / naDays) * 100) + '%' : '—';
+        const protPct = protDays > 0 ? Math.round((protOk / protDays) * 100) + '%' : '—';
+        wrap.innerHTML =
+          '<div class="kpi-grid" style="grid-template-columns:repeat(2, minmax(0, 1fr)); margin-bottom:0;">' +
+            '<div class="kpi-box"><span class="kpi-label">Sodio entro soglia (14g)</span><strong class="kpi-value num">' + naPct + '</strong><span class="kpi-sub">' + naOk + '/' + naDays + ' gg ≤ ' + naLim + 'mg</span></div>' +
+            '<div class="kpi-box"><span class="kpi-label">Proteine a target (14g)</span><strong class="kpi-value num">' + protPct + '</strong><span class="kpi-sub">' + protOk + '/' + protDays + ' gg con pasti</span></div>' +
+          '</div>';
+      }
+
       function render7DayChart() {
+        renderDozenTrendChart(ui.dozenRangeDays || 7);
+        return;
         const svg = document.getElementById('trendSvg');
         const simBtn = document.getElementById('sim7dBtn');
         const naLim = getDailySodiumLimitMg();
@@ -5493,10 +6337,13 @@
 
         saveState();
         renderFastingCard();
+        renderFasting7dGrids();
         renderDailyDozenAndElectrolytes();
+        renderOggiRecommendedRecipes();
         render7DayChart();
         renderMealsDiary();
         renderOggiMealsSummary();
+        renderClinicalGoalsSummary();
         if (clearedExp > 0) {
           renderPantry();
           renderRecipeBook();
@@ -5525,10 +6372,13 @@
 
         saveState();
         renderFastingCard();
+        renderFasting7dGrids();
         renderDailyDozenAndElectrolytes();
+        renderOggiRecommendedRecipes();
         render7DayChart();
         renderMealsDiary();
         renderOggiMealsSummary();
+        renderClinicalGoalsSummary();
         if (typeof renderSyncAndGoalSummary === 'function') renderSyncAndGoalSummary();
         showToast('Pasto rimosso dal diario di oggi');
       }
@@ -5781,8 +6631,8 @@
           { phrase: 'uova', ids: ['uova_bio'] },
           { phrase: 'uovo', ids: ['uova_bio'] },
           { phrase: 'yogurt', ids: ['yogurt_greco'] },
-          { phrase: 'ricotta', ids: ['ricotta_vaccina'] },
-          { phrase: 'salmone', ids: ['salmone_selvaggio'] },
+          { phrase: 'ricotta', ids: ['ricotta_magra'] },
+          { phrase: 'salmone', ids: ['salmone'] },
           { phrase: 'pollo', ids: ['petto_pollo'] },
           { phrase: 'tacchino', ids: ['fesa_tacchino'] },
           { phrase: 'insalata', ids: ['lattuga_romana'] }
@@ -5891,9 +6741,11 @@
       function renderMealsDiary() {
         const log = ensureTodayLog();
         const meals = [...log.meals].sort((a, b) => a.ts - b.ts);
-        document.getElementById('mealsCountBadge').textContent = meals.length + (meals.length === 1 ? ' pasto' : ' pasti');
+        const badge = document.getElementById('mealsCountBadge');
+        if (badge) badge.textContent = meals.length + (meals.length === 1 ? ' pasto' : ' pasti');
 
         const wrap = document.getElementById('mealsDiaryContainer');
+        if (!wrap) return;
         wrap.innerHTML = '';
         if (meals.length === 0) {
           wrap.innerHTML = '<div class="empty-box">Nessun pasto registrato oggi. Scegli una ricetta sopra oppure scrivi a parole tue cosa hai mangiato.</div>';
@@ -5915,6 +6767,89 @@
 
           row.querySelector('button').addEventListener('click', () => removeMealById(m.id));
           wrap.appendChild(row);
+        });
+        renderBoughtToday();
+        renderAlmostReadyRecipes();
+      }
+
+      function renderBoughtToday() {
+        const wrap = document.getElementById('boughtTodayWrap');
+        if (!wrap) return;
+        if (!ui.boughtToday || ui.boughtToday.length === 0) {
+          wrap.innerHTML = '';
+          return;
+        }
+        wrap.innerHTML =
+          '<div style="font-size:0.78rem; font-weight:700; color:var(--ink-secondary); margin-bottom:6px;">🛒 Presi oggi (' + ui.boughtToday.length + '):</div>' +
+          '<div class="chip-row">' +
+            ui.boughtToday.map((b) =>
+              '<button type="button" class="btn btn-xs undo-bought-btn" data-bid="' + escHtml(b.id) + '">✓ ' + escHtml(b.name) + ' · ↩ Annulla</button>'
+            ).join('') +
+          '</div>';
+        wrap.querySelectorAll('.undo-bought-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.bid;
+            ui.boughtToday = ui.boughtToday.filter((b) => b.id !== id);
+            state.pantry = state.pantry.filter((x) => x !== id);
+            if (!state.extraShopping.includes(id)) state.extraShopping.push(id);
+            saveState();
+            renderShoppingList();
+            renderPantry();
+            renderRecipeBook();
+            showToast('↩ Articolo rimesso in lista spesa');
+          });
+        });
+      }
+
+      function renderAlmostReadyRecipes() {
+        const wrap = document.getElementById('almostReadyRecipesWrap');
+        if (!wrap) return;
+        const pantrySet = new Set(state.pantry || []);
+        const almost = [];
+        RECIPES.forEach((r) => {
+          if (typeof isRecipeAllowedForProfile === 'function' && !isRecipeAllowedForProfile(r)) return;
+          const hasBlocked = (r.ingredients || []).some((ing) => {
+            const f = FOOD_MAP[ing.id];
+            return f && isFoodBlockedByProfile(f);
+          });
+          if (hasBlocked) return;
+          const missing = (r.ingredients || []).filter((ing) => !pantrySet.has(ing.id) && FOOD_MAP[ing.id]);
+          if (missing.length >= 1 && missing.length <= 2) {
+            almost.push({ recipe: r, missing });
+          }
+        });
+        almost.sort((a, b) => a.missing.length - b.missing.length || (a.recipe.timeMin || 25) - (b.recipe.timeMin || 25));
+        const top = almost.slice(0, 3);
+        if (top.length === 0) {
+          wrap.innerHTML = '<div class="empty-box" style="padding:10px;">Nessuna ricetta a 1–2 ingredienti dal completamento al momento.</div>';
+          return;
+        }
+        wrap.innerHTML = top.map((it) => {
+          const missNames = it.missing.map((m) => FOOD_MAP[m.id] ? FOOD_MAP[m.id].name : m.id);
+          const missIds = it.missing.map((m) => m.id).join(',');
+          return '<div class="shop-row">' +
+            '<div style="min-width:0;">' +
+              '<strong>' + escHtml(it.recipe.title) + '</strong>' +
+              '<div style="font-size:0.76rem; color:var(--ink-secondary);">Manca: <strong>' + escHtml(missNames.join(', ')) + '</strong></div>' +
+            '</div>' +
+            '<button type="button" class="btn btn-sm btn-soft add-missing-shop-btn" data-mids="' + escHtml(missIds) + '" style="flex-shrink:0; min-height:44px;">＋ Aggiungi</button>' +
+          '</div>';
+        }).join('');
+
+        wrap.querySelectorAll('.add-missing-shop-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const ids = (btn.dataset.mids || '').split(',').filter(Boolean);
+            let added = 0;
+            ids.forEach((id) => {
+              if (!state.pantry.includes(id) && !state.extraShopping.includes(id)) {
+                state.extraShopping.push(id);
+                added++;
+              }
+            });
+            saveState();
+            renderShoppingList();
+            showToast(added > 0 ? ('🛒 Aggiunti ' + added + ' ingredienti alla lista spesa') : 'Già presenti nella lista spesa');
+          });
         });
       }
 
@@ -6233,9 +7168,11 @@
         const addPantryBtn = document.getElementById('addScannedToPantryBtn');
         const eatProdBtn = document.getElementById('eatScannedProductBtn');
         const saveBtn = document.getElementById('saveCacheBtn');
+        const cmpBtn = document.getElementById('compareProductBtn');
         if (addPantryBtn) addPantryBtn.disabled = !hasAnyInput;
         if (eatProdBtn) eatProdBtn.disabled = !hasAnyInput;
         if (saveBtn) saveBtn.disabled = !hasAnyInput;
+        if (cmpBtn) cmpBtn.disabled = !hasAnyInput;
 
         const panel = document.getElementById('verdictPanel');
         const titleEl = document.getElementById('verdictTitle');
@@ -6259,10 +7196,135 @@
         listEl.innerHTML = res.reasons.map((r) => '<li>' + escHtml(r) + '</li>').join('');
         thEl.textContent = res.thresholds;
 
+        renderProductComparison(data, res);
         const hasUnverifiedOcr = Object.values(ui.ocrConfidence || {}).some((c) => c === 'yellow' || c === 'red');
         if (autoSaveIfEan && !hasUnverifiedOcr && data.ean && data.ean.length >= 8) {
           saveCurrentProductToEanCache(true);
         }
+      }
+
+      function pinCurrentProductForCompare() {
+        const data = readScannerFormData();
+        const res = evaluateClinicalProduct(data);
+        ui.compareProductA = { data, res };
+        renderComparePinBar();
+        showToast('⚖️ Prodotto A fissato: ora inquadra o scegli il Prodotto B');
+      }
+
+      function renderComparePinBar() {
+        const bar = document.getElementById('comparePinBar');
+        const panel = document.getElementById('productComparePanel');
+        if (!bar) return;
+        if (!ui.compareProductA) {
+          bar.style.display = 'none';
+          if (panel) panel.style.display = 'none';
+          return;
+        }
+        const a = ui.compareProductA;
+        bar.style.display = 'flex';
+        bar.innerHTML =
+          '<span>⚖️ <strong>Prodotto A:</strong> ' + escHtml(a.data.name || 'Senza nome') + ' (' + escHtml(a.res.level) + ' · ' + a.res.score + '/100)</span>' +
+          '<button type="button" id="clearComparePinBtn" class="btn btn-xs">✕ Chiudi</button>';
+        bar.querySelector('#clearComparePinBtn').addEventListener('click', () => {
+          ui.compareProductA = null;
+          renderComparePinBar();
+        });
+      }
+
+      function renderProductComparison(dataB, resB) {
+        const panel = document.getElementById('productComparePanel');
+        if (!panel) return;
+        if (!ui.compareProductA || !dataB || !resB) {
+          panel.style.display = 'none';
+          return;
+        }
+        const a = ui.compareProductA;
+        if (a.data.name === dataB.name && a.data.ean === dataB.ean && a.res.score === resB.score) {
+          panel.style.display = 'none';
+          return;
+        }
+        const aWins = a.res.score >= resB.score;
+        const fmt = (v, unit) => (v !== '' && v !== undefined && v !== null ? (Number(v) + unit) : '—');
+        panel.style.display = 'grid';
+        panel.innerHTML =
+          '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
+            '<strong style="font-size:0.86rem;">⚖️ Confronto Clinico A vs B</strong>' +
+            '<span class="badge ok">Scelta migliore: ' + escHtml(aWins ? (a.data.name || 'Prodotto A') : (dataB.name || 'Prodotto B')) + '</span>' +
+          '</div>' +
+          '<div class="compare-grid">' +
+            '<div class="compare-col ' + (aWins ? 'winner' : '') + '">' +
+              '<strong>A · ' + escHtml(a.data.name || 'Prodotto A') + '</strong>' +
+              '<span class="num">' + escHtml(a.res.level) + ' · ' + a.res.score + '/100</span>' +
+              '<span class="num">Sale: ' + fmt(a.data.salt, 'g') + ' · Na: ' + fmt(a.data.sodium, 'mg') + '</span>' +
+              '<span class="num">Zuccheri: ' + fmt(a.data.sugars, 'g') + ' · Saturi: ' + fmt(a.data.satFat, 'g') + '</span>' +
+              '<span class="num">Proteine: ' + fmt(a.data.protein, 'g') + ' · Fibre: ' + fmt(a.data.fiber, 'g') + '</span>' +
+            '</div>' +
+            '<div class="compare-col ' + (!aWins ? 'winner' : '') + '">' +
+              '<strong>B · ' + escHtml(dataB.name || 'Prodotto B') + '</strong>' +
+              '<span class="num">' + escHtml(resB.level) + ' · ' + resB.score + '/100</span>' +
+              '<span class="num">Sale: ' + fmt(dataB.salt, 'g') + ' · Na: ' + fmt(dataB.sodium, 'mg') + '</span>' +
+              '<span class="num">Zuccheri: ' + fmt(dataB.sugars, 'g') + ' · Saturi: ' + fmt(dataB.satFat, 'g') + '</span>' +
+              '<span class="num">Proteine: ' + fmt(dataB.protein, 'g') + ' · Fibre: ' + fmt(dataB.fiber, 'g') + '</span>' +
+            '</div>' +
+          '</div>';
+      }
+
+      async function renderPendingLabelsQueue() {
+        const det = document.getElementById('pendingLabelsDetails');
+        const badge = document.getElementById('pendingLabelsBadge');
+        const list = document.getElementById('pendingLabelsList');
+        if (!det || !badge || !list) return;
+        const rows = await OfflineLabelQueue.list();
+        badge.textContent = String(rows.length);
+        if (rows.length === 0) {
+          det.style.display = 'none';
+          list.innerHTML = '';
+          return;
+        }
+        det.style.display = '';
+        list.innerHTML = rows.map((r) =>
+          '<div class="pending-label-row">' +
+            '<img class="pending-label-thumb" src="' + escHtml(r.blobDataUrl) + '" alt="Etichetta salvata">' +
+            '<div style="flex:1; min-width:0;">' +
+              '<div style="font-weight:700; font-size:0.82rem;">' + escHtml(r.label || 'Etichetta salvata') + '</div>' +
+              '<div style="font-size:0.75rem; color:var(--ink-secondary);">' + escHtml(r.ean ? ('EAN ' + r.ean) : 'Senza codice') + ' · ' + escHtml(formatSyncTimestamp(r.createdAt)) + '</div>' +
+            '</div>' +
+            '<div style="display:flex; gap:6px; flex-shrink:0;">' +
+              '<button type="button" class="btn btn-sm btn-primary pending-analyze-btn" data-pid="' + escHtml(r.id) + '">🔍 Analizza</button>' +
+              '<button type="button" class="btn btn-xs btn-danger pending-del-btn" data-pid="' + escHtml(r.id) + '" aria-label="Elimina foto">✕</button>' +
+            '</div>' +
+          '</div>'
+        ).join('');
+
+        list.querySelectorAll('.pending-analyze-btn').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const item = rows.find((x) => x.id === btn.dataset.pid);
+            if (!item) return;
+            ui.activePendingLabelId = item.id;
+            if (item.ean) document.getElementById('eanInput').value = item.ean;
+            if (item.label && !document.getElementById('prodNameInput').value) {
+              document.getElementById('prodNameInput').value = item.label;
+            }
+            const ocrDet = document.getElementById('scannerOcrManualDetails');
+            if (ocrDet) ocrDet.open = true;
+            try {
+              const resp = await fetch(item.blobDataUrl);
+              const blob = await resp.blob();
+              openCropDialogWithFile(blob, 'table');
+            } catch (_) {
+              showToast('Impossibile riaprire la foto salvata');
+            }
+          });
+        });
+
+        list.querySelectorAll('.pending-del-btn').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            await OfflineLabelQueue.remove(btn.dataset.pid);
+            if (ui.activePendingLabelId === btn.dataset.pid) ui.activePendingLabelId = null;
+            renderPendingLabelsQueue();
+            showToast('🗑️ Foto etichetta rimossa');
+          });
+        });
       }
 
       function populateScannerFields(prod, confidenceMode) {
@@ -6353,7 +7415,13 @@
         }
         saveState();
         renderEanCacheList();
-        if (!silent) showToast('💾 Salvato nei prodotti recenti');
+        if (ui.activePendingLabelId) {
+          OfflineLabelQueue.remove(ui.activePendingLabelId).then(() => {
+            ui.activePendingLabelId = null;
+            renderPendingLabelsQueue();
+          });
+        }
+        if (!silent) showToast('💾 Salvato nei recenti (disponibile offline alla prossima spesa)');
       }
 
       function italianStemMatch(haystack, query) {
@@ -6524,7 +7592,7 @@
 
         banner.textContent = '🌐 Ricerca codice ' + ean + ' in corso...';
         const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-        const timer = ctrl ? setTimeout(() => ctrl.abort(), 4000) : null;
+        const timer = ctrl ? setTimeout(() => ctrl.abort(), 2500) : null;
         try {
           const res = await fetch(
             'https://world.openfoodfacts.org/api/v2/product/' + encodeURIComponent(ean) + '.json',
@@ -6568,7 +7636,7 @@
           if (timer) clearTimeout(timer);
           const det = document.getElementById('scannerOcrManualDetails');
           if (det) det.open = true;
-          banner.textContent = '📴 Rete assente o lenta: usa «📷 Foto Tabella (100g)» qui sotto per leggere l\'etichetta senza Internet.';
+          banner.textContent = '📴 Rete assente o lenta (>2,5s): premi «📷 Salva foto per dopo» per analizzarla a casa e memorizzarla per la prossima spesa.';
         }
       }
 
@@ -7239,7 +8307,9 @@
         const wrap = document.getElementById('shoppingListContainer');
         wrap.innerHTML = '';
         if (items.length === 0) {
-          wrap.innerHTML = '<div class="empty-box">Hai già tutti gli ingredienti necessari in Dispensa! 🎉</div>';
+          wrap.innerHTML = '<div class="empty-box">Nessun articolo rimasto da prendere! Controlla sotto le ricette quasi pronte.</div>';
+          renderBoughtToday();
+          renderAlmostReadyRecipes();
           return;
         }
 
@@ -7261,12 +8331,15 @@
           row.querySelector('.shop-bought-btn').addEventListener('click', () => {
             if (!state.pantry.includes(item.id)) state.pantry.push(item.id);
             state.extraShopping = state.extraShopping.filter((x) => x !== item.id);
+            if (!ui.boughtToday.some((b) => b.id === item.id)) {
+              ui.boughtToday.unshift({ id: item.id, name: item.name });
+            }
             saveState();
             renderShoppingList();
             renderPantry();
             renderWeeklyMenu();
             renderRecipeBook();
-            showToast('✅ «' + item.name + '» spostato in Dispensa!');
+            showToast('✅ «' + item.name + '» nel carrello (tocca Annulla sotto se lo rimetti sullo scaffale)');
           });
 
           const delBtn = row.querySelector('.shop-del-btn');
@@ -7554,8 +8627,9 @@
 
         // 1. Daily Dozen
         const dSt = dozenVal >= 18 ? 'hit' : dozenVal >= 10 ? 'mid' : 'none';
-        // 2. Proteine
-        const pSt = protPct >= 85 ? 'hit' : protPct >= 50 ? 'mid' : 'none';
+        // 2. Proteine (non penalizzare i giorni solo check-in 12 Cibi Sani senza pasti dettagliati)
+        const isQualityOnlyDay = meals.length === 0 && dozenVal > 0;
+        const pSt = isQualityOnlyDay ? (dozenVal >= 18 ? 'hit' : 'mid') : (protPct >= 85 ? 'hit' : protPct >= 50 ? 'mid' : 'none');
         // 3. Sodio & K:Na
         const naLim = getDailySodiumLimitMg();
         let kSt = 'none';
@@ -7569,6 +8643,8 @@
         let fSt = 'none';
         if (protoKey === 'off') {
           fSt = hasData ? 'hit' : 'none';
+        } else if (l && l.fasting && l.fasting.fastHours > 0) {
+          fSt = l.fasting.completed ? 'hit' : 'mid';
         } else {
           const eatLimitMs = FASTING_PROTOCOLS[protoKey].eatH * 3600000;
           if (meals.length >= 2) {
@@ -7602,9 +8678,10 @@
         const d = log.dozen || {};
         const naLim = getDailySodiumLimitMg();
 
-        // 1. Protein check
+        // 1. Protein check (evita falsi allarmi 0g se l'utente ha solo spuntato i 12 Cibi Sani)
         const protGap = Math.round(todayStats.protTarget - todayStats.totalProt);
-        if (protGap > 22) {
+        const hasDetailedMeals = (log.meals || []).length > 0;
+        if (hasDetailedMeals && protGap > 22) {
           const diet = state.profile.dietType || 'omnivore';
           const sugFood = diet === 'vegan' ? 'Ceci, Lenticchie o Tofu' : (diet === 'vegetarian' ? 'Legumi, Uova o Yogurt greco' : 'Legumi, Uova o Pesce azzurro');
           tips.push({
@@ -8927,7 +10004,7 @@
         fbPushTimer = setTimeout(() => {
           fbPushTimer = null;
           pushCloudState(false);
-        }, 1800);
+        }, 3800);
       };
 
       async function signInWithFirebaseGoogle() {
@@ -9333,42 +10410,48 @@
       }
 
       function renderOggi() {
-        renderBeginnerCompass();
-        renderPantry();
-        renderOggiMealsSummary();
+        renderOggiContextLayout();
+        renderOggiRecommendedRecipes();
         renderDailyDozenAndElectrolytes();
-        renderHealthAndCloudCard();
+        renderOggiMealsSummary();
         renderFastingCard();
-        render7DayChart();
+        renderFasting7dGrids();
         renderProtocolChips();
-        updateAdvancedSummaryPill();
+        renderSyncAndGoalSummary();
       }
 
       function renderScanner() {
         populateSimilarFoodsSelect();
         renderEanCacheList();
+        renderComparePinBar();
         updateScannerVerdict(false);
+        renderPendingLabelsQueue();
+        renderShoppingList();
         renderSemaforoDirectory();
       }
 
       function renderMenuTab() {
-        renderWeeklyMenu();
-        renderShoppingList();
+        renderDozenTrendChart(ui.dozenRangeDays || 7);
+        renderFasting7dGrids();
+        renderClinicalGoalsSummary();
+        renderHealthAndCloudCard();
         renderProfileSection();
       }
 
       function renderActiveTab() {
         if (ui.activeTab === 'oggi') renderOggi();
-        else if (ui.activeTab === 'cucina') renderCucina();
-        else if (ui.activeTab === 'scanner') renderScanner();
-        else if (ui.activeTab === 'menu') renderMenuTab();
+        else if (ui.activeTab === 'spesa') renderScanner();
+        else if (ui.activeTab === 'cucina') { renderCucina(); renderWeeklyMenu(); renderPantry(); }
+        else if (ui.activeTab === 'progressi') renderMenuTab();
       }
 
       function renderAll() {
         renderHeaderMode();
         renderOggi();
-        renderCucina();
         renderScanner();
+        renderCucina();
+        renderWeeklyMenu();
+        renderPantry();
         renderMenuTab();
         renderWatchRemindersUI();
       }
@@ -9381,39 +10464,103 @@
         document.getElementById('dayModeBtn').addEventListener('click', toggleDayMode);
         document.getElementById('headerProfileBtn').addEventListener('click', openAccountHealthModal);
 
-        // Beginner Quick Compass & Collapsible Advanced Panel Persistence
-        document.getElementById('dismissCompassBtn').addEventListener('click', () => {
-          try { localStorage.setItem(COMPASS_SEEN_KEY, '1'); } catch (_) {}
-          renderBeginnerCompass();
-        });
-        document.getElementById('compassStep1Btn').addEventListener('click', () => {
-          document.getElementById('pantryCard').scrollIntoView({ behavior: 'smooth' });
-          document.getElementById('pantrySearchInput').focus({ preventScroll: true });
-        });
-        document.getElementById('compassStep2Btn').addEventListener('click', () => {
-          if (countReadyRecipes() > 0) ui.recipeFilter = 'ready';
-          switchTab('cucina');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        document.getElementById('compassStep3Btn').addEventListener('click', () => {
-          switchTab('scanner');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        document.getElementById('reopenCompassBtn').addEventListener('click', () => {
-          try { localStorage.removeItem(COMPASS_SEEN_KEY); } catch (_) {}
-          switchTab('oggi');
-          renderBeginnerCompass();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          showToast('👋 Guida rapida riattivata in cima alla scheda Oggi');
+        // v3.6 Contextual Oggi Switch (1-tocco)
+        document.querySelectorAll('#oggiContextSwitch button').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            ui.oggiMode = btn.dataset.oggimode;
+            renderOggiContextLayout();
+          });
         });
 
-        const advPanel = document.getElementById('oggiAdvancedPanel');
-        if (advPanel) {
-          try {
-            if (localStorage.getItem(ADV_OPEN_KEY) === '1') advPanel.open = true;
-          } catch (_) {}
-          advPanel.addEventListener('toggle', () => {
-            try { localStorage.setItem(ADV_OPEN_KEY, advPanel.open ? '1' : '0'); } catch (_) {}
+        // v3.6 Progressi 12 Cibi Sani Range Selector (7g | 14g | 30g)
+        document.querySelectorAll('#dozenRangeBar button').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            renderDozenTrendChart(Number(btn.dataset.days) || 7);
+          });
+        });
+
+        // v3.6 Fasting 7-Day Edit Modal
+        const closeFastEditBtn = document.getElementById('closeFastEditBtn');
+        if (closeFastEditBtn) {
+          closeFastEditBtn.addEventListener('click', () => {
+            const dlg = document.getElementById('fastingDayEditDialog');
+            if (dlg && typeof dlg.close === 'function') dlg.close();
+          });
+        }
+        ['fastEditStartInput', 'fastEditEndInput'].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener('input', updateFastingEditPreview);
+        });
+        const saveFastEditBtn = document.getElementById('saveFastEditBtn');
+        if (saveFastEditBtn) {
+          saveFastEditBtn.addEventListener('click', () => {
+            if (!ui.editingFastDateKey) return;
+            const ok = saveFastingDayEdit(
+              ui.editingFastDateKey,
+              document.getElementById('fastEditStartInput').value,
+              document.getElementById('fastEditEndInput').value
+            );
+            if (ok) {
+              const dlg = document.getElementById('fastingDayEditDialog');
+              if (dlg && typeof dlg.close === 'function') dlg.close();
+            }
+          });
+        }
+        const deleteFastEditBtn = document.getElementById('deleteFastEditBtn');
+        if (deleteFastEditBtn) {
+          deleteFastEditBtn.addEventListener('click', () => {
+            if (!ui.editingFastDateKey) return;
+            deleteFastingDayEdit(ui.editingFastDateKey);
+            const dlg = document.getElementById('fastingDayEditDialog');
+            if (dlg && typeof dlg.close === 'function') dlg.close();
+          });
+        }
+
+        // v3.6 Toggle Fasting from Profile when currently off
+        const toggleFastProfBtn = document.getElementById('toggleFastFromProfileBtn');
+        if (toggleFastProfBtn) {
+          toggleFastProfBtn.addEventListener('click', () => {
+            if (!state.fasting.protocol || state.fasting.protocol === 'off') {
+              state.fasting.protocol = '16:8';
+              saveState();
+              showToast('⏳ Digiuno 16:8 attivato (puoi cambiarlo in Oggi)');
+            }
+            ui.oggiMode = 'sera';
+            switchTab('oggi');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        }
+
+        // v3.6 Compare A vs B & Offline Label Photo Queue
+        const cmpBtn = document.getElementById('compareProductBtn');
+        if (cmpBtn) cmpBtn.addEventListener('click', pinCurrentProductForCompare);
+
+        const saveOffBtn = document.getElementById('saveOfflineLabelBtn');
+        const offInput = document.getElementById('offlineLabelPhotoInput');
+        if (saveOffBtn && offInput) {
+          saveOffBtn.addEventListener('click', () => offInput.click());
+          offInput.addEventListener('change', async (e) => {
+            const file = e.target.files && e.target.files[0];
+            e.target.value = '';
+            if (!file) return;
+            try {
+              const dataUrl = await OfflineLabelQueue.resizeImageToDataUrl(file, 1200, 0.78);
+              const eanVal = (document.getElementById('eanInput').value || '').trim();
+              const nameVal = (document.getElementById('prodNameInput').value || '').trim();
+              await OfflineLabelQueue.add({
+                id: 'lbl_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                createdAt: Date.now(),
+                ean: eanVal,
+                label: nameVal || (eanVal ? ('Prodotto ' + eanVal) : 'Etichetta supermercato'),
+                blobDataUrl: dataUrl
+              });
+              await renderPendingLabelsQueue();
+              const det = document.getElementById('pendingLabelsDetails');
+              if (det) det.open = true;
+              showToast('📷 Foto salvata sul telefono! Completala a casa per memorizzarla nei recenti.');
+            } catch (_) {
+              showToast('Impossibile salvare la foto etichetta');
+            }
           });
         }
 
@@ -9423,8 +10570,9 @@
             state.fasting.protocol = btn.dataset.fproto;
             ui.selectedFastPhase = null;
             saveState();
+            renderOggiContextLayout();
             renderFastingCard();
-            updateAdvancedSummaryPill();
+            renderFasting7dGrids();
             renderSyncAndGoalSummary();
             showToast('⏳ Protocollo impostato su: ' + btn.textContent.trim());
           });
@@ -9450,7 +10598,8 @@
         });
 
         // 7d Sim
-        document.getElementById('sim7dBtn').addEventListener('click', () => {
+        const sim7dBtnEl = document.getElementById('sim7dBtn');
+        if (sim7dBtnEl) sim7dBtnEl.addEventListener('click', () => {
           ui.sim7d = !ui.sim7d;
           render7DayChart();
           renderSyncAndGoalSummary();
@@ -9856,6 +11005,7 @@
             clearTimeout(fbPushTimer);
             fbPushTimer = null;
             await cancelAllWatchNotifications();
+            await OfflineLabelQueue.clear();
             if (fbCurrentUser && fbAuth && fbModules && fbModules.signOut) {
               try {
                 const cap = window.Capacitor;
@@ -10157,7 +11307,7 @@
       try {
         const params = new URLSearchParams(window.location.search);
         const urlTab = params.get('tab');
-        if (urlTab && ['oggi', 'cucina', 'scanner', 'menu'].includes(urlTab)) {
+        if (urlTab && ['oggi', 'spesa', 'cucina', 'progressi', 'scanner', 'menu'].includes(urlTab)) {
           switchTab(urlTab);
         } else if (!state.profile.onboarded && !params.has('skip_onboard') && !params.has('apk_bridge')) {
           // Open friendly 30-second Express Cooking Setup on first visit!
