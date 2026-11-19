@@ -2366,7 +2366,7 @@
       <article class="card">
         <div class="card-head">
           <div>
-            <h2 class="card-title">I 12 Cibi Sani di Oggi</h2>
+            <h2 class="card-title">I 12 Cibi Sani di Oggi (Daily Dozen)</h2>
             <p class="card-desc">Spunta ciò che hai mangiato (si aggiornano da soli quando segni una ricetta · obiettivo ≥ 18/24)</p>
           </div>
           <span id="dozenTopScoreBadge" class="badge ok num">0/24</span>
@@ -2456,7 +2456,7 @@
           </div>
         </details>
 
-        <details class="sub-disclosure">
+        <details class="sub-disclosure" open>
           <summary><span>💊 Integratori &amp; Piccole Abitudini</span><span id="protocolCountBadge" class="badge num">0/5</span></summary>
           <div class="sub-disclosure-body">
             <p class="card-desc" id="protocolCardDesc" style="margin-bottom:8px;">Promemoria giornalieri facoltativi per energia, vitamina B12 e digestione</p>
@@ -5317,7 +5317,6 @@
       }
 
       function renderOggiContextLayout() {
-        const protoKey = (state.fasting && FASTING_PROTOCOLS[state.fasting.protocol]) ? state.fasting.protocol : 'off';
         const mode = resolveOggiMode();
         const pastiBlock = document.getElementById('oggiPastiBlock');
         const fastBlock = document.getElementById('oggiFastingBlock');
@@ -5325,12 +5324,7 @@
         const sBtn = document.getElementById('oggiModeSeraBtn');
         const switchBar = document.getElementById('oggiContextSwitch');
 
-        if (protoKey === 'off') {
-          if (switchBar) switchBar.style.display = 'none';
-          if (pastiBlock) pastiBlock.style.display = '';
-          if (fastBlock) fastBlock.style.display = 'none';
-          return;
-        }
+        // Always keep 1-tap switch visible so Intermittent Fasting is always reachable in 1 tap
         if (switchBar) switchBar.style.display = '';
         if (pBtn) {
           pBtn.classList.toggle('active', mode === 'pasti');
